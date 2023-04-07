@@ -1,8 +1,8 @@
-import { extendTheme } from '@chakra-ui/react'
+import { StyleFunctionProps, extendTheme } from '@chakra-ui/react'
+import { mode } from '@chakra-ui/theme-tools'
 
 // https://github.com/chakra-ui/chakra-ui/blob/main/packages/components/theme/src/foundations/colors.ts
 // greenをbrandとして定義
-
 const brand = {
   50: '#F0FFF4',
   100: '#C6F6D5',
@@ -23,14 +23,15 @@ export const theme = extendTheme({
   components: {
     Input: {
       variants: {
-        outline: {
+        outline: (props: StyleFunctionProps) => ({
           field: {
             _focusVisible: {
-              borderColor: 'brand.500',
+              borderColor: mode('brand.500', 'brand.300')(props),
             },
             borderRadius: 'lg',
+            bg: mode('white', 'whiteAlpha.50')(props),
           },
-        },
+        }),
       },
     },
     Form: {
@@ -57,5 +58,12 @@ export const theme = extendTheme({
         },
       },
     },
+  },
+  styles: {
+    global: (props: StyleFunctionProps) => ({
+      body: {
+        bg: mode('#f7f9f7', 'gray.800')(props),
+      },
+    }),
   },
 })

@@ -14,12 +14,14 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 // import { z } from 'zod'
 // import { zodResolver } from '@hookform/resolvers/zod'
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
-import { useRouter } from 'next/router'
 import { useState } from 'react'
+import { getApp } from 'firebase/app'
+import { AuthAction, withAuthUser } from 'next-firebase-auth'
+import Head from 'next/head'
 import { NextPageWithLayout } from './_app'
 import { PasswordField } from '@/components/PasswordField'
 import Layout from '@/components/Layout'
-import { firebaseApp } from '@/libs/firebase'
+import CardMdOnly from '@/components/CardMdOnly'
 
 // const schema = z.object({
 //   email: z
@@ -44,56 +46,68 @@ const SignIn: NextPageWithLayout = () => {
 
   const [error, setError] = useState<boolean>(false)
 
-  const router = useRouter()
   const onSubmit: SubmitHandler<Schema> = async (data) => {
     console.log(data)
-    const auth = getAuth(firebaseApp)
+    const auth = getAuth(getApp())
     try {
       await signInWithEmailAndPassword(auth, data.email, data.password)
-      router.push('/')
     } catch (e) {
       setError(true)
     }
   }
 
   return (
-    <Container
-      maxW="lg"
-      py={{ base: '4', md: '8' }}
-      px={{ base: '4', md: '12' }}
-    >
-      <Stack spacing="7">
-        <Heading size="lg" fontWeight="normal" textAlign="center">
-          ログイン
-        </Heading>
-        <form onSubmit={handleSubmit(onSubmit)} noValidate>
-          <Stack spacing="10">
-            <Stack spacing="5">
-              <FormControl>
-                <FormLabel htmlFor="email">メールアドレス</FormLabel>
-                <Input id="email" type="email" {...register('email')} />
-              </FormControl>
-              <FormControl>
-                <FormLabel htmlFor="password">パスワード</FormLabel>
-                <PasswordField {...register('password')} />
-              </FormControl>
-            </Stack>
-            {error && (
-              <Alert status="error">
-                <AlertIcon />
-                メールアドレスまたはパスワードが間違っています
-              </Alert>
-            )}
-            <Button colorScheme="green" type="submit" isLoading={isSubmitting}>
+    <>
+      <Head>
+        <title>ログイン - Sleep Cycle Predictor</title>
+      </Head>
+      <Container
+        maxW="lg"
+        py={{ base: '4', md: '8' }}
+        px={{ base: '0', md: '8' }}
+      >
+        <CardMdOnly>
+          <Stack spacing="7">
+            <Heading size="lg" fontWeight="normal" textAlign="center">
               ログイン
-            </Button>
+            </Heading>
+            <form onSubmit={handleSubmit(onSubmit)} noValidate>
+              <Stack spacing="10">
+                <Stack spacing="5">
+                  <FormControl>
+                    <FormLabel htmlFor="email">メールアドレス</FormLabel>
+                    <Input id="email" type="email" {...register('email')} />
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel htmlFor="password">パスワード</FormLabel>
+                    <PasswordField {...register('password')} />
+                  </FormControl>
+                </Stack>
+                {error && (
+                  <Alert status="error">
+                    <AlertIcon />
+                    メールアドレスまたはパスワードが間違っています
+                  </Alert>
+                )}
+                <Button
+                  colorScheme="green"
+                  type="submit"
+                  isLoading={isSubmitting}
+                >
+                  ログイン
+                </Button>
+              </Stack>
+            </form>
           </Stack>
-        </form>
-      </Stack>
-    </Container>
+        </CardMdOnly>
+      </Container>
+    </>
   )
 }
 
 SignIn.getLayout = (page) => <Layout>{page}</Layout>
 
-export default SignIn
+export default withAuthUser<NextPageWithLayout>({
+  whenAuthed: AuthAction.REDIRECT_TO_APP,
+  whenUnauthedBeforeInit: AuthAction.RENDER,
+})(SignIn)

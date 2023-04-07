@@ -1,20 +1,55 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from 'firebase/app'
-import { getAnalytics } from 'firebase/analytics'
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import { init } from 'next-firebase-auth'
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-
-const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGE_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+export const initAuth = () => {
+  init({
+    authPageURL: '/signin?redirected=true',
+    appPageURL: '/',
+    loginAPIEndpoint: '/api/signin',
+    logoutAPIEndpoint: '/api/signout',
+    onLoginRequestError: (err) => {
+      console.error(err)
+    },
+    onLogoutRequestError: (err) => {
+      console.error(err)
+    },
+    firebaseAdminInitConfig: {
+      credential: {
+        projectId: process.env.FIREBASE_PROJECT_ID!,
+        clientEmail: process.env.FIREBASE_CLIENT_EMAIL!,
+        // The private key must not be accessible on the client side.
+        privateKey: process.env.FIREBASE_PRIVATE_KEY
+          ? JSON.parse(process.env.FIREBASE_PRIVATE_KEY)
+          : undefined,
+      },
+      databaseURL: process.env.FIREBASE_DATABASE_URL!,
+    },
+    firebaseClientInitConfig: {
+      apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY!,
+      authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+      projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+      storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+      messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGE_SENDER_ID,
+      appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+    },
+    cookies: {
+      name: 'SleepCyclePredictor',
+      keys: [
+        process.env.COOKIE_SECRET_CURRENT,
+        process.env.COOKIE_SECRET_PREVIOUS,
+      ],
+      httpOnly: true,
+      maxAge: 12 * 60 * 60 * 24 * 1000,
+      overwrite: true,
+      path: '/',
+      sameSite: 'strict',
+      secure: true,
+      signed: true,
+    },
+    onVerifyTokenError: (err) => {
+      console.error(err)
+    },
+    onTokenRefreshError: (err) => {
+      console.error(err)
+    },
+  })
 }
-
-// Initialize Firebase
-export const firebaseApp = initializeApp(firebaseConfig)

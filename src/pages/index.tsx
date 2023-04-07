@@ -11,15 +11,17 @@ const Index: NextPageWithLayout = () => {
         <title>Sleep Cycle Predictor</title>
         <meta
           name="description"
-          content="毎日ずれていく睡眠サイクルを華麗に予測！"
+          content="毎日ずれてゆくあなたの睡眠サイクルを華麗に予測！"
         />
       </Head>
       <main>
         <Container maxW="800px" py="4">
           <Center>
-            <ButtonGroup spacing="6">
+            <ButtonGroup spacing="8" size="lg">
               <Link href="/signin" passHref legacyBehavior>
-                <Button as="a">ログイン</Button>
+                <Button as="a" colorScheme="green" variant="outline">
+                  ログイン
+                </Button>
               </Link>
               <Link href="/signup" passHref legacyBehavior>
                 <Button as="a" colorScheme="green">
