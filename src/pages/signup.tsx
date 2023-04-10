@@ -1,4 +1,6 @@
 import {
+  Alert,
+  AlertIcon,
   Button,
   Container,
   FormControl,
@@ -15,12 +17,17 @@ import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
 import { getApp } from 'firebase/app'
 import { AuthAction, withAuthUser } from 'next-firebase-auth'
 import Head from 'next/head'
+import axios from 'axios'
+import { useState } from 'react'
+import { useRouter } from 'next/router'
 import { NextPageWithLayout } from './_app'
+import { CreateUserRequest } from './api/users'
 import { PasswordField } from '@/components/PasswordField'
 import Layout from '@/components/Layout'
 import CardMdOnly from '@/components/CardMdOnly'
 
 const schema = z.object({
+  nickname: z.string().nonempty({ message: 'ニックネームを入力してください' }),
   email: z
     .string()
     .email({ message: 'メールアドレスの形式が正しくありません' }),
@@ -41,10 +48,32 @@ const SignUp: NextPageWithLayout = () => {
     formState: { errors, isSubmitting },
   } = useForm<Schema>({ mode: 'onBlur', resolver: zodResolver(schema) })
 
-  const onSubmit: SubmitHandler<Schema> = (data) => {
+  const [error, setError] = useState<boolean>(false)
+
+  const router = useRouter()
+  const onSubmit: SubmitHandler<Schema> = async (data) => {
     console.log(data)
     const auth = getAuth(getApp())
-    createUserWithEmailAndPassword(auth, data.email, data.password)
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        data.email,
+        data.password
+      )
+
+      const token = await userCredential.user.getIdToken()
+      await axios.post(
+        '/api/users',
+        { nickname: data.nickname } satisfies CreateUserRequest,
+        {
+          headers: { Authorization: token },
+        }
+      )
+
+      router.push('/home')
+    } catch {
+      setError(true)
+    }
   }
 
   return (
@@ -65,6 +94,13 @@ const SignUp: NextPageWithLayout = () => {
             <form onSubmit={handleSubmit(onSubmit)} noValidate>
               <Stack spacing="10">
                 <Stack spacing="5">
+                  <FormControl isInvalid={!!errors.nickname}>
+                    <FormLabel htmlFor="nickname">ニックネーム</FormLabel>
+                    <Input id="nickname" {...register('nickname')} />
+                    <FormErrorMessage>
+                      {errors.nickname && errors.nickname.message}
+                    </FormErrorMessage>
+                  </FormControl>
                   <FormControl isInvalid={!!errors.email}>
                     <FormLabel htmlFor="email">メールアドレス</FormLabel>
                     <Input id="email" type="email" {...register('email')} />
@@ -80,6 +116,12 @@ const SignUp: NextPageWithLayout = () => {
                     </FormErrorMessage>
                   </FormControl>
                 </Stack>
+                {error && (
+                  <Alert status="error">
+                    <AlertIcon />
+                    登録時にエラーが発生しました。
+                  </Alert>
+                )}
                 <Button
                   colorScheme="green"
                   type="submit"
@@ -100,6 +142,6 @@ const SignUp: NextPageWithLayout = () => {
 SignUp.getLayout = (page) => <Layout>{page}</Layout>
 
 export default withAuthUser<NextPageWithLayout>({
-  whenAuthed: AuthAction.REDIRECT_TO_APP,
-  whenUnauthedBeforeInit: AuthAction.RENDER,
+  // whenAuthed: AuthAction.REDIRECT_TO_APP,
+  // whenUnauthedBeforeInit: AuthAction.RENDER,
 })(SignUp)

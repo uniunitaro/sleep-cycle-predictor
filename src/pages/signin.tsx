@@ -86,7 +86,7 @@ const SignIn: NextPageWithLayout = () => {
                 {error && (
                   <Alert status="error">
                     <AlertIcon />
-                    メールアドレスまたはパスワードが間違っています
+                    メールアドレスまたはパスワードが間違っています。
                   </Alert>
                 )}
                 <Button
