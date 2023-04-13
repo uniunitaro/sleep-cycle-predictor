@@ -58,6 +58,15 @@ export const theme = extendTheme({
         },
       },
     },
+    Card: {
+      parts: ['container'],
+      baseStyle: {
+        container: {
+          borderRadius: 'xl',
+          boxShadow: 'none',
+        },
+      },
+    },
   },
   styles: {
     global: (props: StyleFunctionProps) => ({

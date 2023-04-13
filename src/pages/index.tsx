@@ -2,7 +2,7 @@ import Head from 'next/head'
 import { Button, ButtonGroup, Center, Container } from '@chakra-ui/react'
 import Link from 'next/link'
 import { NextPageWithLayout } from './_app'
-import Layout from '@/components/Layout'
+import SignedOutLayout from '@/components/SignedOutLayout'
 
 const Index: NextPageWithLayout = () => {
   return (
@@ -36,6 +36,6 @@ const Index: NextPageWithLayout = () => {
   )
 }
 
-Index.getLayout = (page) => <Layout>{page}</Layout>
+Index.getLayout = (page) => <SignedOutLayout>{page}</SignedOutLayout>
 
 export default Index

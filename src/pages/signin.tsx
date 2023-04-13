@@ -19,8 +19,8 @@ import { getApp } from 'firebase/app'
 import { AuthAction, withAuthUser } from 'next-firebase-auth'
 import Head from 'next/head'
 import { NextPageWithLayout } from './_app'
-import { PasswordField } from '@/components/PasswordField'
-import Layout from '@/components/Layout'
+import PasswordField from '@/components/PasswordField'
+import SignedOutLayout from '@/components/SignedOutLayout'
 import CardMdOnly from '@/components/CardMdOnly'
 
 // const schema = z.object({
@@ -80,7 +80,7 @@ const SignIn: NextPageWithLayout = () => {
                   </FormControl>
                   <FormControl>
                     <FormLabel htmlFor="password">パスワード</FormLabel>
-                    <PasswordField {...register('password')} />
+                    <PasswordField id="password" {...register('password')} />
                   </FormControl>
                 </Stack>
                 {error && (
@@ -105,7 +105,7 @@ const SignIn: NextPageWithLayout = () => {
   )
 }
 
-SignIn.getLayout = (page) => <Layout>{page}</Layout>
+SignIn.getLayout = (page) => <SignedOutLayout>{page}</SignedOutLayout>
 
 export default withAuthUser<NextPageWithLayout>({
   whenAuthed: AuthAction.REDIRECT_TO_APP,

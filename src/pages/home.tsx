@@ -3,7 +3,8 @@ import { Button, ButtonGroup, Center, Container } from '@chakra-ui/react'
 import Link from 'next/link'
 import { AuthAction, withAuthUser } from 'next-firebase-auth'
 import { NextPageWithLayout } from './_app'
-import Layout from '@/components/Layout'
+import SignedInLayout from '@/components/SignedInLayout'
+import SleepInput from '@/features/sleeps/components/SleepInput'
 
 const Home: NextPageWithLayout = () => {
   return (
@@ -13,14 +14,14 @@ const Home: NextPageWithLayout = () => {
       </Head>
       <main>
         <Container maxW="800px" py="4">
-          <Center>It is a ホームページ！</Center>
+          <SleepInput />
         </Container>
       </main>
     </>
   )
 }
 
-Home.getLayout = (page) => <Layout>{page}</Layout>
+Home.getLayout = (page) => <SignedInLayout>{page}</SignedInLayout>
 
 export default withAuthUser<NextPageWithLayout>({
   whenUnauthedBeforeInit: AuthAction.RETURN_NULL,

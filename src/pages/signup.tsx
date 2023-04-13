@@ -15,15 +15,14 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
 import { getApp } from 'firebase/app'
-import { AuthAction, withAuthUser } from 'next-firebase-auth'
 import Head from 'next/head'
 import axios from 'axios'
 import { useState } from 'react'
 import { useRouter } from 'next/router'
 import { NextPageWithLayout } from './_app'
-import { CreateUserRequest } from './api/users'
-import { PasswordField } from '@/components/PasswordField'
-import Layout from '@/components/Layout'
+import { PostUserRequest } from './api/users'
+import PasswordField from '@/components/PasswordField'
+import SignedOutLayout from '@/components/SignedOutLayout'
 import CardMdOnly from '@/components/CardMdOnly'
 
 const schema = z.object({
@@ -64,7 +63,7 @@ const SignUp: NextPageWithLayout = () => {
       const token = await userCredential.user.getIdToken()
       await axios.post(
         '/api/users',
-        { nickname: data.nickname } satisfies CreateUserRequest,
+        { nickname: data.nickname } satisfies PostUserRequest,
         {
           headers: { Authorization: token },
         }
@@ -110,7 +109,7 @@ const SignUp: NextPageWithLayout = () => {
                   </FormControl>
                   <FormControl isInvalid={!!errors.password}>
                     <FormLabel htmlFor="password">パスワード</FormLabel>
-                    <PasswordField {...register('password')} />
+                    <PasswordField id="password" {...register('password')} />
                     <FormErrorMessage>
                       {errors.password && errors.password.message}
                     </FormErrorMessage>
@@ -139,9 +138,6 @@ const SignUp: NextPageWithLayout = () => {
 }
 // }
 
-SignUp.getLayout = (page) => <Layout>{page}</Layout>
+SignUp.getLayout = (page) => <SignedOutLayout>{page}</SignedOutLayout>
 
-export default withAuthUser<NextPageWithLayout>({
-  // whenAuthed: AuthAction.REDIRECT_TO_APP,
-  // whenUnauthedBeforeInit: AuthAction.RENDER,
-})(SignUp)
+export default SignUp
