@@ -14,10 +14,7 @@ const Home: NextPageWithLayout = () => {
       </Head>
       <main>
         <Container maxW="8xl" py="4">
-          <Grid
-            templateColumns={{ base: undefined, md: '1  fr 320px' }}
-            gap="4"
-          >
+          <Grid templateColumns={{ base: undefined, md: '1fr 320px' }} gap="4">
             <SleepChart />
             <SleepInput />
           </Grid>
