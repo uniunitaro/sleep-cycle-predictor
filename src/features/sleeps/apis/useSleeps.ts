@@ -1,10 +1,28 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import axios from 'axios'
 import { createQueryKeys } from '@lukemorales/query-key-factory'
-import { PostSleepRequest, PostSleepResponse } from '@/pages/api/sleeps'
+import { utcToZonedTime } from 'date-fns-tz'
+import {
+  GetSleepsRequest,
+  GetSleepsResponse,
+  PostSleepResponse,
+} from '@/pages/api/sleeps'
+import { TIMEZONE } from '@/constants/date'
 
 const sleepKeys = createQueryKeys('sleeps', {
-  all: null,
+  list: (payload: GetSleepsRequest) => ({
+    queryKey: [payload],
+    queryFn: () =>
+      axios
+        .get<GetSleepsResponse>('/api/sleeps', { params: payload })
+        .then((res) =>
+          res.data.map((s) => ({
+            ...s,
+            start: utcToZonedTime(s.start, TIMEZONE),
+            end: utcToZonedTime(s.end, TIMEZONE),
+          }))
+        ),
+  }),
 })
 
 export const useCreateSleep = () => {
@@ -24,4 +42,11 @@ export const useCreateSleep = () => {
       },
     }
   )
+}
+
+export const useSleeps = ({ start, end }: { start: Date; end: Date }) => {
+  const startString = start.toISOString()
+  const endString = end.toISOString()
+
+  return useQuery(sleepKeys.list({ start: startString, end: endString }))
 }

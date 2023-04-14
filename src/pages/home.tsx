@@ -1,10 +1,10 @@
 import Head from 'next/head'
-import { Button, ButtonGroup, Center, Container } from '@chakra-ui/react'
-import Link from 'next/link'
+import { Container, Grid } from '@chakra-ui/react'
 import { AuthAction, withAuthUser } from 'next-firebase-auth'
 import { NextPageWithLayout } from './_app'
 import SignedInLayout from '@/components/SignedInLayout'
 import SleepInput from '@/features/sleeps/components/SleepInput'
+import SleepChart from '@/features/sleeps/components/SleepChart'
 
 const Home: NextPageWithLayout = () => {
   return (
@@ -13,8 +13,14 @@ const Home: NextPageWithLayout = () => {
         <title>ホーム - Sleep Cycle Predictor</title>
       </Head>
       <main>
-        <Container maxW="800px" py="4">
-          <SleepInput />
+        <Container maxW="8xl" py="4">
+          <Grid
+            templateColumns={{ base: undefined, md: '1  fr 320px' }}
+            gap="4"
+          >
+            <SleepChart />
+            <SleepInput />
+          </Grid>
         </Container>
       </main>
     </>

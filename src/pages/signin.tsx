@@ -47,7 +47,6 @@ const SignIn: NextPageWithLayout = () => {
   const [error, setError] = useState<boolean>(false)
 
   const onSubmit: SubmitHandler<Schema> = async (data) => {
-    console.log(data)
     const auth = getAuth(getApp())
     try {
       await signInWithEmailAndPassword(auth, data.email, data.password)

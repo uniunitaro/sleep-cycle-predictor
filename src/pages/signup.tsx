@@ -51,7 +51,6 @@ const SignUp: NextPageWithLayout = () => {
 
   const router = useRouter()
   const onSubmit: SubmitHandler<Schema> = async (data) => {
-    console.log(data)
     const auth = getAuth(getApp())
     try {
       const userCredential = await createUserWithEmailAndPassword(
