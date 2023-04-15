@@ -95,11 +95,7 @@ const TimeInput: FC<Props> = memo(({ value, onChange, ...rest }) => {
           </PopoverAnchor>
         </InputGroup>
         <Show above="md">
-          <PopoverContent
-            ref={popoverContentRef}
-            w="auto"
-            boxShadow="lg"
-          ></PopoverContent>
+          <PopoverContent ref={popoverContentRef} w="auto"></PopoverContent>
         </Show>
       </Popover>
       <Show below="md">
@@ -109,10 +105,7 @@ const TimeInput: FC<Props> = memo(({ value, onChange, ...rest }) => {
           returnFocusOnClose={false}
           isCentered
         >
-          <ModalOverlay
-            bg="blackAlpha.400"
-            backdropFilter="blur(20px) saturate(180%)"
-          />
+          <ModalOverlay />
           <ModalContent w={300}>
             <ModalBody pt="8">
               <TimePicker

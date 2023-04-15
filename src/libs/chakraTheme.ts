@@ -17,6 +17,14 @@ const brand = {
 }
 
 export const theme = extendTheme({
+  semanticTokens: {
+    colors: {
+      secondaryText: {
+        default: '#68758d',
+        _dark: 'gray.400',
+      },
+    },
+  },
   colors: {
     brand,
   },
@@ -64,6 +72,23 @@ export const theme = extendTheme({
         container: {
           borderRadius: 'xl',
           boxShadow: 'none',
+        },
+      },
+    },
+    Popover: {
+      parts: ['content'],
+      baseStyle: {
+        content: {
+          boxShadow: 'lg',
+        },
+      },
+    },
+    Modal: {
+      parts: ['overlay'],
+      baseStyle: {
+        overlay: {
+          bg: 'blackAlpha.400',
+          backdropFilter: 'blur(20px) saturate(180%)',
         },
       },
     },

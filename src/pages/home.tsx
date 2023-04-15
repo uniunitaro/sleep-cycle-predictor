@@ -3,8 +3,8 @@ import { Container, Grid } from '@chakra-ui/react'
 import { AuthAction, withAuthUser } from 'next-firebase-auth'
 import { NextPageWithLayout } from './_app'
 import SignedInLayout from '@/components/SignedInLayout'
-import SleepInput from '@/features/sleeps/components/SleepInput'
-import SleepChart from '@/features/sleeps/components/SleepChart'
+import SleepInput from '@/features/sleeps/components/Inputs/SleepInput'
+import SleepChart from '@/features/sleeps/components/Charts/SleepChart'
 
 const Home: NextPageWithLayout = () => {
   return (

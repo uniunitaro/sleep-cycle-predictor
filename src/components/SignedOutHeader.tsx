@@ -12,7 +12,7 @@ import Link from 'next/link'
 const SignedOutHeader = () => {
   return (
     <header>
-      <Container maxW="container.xl" height="16">
+      <Container maxW="8xl" height="16">
         <Flex align="center" h="100%">
           <Link href="/">
             <Heading size={{ base: 'md', md: 'lg' }}>

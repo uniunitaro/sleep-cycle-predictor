@@ -23,7 +23,7 @@ import { NextPageWithLayout } from './_app'
 import { PostUserRequest } from './api/users'
 import PasswordField from '@/components/PasswordField'
 import SignedOutLayout from '@/components/SignedOutLayout'
-import CardMdOnly from '@/components/CardMdOnly'
+import AuthFormCard from '@/features/auths/components/AuthFormCard'
 
 const schema = z.object({
   nickname: z.string().nonempty({ message: 'ニックネームを入力してください' }),
@@ -84,7 +84,7 @@ const SignUp: NextPageWithLayout = () => {
         py={{ base: '4', md: '8' }}
         px={{ base: '0', md: '8' }}
       >
-        <CardMdOnly>
+        <AuthFormCard>
           <Stack spacing="7">
             <Heading size="lg" fontWeight="normal" textAlign="center">
               新規会員登録
@@ -130,7 +130,7 @@ const SignUp: NextPageWithLayout = () => {
               </Stack>
             </form>
           </Stack>
-        </CardMdOnly>
+        </AuthFormCard>
       </Container>
     </>
   )

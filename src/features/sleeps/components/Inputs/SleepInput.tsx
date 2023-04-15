@@ -9,7 +9,7 @@ import {
 } from '@chakra-ui/react'
 import { useState } from 'react'
 import { isBefore } from 'date-fns'
-import { useCreateSleep } from '../apis/useSleeps'
+import { useCreateSleep } from '../../apis/useSleeps'
 import DateAndTimeInput from './DateAndTimeInput'
 
 const SleepInput = () => {

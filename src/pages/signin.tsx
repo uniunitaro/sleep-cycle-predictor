@@ -21,7 +21,7 @@ import Head from 'next/head'
 import { NextPageWithLayout } from './_app'
 import PasswordField from '@/components/PasswordField'
 import SignedOutLayout from '@/components/SignedOutLayout'
-import CardMdOnly from '@/components/CardMdOnly'
+import AuthFormCard from '@/features/auths/components/AuthFormCard'
 
 // const schema = z.object({
 //   email: z
@@ -65,7 +65,7 @@ const SignIn: NextPageWithLayout = () => {
         py={{ base: '4', md: '8' }}
         px={{ base: '0', md: '8' }}
       >
-        <CardMdOnly>
+        <AuthFormCard>
           <Stack spacing="7">
             <Heading size="lg" fontWeight="normal" textAlign="center">
               ログイン
@@ -98,7 +98,7 @@ const SignIn: NextPageWithLayout = () => {
               </Stack>
             </form>
           </Stack>
-        </CardMdOnly>
+        </AuthFormCard>
       </Container>
     </>
   )

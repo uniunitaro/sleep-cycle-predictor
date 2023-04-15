@@ -104,7 +104,7 @@ const DateInput: FC<Props> = memo(({ value, onChange, ...rest }) => {
           </PopoverAnchor>
         </InputGroup>
         <Show above="md">
-          <PopoverContent ref={popoverContentRef} w="auto" boxShadow="lg">
+          <PopoverContent ref={popoverContentRef} w="auto">
             <DatePickerWrapper
               value={oldInputValue}
               colorScheme="green"
@@ -120,10 +120,7 @@ const DateInput: FC<Props> = memo(({ value, onChange, ...rest }) => {
           returnFocusOnClose={false}
           isCentered
         >
-          <ModalOverlay
-            bg="blackAlpha.400"
-            backdropFilter="blur(20px) saturate(180%)"
-          />
+          <ModalOverlay />
           <ModalContent
             w={300}
             visibility={hasModalRendered ? 'visible' : 'hidden'}
