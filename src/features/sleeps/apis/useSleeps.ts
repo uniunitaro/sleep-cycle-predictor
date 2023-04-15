@@ -14,7 +14,7 @@ const sleepKeys = createQueryKeys('sleeps', {
     queryKey: [payload],
     queryFn: () =>
       axios
-        .get<GetSleepsResponse>('/api/sleeps', { params: payload })
+        .get<GetSleepsResponse>('/api/users/me/sleeps', { params: payload })
         .then((res) =>
           res.data.map((s) => ({
             ...s,
@@ -33,7 +33,7 @@ export const useCreateSleep = () => {
       const start = payload.start.toISOString()
       const end = payload.end.toISOString()
       return axios
-        .post<PostSleepResponse>('/api/sleeps', { start, end })
+        .post<PostSleepResponse>('/api/users/me/sleeps', { start, end })
         .then((res) => res.data)
     },
     {

@@ -1,3 +1,3 @@
-import { GetMeResponse } from '@/pages/api/user/me'
+import { GetMeResponse } from '@/pages/api/users/me'
 
 export type AuthUserInfo = GetMeResponse

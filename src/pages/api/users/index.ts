@@ -1,32 +1,39 @@
 import { PrismaClient } from '@prisma/client'
 import { NextApiHandler } from 'next'
-import { getUserFromCookies } from 'next-firebase-auth'
+import { verifyIdToken } from 'next-firebase-auth'
+import { initAuth } from '@/libs/firebase'
 
-export type GetMeResponse = {
+initAuth()
+
+export type PostUserRequest = {
+  nickname: string
+}
+
+export type PostUserResponse = {
   nickname: string
   email?: string
 }
 
 const handler: NextApiHandler = async (req, res) => {
   switch (req.method) {
-    case 'GET':
+    case 'POST':
       try {
-        const authUser = await getUserFromCookies({ req })
+        const authUser = await verifyIdToken(req.headers.authorization ?? '')
         if (!authUser.id) {
           return res.status(401).json({ error: 'Unauthorized.' })
         }
 
+        const payload = req.body as PostUserRequest
         const prisma = new PrismaClient()
-        const user = await prisma.user.findUnique({
-          where: {
+        const user = await prisma.user.create({
+          data: {
             id: authUser.id,
+            email: authUser.email,
+            nickname: payload.nickname,
           },
         })
-        if (!user) {
-          throw new Error('User not found.')
-        }
 
-        const userResponse: GetMeResponse = {
+        const userResponse: PostUserResponse = {
           nickname: user.nickname,
           email: user.email ?? undefined,
         }

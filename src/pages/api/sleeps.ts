@@ -1,6 +1,9 @@
 import { PrismaClient, Sleep } from '@prisma/client'
 import { NextApiHandler } from 'next'
 import { getUserFromCookies } from 'next-firebase-auth'
+import { initAuth } from '@/libs/firebase'
+
+initAuth()
 
 export type PostSleepRequest = {
   start: string
