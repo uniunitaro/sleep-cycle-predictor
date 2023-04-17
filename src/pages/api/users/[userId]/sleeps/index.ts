@@ -1,13 +1,14 @@
-import { PrismaClient, Sleep } from '@prisma/client'
+import { PrismaClient } from '@prisma/client'
 import { NextApiHandler } from 'next'
 import { getUserFromCookies } from 'next-firebase-auth'
 import { initAuth } from '@/libs/firebase'
+import { BodyType, QueryType } from '@/types/utils'
 
 initAuth()
 
 export type PostSleepRequest = {
-  start: string
-  end: string
+  start: Date
+  end: Date
 }
 
 export type PostSleepResponse = {
@@ -17,11 +18,15 @@ export type PostSleepResponse = {
 }
 
 export type GetSleepsRequest = {
-  start: string
-  end: string
+  start: Date
+  end: Date
 }
 
-export type GetSleepsResponse = Sleep[]
+export type GetSleepsResponse = {
+  id: number
+  start: string
+  end: string
+}[]
 
 const handler: NextApiHandler = async (req, res) => {
   const { userId } = req.query
@@ -34,7 +39,7 @@ const handler: NextApiHandler = async (req, res) => {
             return res.status(401).json({ error: 'Unauthorized.' })
           }
 
-          const payload = req.body as PostSleepRequest
+          const payload = req.body as BodyType<PostSleepRequest>
           const prisma = new PrismaClient()
           const sleep = await prisma.sleep.create({
             data: {
@@ -62,7 +67,7 @@ const handler: NextApiHandler = async (req, res) => {
             return res.status(401).json({ error: 'Unauthorized.' })
           }
 
-          const payload = req.query as GetSleepsRequest
+          const payload = req.query as QueryType<GetSleepsRequest>
           const prisma = new PrismaClient()
           const sleeps = await prisma.sleep.findMany({
             where: {

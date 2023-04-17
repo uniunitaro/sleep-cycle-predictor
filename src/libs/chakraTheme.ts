@@ -19,7 +19,7 @@ const brand = {
 export const theme = extendTheme({
   semanticTokens: {
     colors: {
-      secondaryText: {
+      secondaryGray: {
         default: '#68758d',
         _dark: 'gray.400',
       },
