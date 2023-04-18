@@ -1,8 +1,8 @@
-import { PrismaClient } from '@prisma/client'
 import { NextApiHandler } from 'next'
 import { getUserFromCookies } from 'next-firebase-auth'
 import { initAuth } from '@/libs/firebase'
 import { BodyType, QueryType } from '@/types/utils'
+import { prisma } from '@/libs/prisma'
 
 initAuth()
 
@@ -40,7 +40,6 @@ const handler: NextApiHandler = async (req, res) => {
           }
 
           const payload = req.body as BodyType<PostSleepRequest>
-          const prisma = new PrismaClient()
           const sleep = await prisma.sleep.create({
             data: {
               userId: authUser.id,
@@ -68,7 +67,6 @@ const handler: NextApiHandler = async (req, res) => {
           }
 
           const payload = req.query as QueryType<GetSleepsRequest>
-          const prisma = new PrismaClient()
           const sleeps = await prisma.sleep.findMany({
             where: {
               userId: authUser.id,

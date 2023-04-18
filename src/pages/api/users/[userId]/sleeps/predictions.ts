@@ -1,9 +1,9 @@
 import { NextApiHandler } from 'next'
 import { getUserFromCookies } from 'next-firebase-auth'
-import { PrismaClient } from '@prisma/client'
 import { initAuth } from '@/libs/firebase'
 import { predictWithLR } from '@/services/predictWithLR'
 import { QueryType } from '@/types/utils'
+import { prisma } from '@/libs/prisma'
 
 initAuth()
 
@@ -30,8 +30,6 @@ const handler: NextApiHandler = async (req, res) => {
           }
 
           const payload = req.query as QueryType<GetPredictionsRequest>
-          const prisma = new PrismaClient()
-
           const sleeps = await prisma.sleep.findMany({
             where: {
               userId: authUser.id,

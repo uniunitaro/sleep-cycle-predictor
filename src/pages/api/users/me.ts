@@ -1,7 +1,7 @@
-import { PrismaClient } from '@prisma/client'
 import { NextApiHandler } from 'next'
 import { getUserFromCookies } from 'next-firebase-auth'
 import { initAuth } from '@/libs/firebase'
+import { prisma } from '@/libs/prisma'
 
 initAuth()
 
@@ -19,7 +19,6 @@ const handler: NextApiHandler = async (req, res) => {
           return res.status(401).json({ error: 'Unauthorized.' })
         }
 
-        const prisma = new PrismaClient()
         const user = await prisma.user.findUnique({
           where: {
             id: authUser.id,

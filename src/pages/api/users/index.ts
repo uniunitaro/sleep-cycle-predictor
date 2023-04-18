@@ -1,7 +1,7 @@
-import { PrismaClient } from '@prisma/client'
 import { NextApiHandler } from 'next'
 import { verifyIdToken } from 'next-firebase-auth'
 import { initAuth } from '@/libs/firebase'
+import { prisma } from '@/libs/prisma'
 
 initAuth()
 
@@ -24,7 +24,6 @@ const handler: NextApiHandler = async (req, res) => {
         }
 
         const payload = req.body as PostUserRequest
-        const prisma = new PrismaClient()
         const user = await prisma.user.create({
           data: {
             id: authUser.id,
