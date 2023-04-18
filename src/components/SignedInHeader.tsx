@@ -3,13 +3,13 @@ import {
   Container,
   Flex,
   HStack,
-  Heading,
   IconButton,
   Spacer,
   useColorMode,
 } from '@chakra-ui/react'
 import Link from 'next/link'
 import { MoonIcon, SunIcon } from '@chakra-ui/icons'
+import Logo from './Logo'
 import { useAuthUserInfo } from '@/features/users/apis/useAuthUserInfo'
 
 const SignedInHeader = () => {
@@ -21,9 +21,7 @@ const SignedInHeader = () => {
       <Container maxW="8xl" height="16">
         <Flex align="center" h="100%">
           <Link href="/">
-            <Heading size={{ base: 'md', md: 'lg' }}>
-              Sleep Cycle Predictor
-            </Heading>
+            <Logo />
           </Link>
           <Spacer />
           <HStack spacing="4">

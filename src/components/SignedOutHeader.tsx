@@ -3,11 +3,11 @@ import {
   ButtonGroup,
   Container,
   Flex,
-  Heading,
   Show,
   Spacer,
 } from '@chakra-ui/react'
 import Link from 'next/link'
+import Logo from './Logo'
 
 const SignedOutHeader = () => {
   return (
@@ -15,9 +15,7 @@ const SignedOutHeader = () => {
       <Container maxW="8xl" height="16">
         <Flex align="center" h="100%">
           <Link href="/">
-            <Heading size={{ base: 'md', md: 'lg' }}>
-              Sleep Cycle Predictor
-            </Heading>
+            <Logo />
           </Link>
           <Spacer />
           <ButtonGroup spacing="4">
