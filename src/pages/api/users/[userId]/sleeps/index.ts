@@ -80,6 +80,11 @@ const handler: NextApiHandler = async (req, res) => {
             orderBy: {
               start: 'asc',
             },
+            select: {
+              id: true,
+              start: true,
+              end: true,
+            },
           })
 
           return res.status(200).json(sleeps)

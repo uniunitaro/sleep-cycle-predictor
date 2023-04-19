@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "patch-package && prisma generate"
+    "gen:theme-typings": "chakra-cli tokens src/libs/chakraTheme.ts",
+    "postinstall": "patch-package && prisma generate && npm run gen:theme-typings"
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.0.18",
@@ -55,5 +56,8 @@
       "react": "$react",
       "react-dom": "$react-dom"
     }
+  },
+  "devDependencies": {
+    "@chakra-ui/cli": "^2.3.0"
   }
 }

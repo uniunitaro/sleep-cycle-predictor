@@ -23,6 +23,10 @@ export const theme = extendTheme({
         default: '#68758d',
         _dark: 'gray.400',
       },
+      contentBg: {
+        default: 'white',
+        _dark: 'gray.700',
+      },
     },
   },
   colors: {
@@ -55,6 +59,8 @@ export const theme = extendTheme({
     Button: {
       baseStyle: {
         borderRadius: 'lg',
+        fontWeight: '700',
+        WebkitTapHighlightColor: 'transparent',
       },
     },
     Alert: {

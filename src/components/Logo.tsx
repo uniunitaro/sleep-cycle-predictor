@@ -1,8 +1,8 @@
 import { Box, useColorMode } from '@chakra-ui/react'
 import Image from 'next/image'
-import React from 'react'
+import { FC } from 'react'
 
-const Logo = () => {
+const Logo: FC = () => {
   const { colorMode } = useColorMode()
 
   return (

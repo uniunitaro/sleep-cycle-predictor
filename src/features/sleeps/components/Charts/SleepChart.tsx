@@ -1,6 +1,5 @@
 import {
   Box,
-  Card,
   CardBody,
   Center,
   Flex,
@@ -11,7 +10,7 @@ import {
   StackDivider,
   VStack,
 } from '@chakra-ui/react'
-import { useState } from 'react'
+import { FC, useState } from 'react'
 import {
   addDays,
   addMonths,
@@ -32,8 +31,9 @@ import { usePredictions } from '../../apis/usePredictions'
 import SleepBar from './SleepBar'
 import ChartColumn from './ChartColumn'
 import AwesomeLoader from '@/components/AwesomeLoader'
+import CardMdOnly from '@/components/CardMdOnly'
 
-const SleepChart = () => {
+const SleepChart: FC = () => {
   const [displayMode, setDisplayMode] = useState<'month' | 'week'>('month')
   const [targetDate, setTargetDate] = useState(startOfMonth(new Date()))
   const startDate = targetDate
@@ -57,7 +57,6 @@ const SleepChart = () => {
   )
 
   const headerHeight = 48
-  const cellHeight = 26
 
   const dailySleeps = eachDayOfInterval({ start: startDate, end: endDate }).map(
     (date) => {
@@ -96,9 +95,9 @@ const SleepChart = () => {
   const [hoveredSleepId, setHoveredSleepId] = useState<number>()
 
   return (
-    <Card>
-      <CardBody>
-        <Stack>
+    <CardMdOnly h="100%">
+      <CardBody h="100%">
+        <Stack h="100%">
           <HStack>
             <IconButton
               icon={<ArrowLeftIcon color="secondaryGray" />}
@@ -118,79 +117,89 @@ const SleepChart = () => {
               onClick={() => setTargetDate(addMonths(targetDate, 1))}
             />
           </HStack>
-          <Flex position="relative">
-            {(isSleepsLoading || isPredictionsLoading) && (
-              <Center
-                position="absolute"
-                w="100%"
-                h="100%"
-                backdropFilter="blur(1px)"
-                zIndex="5"
-              >
-                <AwesomeLoader />
-              </Center>
-            )}
-            <VStack mr="3" fontSize="xs" spacing="0">
-              <Box h={`${headerHeight - cellHeight / 2}px`} />
-              {[...Array(24)].map((_, i) => (
-                <Center key={i} h={`${cellHeight}px`} color="secondaryGray">
-                  {i}:00
-                </Center>
-              ))}
-            </VStack>
-            <Flex flex="1" overflowY="auto">
-              <Flex position="relative" flex="1">
-                <Box>
-                  <Box h={`${headerHeight}px`} />
-                  {[...Array(24)].map((_, i) => (
-                    <Box key={i} h={`${cellHeight}px`}>
-                      <Box
-                        position="absolute"
-                        w="100%"
-                        borderBottom="1px solid"
-                        borderColor="chakra-border-color"
-                      />
-                    </Box>
-                  ))}
-                </Box>
-                <HStack
-                  divider={<StackDivider />}
-                  spacing="1"
-                  align="start"
-                  flex="1"
+          <Flex flex="1" overflowY="auto">
+            <Flex position="relative" flex="1" minH="400px" overflowX="auto">
+              {(isSleepsLoading || isPredictionsLoading) && (
+                <Center
+                  position="absolute"
+                  w="100%"
+                  h="100%"
+                  backdropFilter="blur(2px)"
+                  zIndex="5"
                 >
-                  {dailySleeps.map(({ date, sleeps }) => (
-                    <ChartColumn
-                      key={date.toString()}
-                      date={date}
-                      w={`${100 / dailySleeps.length}%`}
-                      h="100%"
-                    >
-                      <Box position="relative" height="100%" flex="1">
-                        {sleeps &&
-                          sleeps.map((sleep) => (
-                            <SleepBar
-                              key={date.toString() + sleep.id}
-                              isHovered={hoveredSleepId === sleep.id}
-                              position="absolute"
-                              w="100%"
-                              h={`${sleep.barHeightPercentage}%`}
-                              top={`${sleep.barTopPercentage}%`}
-                              barColor={sleep.isPrediction ? 'blue' : 'brand'}
-                              onMouseEnter={() => setHoveredSleepId(sleep.id)}
-                              onMouseLeave={() => setHoveredSleepId(undefined)}
-                            />
-                          ))}
+                  <AwesomeLoader />
+                </Center>
+              )}
+              <VStack mr="3" fontSize="xs" spacing="0">
+                <Box
+                  h={`calc(${headerHeight}px - ((100% - ${headerHeight}px) / 24) / 2)`}
+                />
+                {[...Array(24)].map((_, i) => (
+                  <Center
+                    key={i}
+                    h={`calc((100% - ${headerHeight}px) / 24)`}
+                    color="secondaryGray"
+                  >
+                    {i}:00
+                  </Center>
+                ))}
+              </VStack>
+              <Flex flex="1" overflowX="auto">
+                <Flex position="relative" flex="1">
+                  <Box>
+                    <Box h={`${headerHeight}px`} />
+                    {[...Array(24)].map((_, i) => (
+                      <Box key={i} h={`calc((100% - ${headerHeight}px) / 24)`}>
+                        <Box
+                          position="absolute"
+                          w="100%"
+                          borderBottom="1px solid"
+                          borderColor="chakra-border-color"
+                        />
                       </Box>
-                    </ChartColumn>
-                  ))}
-                </HStack>
+                    ))}
+                  </Box>
+                  <HStack
+                    divider={<StackDivider />}
+                    spacing="1"
+                    align="start"
+                    flex="1"
+                  >
+                    {dailySleeps.map(({ date, sleeps }) => (
+                      <ChartColumn
+                        key={date.toString()}
+                        date={date}
+                        w={`${100 / dailySleeps.length}%`}
+                        h="100%"
+                      >
+                        <Box position="relative" height="100%" flex="1">
+                          {sleeps &&
+                            sleeps.map((sleep) => (
+                              <SleepBar
+                                key={date.toString() + sleep.id}
+                                isHovered={hoveredSleepId === sleep.id}
+                                position="absolute"
+                                w="100%"
+                                h={`${sleep.barHeightPercentage}%`}
+                                top={`${sleep.barTopPercentage}%`}
+                                barColor={sleep.isPrediction ? 'blue' : 'brand'}
+                                onMouseEnter={() => setHoveredSleepId(sleep.id)}
+                                onMouseLeave={() =>
+                                  setHoveredSleepId(undefined)
+                                }
+                              />
+                            ))}
+                        </Box>
+                      </ChartColumn>
+                    ))}
+                  </HStack>
+                </Flex>
               </Flex>
             </Flex>
           </Flex>
         </Stack>
       </CardBody>
-    </Card>
+    </CardMdOnly>
   )
 }
 

@@ -7,12 +7,12 @@ import {
   FormLabel,
   Stack,
 } from '@chakra-ui/react'
-import { useState } from 'react'
+import { FC, useState } from 'react'
 import { isBefore } from 'date-fns'
 import { useCreateSleep } from '../../apis/useSleeps'
 import DateAndTimeInput from './DateAndTimeInput'
 
-const SleepInput = () => {
+const SleepInput: FC = () => {
   const [start, setStart] = useState(new Date())
   const [end, setEnd] = useState(new Date())
 

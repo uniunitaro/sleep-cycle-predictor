@@ -1,14 +1,12 @@
-import { Card, useColorModeValue } from '@chakra-ui/react'
-import React, { FC } from 'react'
+import { Card, CardProps } from '@chakra-ui/react'
+import { FC } from 'react'
 
-const CardMdOnly: FC<{ children: React.ReactNode }> = ({ children }) => {
+const CardMdOnly: FC<CardProps> = ({ children, ...rest }) => {
   return (
     <Card
-      py={{ base: '0', md: '8' }}
-      px={{ base: '4', md: '10' }}
-      bg={{ base: 'transparent', md: useColorModeValue('white', 'gray.700') }}
-      boxShadow="none"
+      bg={{ base: 'transparent', md: 'contentBg' }}
       borderRadius={{ base: 'none', md: 'xl' }}
+      {...rest}
     >
       {children}
     </Card>
