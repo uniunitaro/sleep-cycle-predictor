@@ -1,5 +1,4 @@
 import {
-  Avatar,
   Container,
   Flex,
   HStack,
@@ -10,10 +9,9 @@ import {
 import Link from 'next/link'
 import { MoonIcon, SunIcon } from '@chakra-ui/icons'
 import Logo from './Logo'
-import { useAuthUserInfo } from '@/features/users/apis/useAuthUserInfo'
+import UserMenu from '@/features/users/components/UserMenu'
 
 const SignedInHeader = () => {
-  const { data: authUserInfo } = useAuthUserInfo()
   const { colorMode, toggleColorMode } = useColorMode()
 
   return (
@@ -31,7 +29,7 @@ const SignedInHeader = () => {
               variant="ghost"
               onClick={toggleColorMode}
             />
-            {authUserInfo && <Avatar size="sm" name={authUserInfo.nickname} />}
+            <UserMenu />
           </HStack>
         </Flex>
       </Container>
