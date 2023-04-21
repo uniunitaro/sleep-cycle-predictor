@@ -8,6 +8,7 @@ import { ThemeProvider, createTheme } from '@mui/material'
 import { theme } from '@/libs/chakraTheme'
 import { initAuth } from '@/libs/firebase'
 import type {} from '@mui/x-date-pickers/themeAugmentation'
+import ThemeColorWrapper from '@/components/ThemeColorWrapper'
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
@@ -54,7 +55,9 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
       <QueryClientProvider client={queryClient}>
         <ThemeProvider theme={MuiTheme(colorMode)}>
           <ChakraProvider theme={theme}>
-            {getLayout(<Component {...pageProps} />)}
+            <ThemeColorWrapper>
+              {getLayout(<Component {...pageProps} />)}
+            </ThemeColorWrapper>
           </ChakraProvider>
         </ThemeProvider>
       </QueryClientProvider>

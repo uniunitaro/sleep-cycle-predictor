@@ -86,15 +86,19 @@ export const theme = extendTheme({
       baseStyle: {
         content: {
           boxShadow: 'lg',
+          borderRadius: 'xl',
         },
       },
     },
     Modal: {
-      parts: ['overlay'],
+      parts: ['overlay', 'dialog'],
       baseStyle: {
         overlay: {
           bg: 'blackAlpha.400',
           backdropFilter: 'blur(20px) saturate(180%)',
+        },
+        dialog: {
+          borderRadius: 'xl',
         },
       },
     },

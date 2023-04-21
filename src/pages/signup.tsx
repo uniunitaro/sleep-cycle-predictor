@@ -77,7 +77,7 @@ const SignUp: NextPageWithLayout = () => {
   return (
     <>
       <Head>
-        <title>新規会員登録 - Sleep Cycle Predictor</title>
+        <title>新規登録 - Sleep Cycle Predictor</title>
       </Head>
       <Container
         maxW="lg"
@@ -87,7 +87,7 @@ const SignUp: NextPageWithLayout = () => {
         <AuthFormCard>
           <Stack spacing="7">
             <Heading size="lg" fontWeight="normal" textAlign="center">
-              新規会員登録
+              新規登録
             </Heading>
             <form onSubmit={handleSubmit(onSubmit)} noValidate>
               <Stack spacing="10">

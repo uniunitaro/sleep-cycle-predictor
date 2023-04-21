@@ -1,3 +1,4 @@
+import { ColorModeScript } from '@chakra-ui/react'
 import { Html, Head, Main, NextScript } from 'next/document'
 
 export default function Document() {
@@ -29,9 +30,9 @@ export default function Document() {
           color="#38a169"
         />
         <meta name="msapplication-TileColor" content="#2b5797" />
-        <meta name="theme-color" content="#ffffff" />
       </Head>
       <body>
+        <ColorModeScript />
         <Main />
         <NextScript />
       </body>

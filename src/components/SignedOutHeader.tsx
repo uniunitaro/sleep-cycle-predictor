@@ -32,7 +32,7 @@ const SignedOutHeader = () => {
             <Show above="md">
               <Link href="/signup" passHref legacyBehavior>
                 <Button as="a" colorScheme="green">
-                  会員登録
+                  新規登録
                 </Button>
               </Link>
             </Show>

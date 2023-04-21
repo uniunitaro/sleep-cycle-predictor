@@ -1,16 +1,17 @@
 import {
   Box,
-  CardBody,
   Center,
   Flex,
   HStack,
   Heading,
+  Icon,
   IconButton,
   Stack,
   StackDivider,
   VStack,
+  useDimensions,
 } from '@chakra-ui/react'
-import { FC, useState } from 'react'
+import { FC, useRef, useState } from 'react'
 import {
   addDays,
   addMonths,
@@ -26,13 +27,14 @@ import {
   subMonths,
 } from 'date-fns'
 import { ArrowLeftIcon, ArrowRightIcon } from '@chakra-ui/icons'
+import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'
 import { useSleeps } from '../../apis/useSleeps'
 import { usePredictions } from '../../apis/usePredictions'
 import SleepBar from './SleepBar'
 import ChartColumn from './ChartColumn'
 import AwesomeLoader from '@/components/AwesomeLoader'
 import CardMdOnly from '@/components/CardMdOnly'
-
+import CardBodyMdOnly from '@/components/CardBodyMdOnly'
 const SleepChart: FC = () => {
   const [displayMode, setDisplayMode] = useState<'month' | 'week'>('month')
   const [targetDate, setTargetDate] = useState(startOfMonth(new Date()))
@@ -94,13 +96,17 @@ const SleepChart: FC = () => {
 
   const [hoveredSleepId, setHoveredSleepId] = useState<number>()
 
+  const chartRef = useRef<HTMLDivElement>(null)
+  const chartDimensions = useDimensions(chartRef, true)
+  const chartHeightWoScrollBar = chartDimensions?.contentBox.height ?? 0
+
   return (
     <CardMdOnly h="100%">
-      <CardBody h="100%">
+      <CardBodyMdOnly h="100%" py={{ base: 2, md: 5 }}>
         <Stack h="100%">
-          <HStack>
+          <HStack px={{ base: 4, md: 0 }}>
             <IconButton
-              icon={<ArrowLeftIcon color="secondaryGray" />}
+              icon={<Icon as={FaChevronLeft} color="secondaryGray" />}
               aria-label="前の月を表示"
               size="sm"
               variant="ghost"
@@ -110,7 +116,7 @@ const SleepChart: FC = () => {
               {format(startDate, 'yyyy年M月')}
             </Heading>
             <IconButton
-              icon={<ArrowRightIcon color="secondaryGray" />}
+              icon={<Icon as={FaChevronRight} color="secondaryGray" />}
               aria-label="次の月を表示"
               size="sm"
               variant="ghost"
@@ -130,7 +136,13 @@ const SleepChart: FC = () => {
                   <AwesomeLoader />
                 </Center>
               )}
-              <VStack mr="3" fontSize="xs" spacing="0">
+              <VStack
+                mr="3"
+                fontSize="xs"
+                spacing="0"
+                pl={{ base: 4, md: 0 }}
+                height={`${chartHeightWoScrollBar}px`}
+              >
                 <Box
                   h={`calc(${headerHeight}px - ((100% - ${headerHeight}px) / 24) / 2)`}
                 />
@@ -145,7 +157,7 @@ const SleepChart: FC = () => {
                 ))}
               </VStack>
               <Flex flex="1" overflowX="auto">
-                <Flex position="relative" flex="1">
+                <Flex position="relative" flex="1" ref={chartRef}>
                   <Box>
                     <Box h={`${headerHeight}px`} />
                     {[...Array(24)].map((_, i) => (
@@ -161,7 +173,7 @@ const SleepChart: FC = () => {
                   </Box>
                   <HStack
                     divider={<StackDivider />}
-                    spacing="1"
+                    spacing="0"
                     align="start"
                     flex="1"
                   >
@@ -171,6 +183,7 @@ const SleepChart: FC = () => {
                         date={date}
                         w={`${100 / dailySleeps.length}%`}
                         h="100%"
+                        px="1"
                       >
                         <Box position="relative" height="100%" flex="1">
                           {sleeps &&
@@ -198,7 +211,7 @@ const SleepChart: FC = () => {
             </Flex>
           </Flex>
         </Stack>
-      </CardBody>
+      </CardBodyMdOnly>
     </CardMdOnly>
   )
 }

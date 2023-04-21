@@ -5,6 +5,7 @@ import {
   CardHeader,
   FormControl,
   FormLabel,
+  Heading,
   Stack,
 } from '@chakra-ui/react'
 import { FC, useState } from 'react'
@@ -27,7 +28,11 @@ const SleepInput: FC = () => {
 
   return (
     <Card>
-      <CardHeader>睡眠記録を追加</CardHeader>
+      <CardHeader>
+        <Heading size="md" fontWeight="normal">
+          睡眠記録を追加
+        </Heading>
+      </CardHeader>
       <CardBody>
         <form>
           <Stack spacing="10">
