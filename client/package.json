@@ -1,0 +1,61 @@
+{
+  "name": "sleep-cycle-predictor",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "gen:theme-typings": "chakra-cli tokens src/libs/chakraTheme.ts",
+    "postinstall": "patch-package && npm run gen:theme-typings"
+  },
+  "dependencies": {
+    "@chakra-ui/icons": "^2.0.18",
+    "@chakra-ui/next-js": "^2.1.2",
+    "@chakra-ui/react": "^2.5.5",
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
+    "@hookform/resolvers": "^3.0.1",
+    "@lukemorales/query-key-factory": "^1.2.0",
+    "@mui/material": "^5.12.0",
+    "@mui/x-date-pickers": "^6.1.0",
+    "@tanstack/react-query": "^4.29.1",
+    "@types/node": "18.15.11",
+    "@types/react": "18.0.33",
+    "@types/react-dom": "18.0.11",
+    "@typescript-eslint/eslint-plugin": "^5.57.1",
+    "axios": "^1.3.5",
+    "chakra-datetime-picker": "^1.1.7",
+    "date-fns": "^2.29.3",
+    "date-fns-tz": "^2.0.0",
+    "eslint": "8.37.0",
+    "eslint-config-next": "13.2.4",
+    "eslint-config-prettier": "^8.8.0",
+    "firebase": "9.16.0",
+    "firebase-admin": "^11.6.0",
+    "framer-motion": "^10.10.0",
+    "next": "13.2.4",
+    "next-firebase-auth": "^1.0.0-canary.19",
+    "patch-package": "^6.5.1",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-hook-form": "^7.43.9",
+    "react-icons": "^4.8.0",
+    "simple-statistics": "^7.8.3",
+    "typescript": "5.0.3",
+    "zod": "^3.21.4"
+  },
+  "overrides": {
+    "chakra-datetime-picker": {
+      "@chakra-ui/icons": "$@chakra-ui/icons",
+      "@chakra-ui/react": "$@chakra-ui/react",
+      "framer-motion": "$framer-motion",
+      "react": "$react",
+      "react-dom": "$react-dom"
+    }
+  },
+  "devDependencies": {
+    "@chakra-ui/cli": "^2.3.0"
+  }
+}
