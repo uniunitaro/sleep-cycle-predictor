@@ -1,7 +1,7 @@
 import { createQueryKeys } from '@lukemorales/query-key-factory'
 import { useQuery } from '@tanstack/react-query'
-import { GetPredictionsResponse } from '@server/src/sleeps/sleeps.type'
-import { GetMyPredictionsRequest } from '@server/src/sleeps/sleeps.dto'
+import { GetPredictionsResponse } from '@shared-types/sleeps/sleeps.type'
+import { GetMyPredictionsRequest } from '@shared-types/sleeps/sleeps.dto'
 import { api } from '@/libs/axios'
 
 export const predictionKeys = createQueryKeys('predictions', {

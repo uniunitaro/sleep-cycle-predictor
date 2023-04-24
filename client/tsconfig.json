@@ -16,15 +16,9 @@
     "incremental": true,
     "paths": {
       "@/*": ["./src/*"],
-      "@server/*": ["../server/*"]
+      "@shared-types/*": ["../types/*"]
     }
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    "./../server/**/*dto.ts",
-    "./../server/**/*type.ts"
-  ],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "../types"],
   "exclude": ["node_modules"]
 }

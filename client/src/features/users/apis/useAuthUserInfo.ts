@@ -1,6 +1,6 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { createQueryKeys } from '@lukemorales/query-key-factory'
-import { GetMeResponse } from '@server/src/users/users.type'
+import { GetMeResponse } from '@shared-types/users/users.type'
 import { AuthUserInfo } from '../types/user'
 import { api } from '@/libs/axios'
 

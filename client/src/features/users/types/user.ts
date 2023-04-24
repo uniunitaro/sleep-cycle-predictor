@@ -1,3 +1,3 @@
-import { GetMeResponse } from '@server/src/users/users.type'
+import { GetMeResponse } from '@shared-types/users/users.type'
 
 export type AuthUserInfo = GetMeResponse

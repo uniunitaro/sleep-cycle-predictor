@@ -1,13 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createQueryKeys } from '@lukemorales/query-key-factory'
+
 import {
   GetSleepsRequest,
   PostSleepRequest,
-} from '@server/src/sleeps/sleeps.dto'
+} from '@shared-types/sleeps/sleeps.dto'
 import {
   GetSleepsResponse,
   PostSleepResponse,
-} from '@server/src/sleeps/sleeps.type'
+} from '@shared-types/sleeps/sleeps.type'
 import { Sleep } from '../types/sleep'
 import { api } from '@/libs/axios'
 
