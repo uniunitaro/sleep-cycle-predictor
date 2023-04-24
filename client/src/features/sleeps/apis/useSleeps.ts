@@ -1,29 +1,23 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import axios from 'axios'
 import { createQueryKeys } from '@lukemorales/query-key-factory'
-import { utcToZonedTime } from 'date-fns-tz'
-import { Sleep } from '../types/sleep'
 import {
   GetSleepsRequest,
-  GetSleepsResponse,
   PostSleepRequest,
+} from '@server/src/sleeps/sleeps.dto'
+import {
+  GetSleepsResponse,
   PostSleepResponse,
-} from '@/pages/api/users/[userId]/sleeps'
-import { TIMEZONE } from '@/constants/date'
+} from '@server/src/sleeps/sleeps.type'
+import { Sleep } from '../types/sleep'
+import { api } from '@/libs/axios'
 
 export const sleepKeys = createQueryKeys('sleeps', {
   list: (payload: GetSleepsRequest) => ({
     queryKey: [payload],
     queryFn: (): Promise<Sleep[]> =>
-      axios
+      api
         .get<GetSleepsResponse>('/api/users/me/sleeps', { params: payload })
-        .then((res) =>
-          res.data.map((s) => ({
-            ...s,
-            start: utcToZonedTime(s.start, TIMEZONE),
-            end: utcToZonedTime(s.end, TIMEZONE),
-          }))
-        ),
+        .then((res) => res.data),
   }),
 })
 
@@ -32,13 +26,9 @@ export const useCreateSleep = () => {
 
   return useMutation<Sleep, unknown, PostSleepRequest>(
     (payload) => {
-      return axios
+      return api
         .post<PostSleepResponse>('/api/users/me/sleeps', payload)
-        .then((res) => ({
-          ...res.data,
-          start: utcToZonedTime(res.data.start, TIMEZONE),
-          end: utcToZonedTime(res.data.end, TIMEZONE),
-        }))
+        .then((res) => res.data)
     },
     {
       onSuccess: async () => {

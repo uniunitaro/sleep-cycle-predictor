@@ -5,7 +5,7 @@ import { linearRegression, linearRegressionLine, mean } from 'simple-statistics'
 export const predictWithLR = (
   sleeps: Sleep[],
   startDate: Date,
-  endDate: Date
+  endDate: Date,
 ) => {
   const arrayData = sleeps.map((sleep, i) => {
     const median =
@@ -20,15 +20,15 @@ export const predictWithLR = (
   const meanSleepDuration = mean(
     sleeps.map(
       (sleep) =>
-        getUnixTime(new Date(sleep.end)) - getUnixTime(new Date(sleep.start))
-    )
+        getUnixTime(new Date(sleep.end)) - getUnixTime(new Date(sleep.start)),
+    ),
   )
 
   const getPrediction = (
     startDate: Date,
     endDate: Date,
     index = 0,
-    result: { start: Date; end: Date }[] = []
+    result: { start: Date; end: Date }[] = [],
   ): { start: Date; end: Date }[] => {
     const x = index + sleeps.length
     const y = line(x)

@@ -16,14 +16,14 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
 import { getApp } from 'firebase/app'
 import Head from 'next/head'
-import axios from 'axios'
 import { useState } from 'react'
 import { useRouter } from 'next/router'
+import { PostUserRequest } from '@server/src/users/users.dto'
 import { NextPageWithLayout } from './_app'
-import { PostUserRequest } from './api/users'
 import PasswordField from '@/components/PasswordField'
 import SignedOutLayout from '@/components/SignedOutLayout'
 import AuthFormCard from '@/features/auths/components/AuthFormCard'
+import { api } from '@/libs/axios'
 
 const schema = z.object({
   nickname: z.string().nonempty({ message: 'ニックネームを入力してください' }),
@@ -60,7 +60,7 @@ const SignUp: NextPageWithLayout = () => {
       )
 
       const token = await userCredential.user.getIdToken()
-      await axios.post(
+      await api.post(
         '/api/users',
         { nickname: data.nickname } satisfies PostUserRequest,
         {

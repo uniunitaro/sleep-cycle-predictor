@@ -1,31 +1,21 @@
 import { createQueryKeys } from '@lukemorales/query-key-factory'
-import axios from 'axios'
-import { utcToZonedTime } from 'date-fns-tz'
 import { useQuery } from '@tanstack/react-query'
-import {
-  GetPredictionsRequest,
-  GetPredictionsResponse,
-} from '@/pages/api/users/[userId]/sleeps/predictions'
-import { TIMEZONE } from '@/constants/date'
+import { GetPredictionsResponse } from '@server/src/sleeps/sleeps.type'
+import { GetMyPredictionsRequest } from '@server/src/sleeps/sleeps.dto'
+import { api } from '@/libs/axios'
 
 export const predictionKeys = createQueryKeys('predictions', {
-  list: (payload: GetPredictionsRequest) => ({
+  list: (payload: GetMyPredictionsRequest) => ({
     queryKey: [payload],
     queryFn: (): Promise<{ start: Date; end: Date }[]> =>
-      axios
+      api
         .get<GetPredictionsResponse>('/api/users/me/sleeps/predictions', {
           params: payload,
         })
-        .then((res) =>
-          res.data.map((s) => ({
-            ...s,
-            start: utcToZonedTime(s.start, TIMEZONE),
-            end: utcToZonedTime(s.end, TIMEZONE),
-          }))
-        ),
+        .then((res) => res.data),
   }),
 })
 
-export const usePredictions = (payload: GetPredictionsRequest) => {
+export const usePredictions = (payload: GetMyPredictionsRequest) => {
   return useQuery(predictionKeys.list(payload))
 }
