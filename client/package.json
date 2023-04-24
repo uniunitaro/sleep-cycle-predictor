@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "gen:theme-typings": "chakra-cli tokens src/libs/chakraTheme.ts",
-    "postinstall": "patch-package && prisma generate && npm run gen:theme-typings"
+    "postinstall": "patch-package && npm run gen:theme-typings"
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.0.18",
