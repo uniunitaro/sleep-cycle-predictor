@@ -41,7 +41,7 @@ export const initAuth = () => {
       maxAge: 12 * 60 * 60 * 24 * 1000,
       overwrite: true,
       path: '/',
-      sameSite: 'strict',
+      // sameSite: 'strict',
       secure: true,
       signed: true,
     },

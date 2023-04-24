@@ -11,7 +11,7 @@ import {
   unsetAuthCookies,
   verifyIdToken,
 } from 'next-firebase-auth'
-import { initAuth } from 'libs/firebase'
+import { initAuth } from 'src/libs/firebase'
 import { Request, Response } from 'express'
 
 @Injectable()
