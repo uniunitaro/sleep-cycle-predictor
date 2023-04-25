@@ -12,7 +12,10 @@ export class SleepsController {
     @Req() req: Request,
     @Query() getSleepsRequest: GetSleepsRequest,
   ) {
-    return this.sleepsService.getSleeps(req, getSleepsRequest)
+    console.time('getSleeps')
+    const sleeps = await this.sleepsService.getSleeps(req, getSleepsRequest)
+    console.timeEnd('getSleeps')
+    return sleeps
   }
 
   @Post()
@@ -28,6 +31,13 @@ export class SleepsController {
     @Req() req: Request,
     @Query() getMyPredictionsRequest: GetMyPredictionsRequest,
   ) {
-    return this.sleepsService.getMyPredictions(req, getMyPredictionsRequest)
+    console.time('getPredictions')
+
+    const predictions = await this.sleepsService.getMyPredictions(
+      req,
+      getMyPredictionsRequest,
+    )
+    console.timeEnd('getPredictions')
+    return predictions
   }
 }

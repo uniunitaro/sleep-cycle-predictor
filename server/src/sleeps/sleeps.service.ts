@@ -22,9 +22,9 @@ export class SleepsService {
     req: Request,
     payload: GetSleepsRequest,
   ): Promise<GetSleepsResponse> {
+    console.time('getSleeps: Service')
     const authUser = await this.auth.getAuthUser(req)
-
-    return this.prisma.sleep.findMany({
+    const sleeps = await this.prisma.sleep.findMany({
       where: {
         userId: authUser.id,
         start: {
@@ -43,6 +43,8 @@ export class SleepsService {
         end: true,
       },
     })
+    console.timeEnd('getSleeps: Service')
+    return sleeps
   }
 
   async postSleep(
