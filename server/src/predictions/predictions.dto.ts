@@ -1,7 +1,7 @@
 import { Type } from 'class-transformer'
 import { IsDate } from 'class-validator'
 
-export class GetSleepsRequest {
+export class GetMyPredictionsRequest {
   @IsDate()
   @Type(() => Date)
   start: Date
@@ -9,9 +9,13 @@ export class GetSleepsRequest {
   @IsDate()
   @Type(() => Date)
   end: Date
+
+  @IsDate()
+  @Type(() => Date)
+  srcStart: Date
 }
 
-export class PostSleepRequest {
+export class GetPredictionsRequest {
   @IsDate()
   @Type(() => Date)
   start: Date

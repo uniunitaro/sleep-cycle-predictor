@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Query, Req } from '@nestjs/common'
+import { Controller, Get, Param, Post, Query, Req } from '@nestjs/common'
 import { Request } from 'express'
 import { UserService } from './users.service'
 import { PostUserRequest } from './users.dto'
@@ -9,7 +9,7 @@ export class MeController {
 
   @Get()
   async getMe(@Req() req: Request) {
-    return this.userService.me(req)
+    return this.userService.getMe(req)
   }
 }
 
@@ -20,5 +20,10 @@ export class UsersController {
   @Post()
   async createUser(@Req() req: Request, @Query() payload: PostUserRequest) {
     return this.userService.createUser(req, payload)
+  }
+
+  @Get(':userId')
+  async getUser(@Param('userId') userId: string) {
+    return this.userService.getUser(userId)
   }
 }

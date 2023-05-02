@@ -5,3 +5,8 @@ export type GetMeResponse = {
 }
 
 export type PostUserResponse = GetMeResponse
+
+export type GetUserResponse = {
+  id: string
+  nickname: string
+}

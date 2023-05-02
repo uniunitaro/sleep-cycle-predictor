@@ -3,3 +3,8 @@ export type Sleep = {
   start: Date
   end: Date
 }
+
+export type Prediction = {
+  start: Date
+  end: Date
+}

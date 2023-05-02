@@ -4,3 +4,7 @@ export type GetMeResponse = {
     email: string | null;
 };
 export type PostUserResponse = GetMeResponse;
+export type GetUserResponse = {
+    id: string;
+    nickname: string;
+};

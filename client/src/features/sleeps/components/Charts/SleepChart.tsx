@@ -20,43 +20,35 @@ import {
   endOfMonth,
   endOfWeek,
   format,
-  isAfter,
   isSameDay,
-  startOfDay,
-  startOfMonth,
   subMonths,
 } from 'date-fns'
-import { ArrowLeftIcon, ArrowRightIcon } from '@chakra-ui/icons'
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'
-import { useSleeps } from '../../apis/useSleeps'
-import { usePredictions } from '../../apis/usePredictions'
+import { Prediction, Sleep } from '../../types/sleep'
 import SleepBar from './SleepBar'
 import ChartColumn from './ChartColumn'
 import AwesomeLoader from '@/components/AwesomeLoader'
 import CardMdOnly from '@/components/CardMdOnly'
 import CardBodyMdOnly from '@/components/CardBodyMdOnly'
-const SleepChart: FC = () => {
+
+type Props = {
+  sleeps: Sleep[]
+  predictions: Prediction[]
+  isLoading: boolean
+  targetDate: Date
+  setTargetDate: (date: Date) => void
+}
+const SleepChart: FC<Props> = ({
+  sleeps,
+  predictions,
+  isLoading,
+  targetDate,
+  setTargetDate,
+}) => {
   const [displayMode, setDisplayMode] = useState<'month' | 'week'>('month')
-  const [targetDate, setTargetDate] = useState(startOfMonth(new Date()))
   const startDate = targetDate
   const endDate =
     displayMode === 'month' ? endOfMonth(targetDate) : endOfWeek(targetDate)
-
-  const { data: sleeps, isLoading: isSleepsLoading } = useSleeps({
-    start: startDate,
-    end: endDate,
-  })
-
-  const today = startOfDay(new Date())
-  const predictionsStart = isAfter(startDate, today) ? startDate : today
-  const srcStart = subMonths(today, 1)
-  const { data: predictions, isLoading: isPredictionsLoading } = usePredictions(
-    {
-      start: predictionsStart,
-      end: endDate,
-      srcStart,
-    }
-  )
 
   const headerHeight = 48
 
@@ -125,7 +117,7 @@ const SleepChart: FC = () => {
           </HStack>
           <Flex flex="1" overflowY="auto">
             <Flex position="relative" flex="1" minH="400px" overflowX="auto">
-              {(isSleepsLoading || isPredictionsLoading) && (
+              {isLoading && (
                 <Center
                   position="absolute"
                   w="100%"

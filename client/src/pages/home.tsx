@@ -1,14 +1,14 @@
 import Head from 'next/head'
-import { Box, Container, Flex, Grid, Show } from '@chakra-ui/react'
+import { Box, Container, Grid, Show } from '@chakra-ui/react'
 import { AuthAction, withAuthUser } from 'next-firebase-auth'
 import { AddIcon } from '@chakra-ui/icons'
 import { NextPageWithLayout } from './_app'
 import SignedInLayout from '@/components/SignedInLayout'
 import SleepInput from '@/features/sleeps/components/Inputs/SleepInput'
-import SleepChart from '@/features/sleeps/components/Charts/SleepChart'
 import FAB from '@/components/FAB'
 import SleepInputModal from '@/features/sleeps/components/Inputs/SleepInputModal'
 import { useHistoriedModal } from '@/hooks/useHistoriedModal'
+import PrivateSleepChartContainer from '@/features/sleeps/components/Charts/PrivateSleepChartContainer'
 
 const Home: NextPageWithLayout = () => {
   const { isOpen, onOpen, onClose } = useHistoriedModal()
@@ -32,7 +32,7 @@ const Home: NextPageWithLayout = () => {
             gap="4"
           >
             <Box minH="0" minW="0">
-              <SleepChart />
+              <PrivateSleepChartContainer />
             </Box>
             <Show above="md">
               <SleepInput />
