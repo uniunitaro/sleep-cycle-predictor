@@ -8,7 +8,12 @@ const SignedOutLayout = ({ children }: { children: ReactElement }) => {
       w="100%"
       direction="column"
       overflow="hidden"
-      height={{ base: undefined, md: '100vh' }}
+      sx={{
+        height: '100vh',
+        '&': {
+          height: '100dvh',
+        },
+      }}
     >
       <SignedOutHeader />
       <Box flex="1" minH="0">

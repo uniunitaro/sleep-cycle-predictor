@@ -1,16 +1,38 @@
 import Head from 'next/head'
-import { Box, Container, Flex, Heading, Show } from '@chakra-ui/react'
+import { Box, Container, Flex, Heading } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
+import { GetStaticPaths, GetStaticProps } from 'next'
 import { NextPageWithLayout } from '../_app'
 import SignedOutLayout from '@/components/SignedOutLayout'
 import PublicSleepChartContainer from '@/features/sleeps/components/Charts/PublicSleepChartContainer'
-import { useUser } from '@/features/users/apis/useUser'
+import { getUser } from '@/features/users/apis/useUser'
+import { User } from '@/features/users/types/user'
 
-const UserIndex: NextPageWithLayout = () => {
+type Props = {
+  user: User
+}
+
+export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
+  if (!params) return { notFound: true }
+
+  const user = await getUser(params.userId as string)
+  return {
+    props: {
+      user,
+    },
+  }
+}
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [],
+    fallback: 'blocking',
+  }
+}
+
+const UserIndex: NextPageWithLayout<Props> = ({ user }) => {
   const router = useRouter()
   const { userId } = router.query
 
-  const { data: user } = useUser(userId as string)
   return (
     <>
       <Head>
@@ -28,34 +50,14 @@ const UserIndex: NextPageWithLayout = () => {
           py={{ base: 0, md: 4 }}
           bg={{ base: 'contentBg', md: 'transparent' }}
         >
-          <Show above="md">
-            <Flex direction="column" h="100%">
-              <Heading
-                size={{ base: 'sm', md: 'md' }}
-                p="2"
-                // TODO 時刻ラベルを直して高さの指定を消す
-                h={{ base: undefined, md: '45px' }}
-              >
-                {user && `${user.nickname}さんの睡眠予測`}
-              </Heading>
-              <Box
-                flex="1"
-                minH={{ base: '100vh', md: '0' }}
-                h={{ base: '100vh', md: undefined }}
-                maxH={{ base: '100vh', md: undefined }}
-              >
-                <PublicSleepChartContainer userId={userId as string} />
-              </Box>
-            </Flex>
-          </Show>
-          <Show below="md">
-            <Heading size="sm" p="2">
+          <Flex direction="column" h="100%">
+            <Heading size={{ base: 'sm', md: 'md' }} px="4" py="2">
               {user && `${user.nickname}さんの睡眠予測`}
             </Heading>
-            <Box h="100vh">
+            <Box flex="1" minH="0">
               <PublicSleepChartContainer userId={userId as string} />
             </Box>
-          </Show>
+          </Flex>
         </Container>
       </Box>
     </>

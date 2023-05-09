@@ -90,7 +90,13 @@ const SleepChart: FC<Props> = ({
 
   const chartRef = useRef<HTMLDivElement>(null)
   const chartDimensions = useDimensions(chartRef, true)
-  const chartHeightWoScrollBar = chartDimensions?.contentBox.height ?? 0
+
+  const chartContainerRef = useRef<HTMLDivElement>(null)
+  const chartContainerDimensions = useDimensions(chartContainerRef, true)
+
+  const scrollBarHeight =
+    (chartContainerDimensions?.contentBox.height ?? 0) -
+    (chartDimensions?.contentBox.height ?? 0)
 
   return (
     <CardMdOnly h="100%">
@@ -128,27 +134,25 @@ const SleepChart: FC<Props> = ({
                   <AwesomeLoader />
                 </Center>
               )}
-              <VStack
-                mr="3"
-                fontSize="xs"
-                spacing="0"
-                pl={{ base: 4, md: 0 }}
-                height={`${chartHeightWoScrollBar}px`}
-              >
+              <VStack mr="3" fontSize="xs" spacing="0" pl={{ base: 4, md: 0 }}>
                 <Box
-                  h={`calc(${headerHeight}px - ((100% - ${headerHeight}px) / 24) / 2)`}
+                  h={`calc(${headerHeight}px - ((100% - ${
+                    headerHeight + scrollBarHeight
+                  }px) / 24) / 2)`}
                 />
                 {[...Array(24)].map((_, i) => (
                   <Center
                     key={i}
-                    h={`calc((100% - ${headerHeight}px) / 24)`}
+                    h={`calc((100% - ${
+                      headerHeight + scrollBarHeight
+                    }px) / 24)`}
                     color="secondaryGray"
                   >
                     {i}:00
                   </Center>
                 ))}
               </VStack>
-              <Flex flex="1" overflowX="auto">
+              <Flex flex="1" overflowX="scroll" ref={chartContainerRef}>
                 <Flex position="relative" flex="1" ref={chartRef}>
                   <Box>
                     <Box h={`${headerHeight}px`} />

@@ -1,5 +1,5 @@
 import { Sleep } from '@prisma/client'
-import { fromUnixTime, getUnixTime, isAfter } from 'date-fns'
+import { fromUnixTime, getUnixTime, isAfter, differenceInHours } from 'date-fns'
 import { linearRegression, linearRegressionLine, mean } from 'simple-statistics'
 
 export const predictWithLR = (
@@ -7,7 +7,41 @@ export const predictWithLR = (
   startDate: Date,
   endDate: Date,
 ) => {
-  const arrayData = sleeps.map((sleep, i) => {
+  const SLEEP_INTERVAL_HOURS = 8
+
+  // 分割睡眠があった場合一つの睡眠として扱う
+  const isSegmentedSleep = (currSleep?: Sleep, prevSleep?: Sleep) =>
+    !!currSleep &&
+    !!prevSleep &&
+    differenceInHours(currSleep.start, prevSleep.end) < SLEEP_INTERVAL_HOURS
+  const combinedSleeps: { sleep: Sleep; duration: number }[] = sleeps.flatMap(
+    (sleep, i) => {
+      if (isSegmentedSleep(sleeps[i + 1], sleep)) {
+        return [
+          {
+            sleep: { ...sleep, start: sleep.start, end: sleeps[i + 1].end },
+            duration:
+              getUnixTime(new Date(sleep.end)) -
+              getUnixTime(new Date(sleep.start)) +
+              getUnixTime(new Date(sleeps[i + 1].end)) -
+              getUnixTime(new Date(sleeps[i + 1].start)),
+          },
+        ]
+      } else if (isSegmentedSleep(sleep, sleeps[i - 1])) {
+        return []
+      }
+      return [
+        {
+          sleep,
+          duration:
+            getUnixTime(new Date(sleep.end)) -
+            getUnixTime(new Date(sleep.start)),
+        },
+      ]
+    },
+  )
+
+  const arrayData = combinedSleeps.map(({ sleep }, i) => {
     const median =
       getUnixTime(sleep.start) +
       (getUnixTime(sleep.end) - getUnixTime(sleep.start)) / 2
@@ -17,12 +51,7 @@ export const predictWithLR = (
   const mb = linearRegression(arrayData)
   const line = linearRegressionLine(mb)
 
-  const meanSleepDuration = mean(
-    sleeps.map(
-      (sleep) =>
-        getUnixTime(new Date(sleep.end)) - getUnixTime(new Date(sleep.start)),
-    ),
-  )
+  const meanSleepDuration = mean(combinedSleeps.map(({ duration }) => duration))
 
   const getPrediction = (
     startDate: Date,
@@ -30,7 +59,7 @@ export const predictWithLR = (
     index = 0,
     result: { start: Date; end: Date }[] = [],
   ): { start: Date; end: Date }[] => {
-    const x = index + sleeps.length
+    const x = index + combinedSleeps.length
     const y = line(x)
 
     const sleepStart = fromUnixTime(y - meanSleepDuration / 2)
