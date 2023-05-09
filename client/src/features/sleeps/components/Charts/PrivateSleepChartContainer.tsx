@@ -21,7 +21,7 @@ const PrivateSleepChartContainer: FC = () => {
 
   const today = startOfDay(new Date())
   const predictionsStart = isAfter(startDate, today) ? startDate : today
-  const srcStart = subMonths(today, 1)
+  const srcStart = subMonths(today, 2)
   const { data: predictions, isLoading: isPredictionsLoading } =
     useMyPredictions({
       start: predictionsStart,
