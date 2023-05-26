@@ -1,3 +1,3 @@
-export declare class PostUserRequest {
+export declare class CreateUserRequest {
     nickname: string;
 }

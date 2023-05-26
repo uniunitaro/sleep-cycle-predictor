@@ -11,7 +11,7 @@ export class GetSleepsRequest {
   end: Date
 }
 
-export class PostSleepRequest {
+export class CreateSleepRequest {
   @IsDate()
   @Type(() => Date)
   start: Date

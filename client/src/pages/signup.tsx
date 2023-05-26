@@ -18,7 +18,7 @@ import { getApp } from 'firebase/app'
 import Head from 'next/head'
 import { useState } from 'react'
 import { useRouter } from 'next/router'
-import { PostUserRequest } from '@shared-types/users/users.dto'
+import { CreateUserRequest } from '@shared-types/users/users.dto'
 import { NextPageWithLayout } from './_app'
 import PasswordField from '@/components/PasswordField'
 import SignedOutLayout from '@/components/SignedOutLayout'
@@ -62,7 +62,7 @@ const SignUp: NextPageWithLayout = () => {
       const token = await userCredential.user.getIdToken()
       await api.post(
         '/api/users',
-        { nickname: data.nickname } satisfies PostUserRequest,
+        { nickname: data.nickname } satisfies CreateUserRequest,
         {
           headers: { Authorization: token },
         }

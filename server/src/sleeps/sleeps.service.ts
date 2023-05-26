@@ -2,14 +2,14 @@ import { Injectable } from '@nestjs/common'
 import { Request } from 'express'
 import { AuthService } from 'src/auth/auth.service'
 import { PrismaService } from 'src/prisma/prisma.service'
-import { GetSleepsRequest, PostSleepRequest } from './sleeps.dto'
-import { GetSleepsResponse, PostSleepResponse } from './sleeps.type'
+import { GetSleepsRequest, CreateSleepRequest } from './sleeps.dto'
+import { GetSleepsResponse, CreateSleepResponse } from './sleeps.type'
 
 @Injectable()
 export class SleepsService {
   constructor(private prisma: PrismaService, private auth: AuthService) {}
 
-  async getSleeps(
+  async findByPeriod(
     req: Request,
     payload: GetSleepsRequest,
   ): Promise<GetSleepsResponse> {
@@ -36,10 +36,10 @@ export class SleepsService {
     })
   }
 
-  async postSleep(
+  async create(
     req: Request,
-    payload: PostSleepRequest,
-  ): Promise<PostSleepResponse> {
+    payload: CreateSleepRequest,
+  ): Promise<CreateSleepResponse> {
     const authUser = await this.auth.getAuthUser(req)
 
     return this.prisma.sleep.create({

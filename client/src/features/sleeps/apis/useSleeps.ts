@@ -3,11 +3,11 @@ import { createQueryKeys } from '@lukemorales/query-key-factory'
 
 import {
   GetSleepsRequest,
-  PostSleepRequest,
+  CreateSleepRequest,
 } from '@shared-types/sleeps/sleeps.dto'
 import {
   GetSleepsResponse,
-  PostSleepResponse,
+  CreateSleepResponse,
 } from '@shared-types/sleeps/sleeps.type'
 import { Sleep } from '../types/sleep'
 import { api } from '@/libs/axios'
@@ -25,10 +25,10 @@ export const sleepKeys = createQueryKeys('sleeps', {
 export const useCreateSleep = () => {
   const queryClient = useQueryClient()
 
-  return useMutation<Sleep, unknown, PostSleepRequest>(
+  return useMutation<Sleep, unknown, CreateSleepRequest>(
     (payload) => {
       return api
-        .post<PostSleepResponse>('/api/users/me/sleeps', payload)
+        .post<CreateSleepResponse>('/api/users/me/sleeps', payload)
         .then((res) => res.data)
     },
     {

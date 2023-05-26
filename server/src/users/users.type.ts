@@ -4,7 +4,7 @@ export type GetMeResponse = {
   email: string | null
 }
 
-export type PostUserResponse = GetMeResponse
+export type CreateUserResponse = GetMeResponse
 
 export type GetUserResponse = {
   id: string

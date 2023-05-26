@@ -3,7 +3,7 @@ export type GetSleepsResponse = {
     start: Date;
     end: Date;
 }[];
-export type PostSleepResponse = {
+export type CreateSleepResponse = {
     id: number;
     start: Date;
     end: Date;
