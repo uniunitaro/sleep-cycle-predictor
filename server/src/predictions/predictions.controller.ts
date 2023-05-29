@@ -1,11 +1,13 @@
-import { Controller, Get, Param, Query, Req } from '@nestjs/common'
+import { Controller, Get, Param, Query, Req, UseGuards } from '@nestjs/common'
 import { Request } from 'express'
+import { AuthGuard } from 'src/auth/auth.guard'
 import {
   GetMyPredictionsRequest,
   GetPredictionsRequest,
 } from './predictions.dto'
 import { PredictionsService } from './predictions.service'
 
+@UseGuards(AuthGuard)
 @Controller('users/me/predictions')
 export class MyPredictionsController {
   constructor(private readonly predictionsService: PredictionsService) {}

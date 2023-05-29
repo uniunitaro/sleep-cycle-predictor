@@ -1,8 +1,18 @@
-import { Body, Controller, Get, Post, Query, Req } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common'
 import { Request } from 'express'
+import { AuthGuard } from 'src/auth/auth.guard'
 import { SleepsService } from './sleeps.service'
 import { CreateSleepRequest, GetSleepsRequest } from './sleeps.dto'
 
+@UseGuards(AuthGuard)
 @Controller('users/me/sleeps')
 export class MySleepsController {
   constructor(private readonly sleepsService: SleepsService) {}
