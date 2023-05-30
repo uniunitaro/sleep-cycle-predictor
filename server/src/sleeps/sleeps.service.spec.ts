@@ -5,12 +5,6 @@ import { AuthService } from '../auth/auth.service'
 import { SleepsService } from './sleeps.service'
 import { GetSleepsRequest, CreateSleepRequest } from './sleeps.dto'
 
-jest.mock('../auth/auth.service', () => ({
-  AuthService: jest.fn().mockImplementation(() => ({
-    getAuthUser: jest.fn(),
-  })),
-}))
-
 describe('SleepsService', () => {
   let service: SleepsService
   let prismaService: PrismaService
@@ -40,9 +34,7 @@ describe('SleepsService', () => {
         start: new Date('2022-01-02T00:00:00.000Z'),
         end: new Date('2022-01-03T00:00:00.000Z'),
       }
-      const authUser = {
-        id: '1',
-      }
+      const authUser = { id: '1' }
       jest.spyOn(authService, 'getAuthUser').mockResolvedValue(authUser as any)
 
       const sleeps = await Promise.all([
@@ -84,9 +76,7 @@ describe('SleepsService', () => {
         start: new Date('2022-01-01T00:00:00.000Z'),
         end: new Date('2022-01-01T08:00:00.000Z'),
       }
-      const authUser = {
-        id: '1',
-      }
+      const authUser = { id: '1' }
       jest.spyOn(authService, 'getAuthUser').mockResolvedValue(authUser as any)
 
       const sleep = await service.create(req, payload)

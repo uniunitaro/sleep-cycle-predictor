@@ -82,6 +82,9 @@
     "moduleNameMapper": {
       "^src/(.*)$": "<rootDir>/$1"
     },
-    "globalSetup": "../jestSetup.ts"
+    "globalSetup": "../jestGlobalSetup.ts",
+    "setupFiles": [
+      "../jestSetup.ts"
+    ]
   }
 }

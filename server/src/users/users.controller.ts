@@ -9,13 +9,13 @@ import {
 } from '@nestjs/common'
 import { Request } from 'express'
 import { AuthGuard } from 'src/auth/auth.guard'
-import { UserService } from './users.service'
+import { UsersService } from './users.service'
 import { CreateUserRequest } from './users.dto'
 
 @UseGuards(AuthGuard)
 @Controller('users/me')
 export class MeController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UsersService) {}
 
   @Get()
   async findMe(@Req() req: Request) {
@@ -25,7 +25,7 @@ export class MeController {
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UsersService) {}
 
   @Post()
   async create(@Req() req: Request, @Query() payload: CreateUserRequest) {

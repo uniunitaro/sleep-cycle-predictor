@@ -1,12 +1,6 @@
-import * as dotenv from 'dotenv'
-
-// .env.testを読み込む
-export default function setup() {
-  const testEnv = dotenv.config({
-    path: '.env.test',
-  })
-
-  Object.assign(process.env, {
-    ...testEnv.parsed,
-  })
-}
+jest.mock('src/auth/auth.service', () => ({
+  AuthService: jest.fn().mockImplementation(() => ({
+    getAuthUser: jest.fn(),
+    verifyIdToken: jest.fn(),
+  })),
+}))
