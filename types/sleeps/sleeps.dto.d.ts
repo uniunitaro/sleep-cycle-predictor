@@ -5,4 +5,10 @@ export declare class GetSleepsRequest {
 export declare class CreateSleepRequest {
     start: Date;
     end: Date;
+    segmentedSleeps: SegmentedSleep[];
 }
+declare class SegmentedSleep {
+    start: Date;
+    end: Date;
+}
+export {};

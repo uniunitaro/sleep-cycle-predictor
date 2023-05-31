@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.defineConfigFactory = exports.defineSleepFactory = exports.defineUserFactory = exports.resetScalarFieldValueGenerator = exports.registerScalarFieldValueGenerator = exports.resetSequence = exports.initialize = void 0;
+exports.defineConfigFactory = exports.defineSegmentedSleepFactory = exports.defineSleepFactory = exports.defineUserFactory = exports.resetScalarFieldValueGenerator = exports.registerScalarFieldValueGenerator = exports.resetSequence = exports.initialize = void 0;
 const internal_1 = require("@quramy/prisma-fabbrica/lib/internal");
 var internal_2 = require("@quramy/prisma-fabbrica/lib/internal");
 Object.defineProperty(exports, "initialize", { enumerable: true, get: function () { return internal_2.initialize; } });
@@ -24,6 +24,17 @@ const modelFieldDefinitions = [{
                 name: "user",
                 type: "User",
                 relationName: "SleepToUser"
+            }, {
+                name: "segmentedSleeps",
+                type: "SegmentedSleep",
+                relationName: "SegmentedSleepToSleep"
+            }]
+    }, {
+        name: "SegmentedSleep",
+        fields: [{
+                name: "sleep",
+                type: "Sleep",
+                relationName: "SegmentedSleepToSleep"
             }]
     }, {
         name: "Config",
@@ -135,6 +146,57 @@ function defineSleepFactory(options) {
     return defineSleepFactoryInternal(options);
 }
 exports.defineSleepFactory = defineSleepFactory;
+function isSegmentedSleepsleepFactory(x) {
+    return (x === null || x === void 0 ? void 0 : x._factoryFor) === "Sleep";
+}
+function autoGenerateSegmentedSleepScalarsOrEnums({ seq }) {
+    return {
+        start: (0, internal_1.getScalarFieldValueGenerator)().DateTime({ modelName: "SegmentedSleep", fieldName: "start", isId: false, isUnique: false, seq }),
+        end: (0, internal_1.getScalarFieldValueGenerator)().DateTime({ modelName: "SegmentedSleep", fieldName: "end", isId: false, isUnique: false, seq })
+    };
+}
+function defineSegmentedSleepFactoryInternal({ defaultData: defaultDataResolver }) {
+    const seqKey = {};
+    const getSeq = () => (0, internal_1.getSequenceCounter)(seqKey);
+    const screen = (0, internal_1.createScreener)("SegmentedSleep", modelFieldDefinitions);
+    const build = async (inputData = {}) => {
+        const seq = getSeq();
+        const requiredScalarData = autoGenerateSegmentedSleepScalarsOrEnums({ seq });
+        const resolveValue = (0, internal_1.normalizeResolver)(defaultDataResolver !== null && defaultDataResolver !== void 0 ? defaultDataResolver : {});
+        const defaultData = await resolveValue({ seq });
+        const defaultAssociations = {
+            sleep: isSegmentedSleepsleepFactory(defaultData.sleep) ? {
+                create: await defaultData.sleep.build()
+            } : defaultData.sleep
+        };
+        const data = Object.assign(Object.assign(Object.assign(Object.assign({}, requiredScalarData), defaultData), defaultAssociations), inputData);
+        return data;
+    };
+    const buildList = (inputData) => Promise.all((0, internal_1.normalizeList)(inputData).map(data => build(data)));
+    const pickForConnect = (inputData) => ({
+        id: inputData.id
+    });
+    const create = async (inputData = {}) => {
+        const data = await build(inputData).then(screen);
+        return await (0, internal_1.getClient)().segmentedSleep.create({ data });
+    };
+    const createList = (inputData) => Promise.all((0, internal_1.normalizeList)(inputData).map(data => create(data)));
+    const createForConnect = (inputData = {}) => create(inputData).then(pickForConnect);
+    return {
+        _factoryFor: "SegmentedSleep",
+        build,
+        buildList,
+        buildCreateInput: build,
+        pickForConnect,
+        create,
+        createList,
+        createForConnect,
+    };
+}
+function defineSegmentedSleepFactory(options) {
+    return defineSegmentedSleepFactoryInternal(options);
+}
+exports.defineSegmentedSleepFactory = defineSegmentedSleepFactory;
 function isConfiguserFactory(x) {
     return (x === null || x === void 0 ? void 0 : x._factoryFor) === "User";
 }

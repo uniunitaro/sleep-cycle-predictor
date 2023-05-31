@@ -1,6 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { Request } from 'express'
-import { ConfigFactory, SleepFactory, UserFactory } from 'src/test/factories'
+import {
+  ConfigFactory,
+  SegmentedSleepFactory,
+  SleepFactory,
+  UserFactory,
+} from 'src/test/factories'
 import { ConflictException } from '@nestjs/common'
 import { PrismaService } from '../prisma/prisma.service'
 import { AuthService } from '../auth/auth.service'
@@ -53,6 +58,12 @@ describe('SleepsService', () => {
           user: { connect: user },
           start: new Date('2022-01-02T00:00:00.000Z'),
           end: new Date('2022-01-02T08:00:00.000Z'),
+          segmentedSleeps: {
+            create: await SegmentedSleepFactory.build({
+              start: new Date('2022-01-02T10:00:00.000Z'),
+              end: new Date('2022-01-02T11:00:00.000Z'),
+            }),
+          },
         },
         {
           user: { connect: user },
@@ -66,6 +77,14 @@ describe('SleepsService', () => {
       expect(result[0].id).toEqual(sleeps[1].id)
       expect(result[0].start).toEqual(sleeps[1].start)
       expect(result[0].end).toEqual(sleeps[1].end)
+
+      expect(result[0].segmentedSleeps).toHaveLength(1)
+      expect(result[0].segmentedSleeps[0].start).toEqual(
+        new Date('2022-01-02T10:00:00.000Z'),
+      )
+      expect(result[0].segmentedSleeps[0].end).toEqual(
+        new Date('2022-01-02T11:00:00.000Z'),
+      )
     })
   })
 
@@ -75,6 +94,12 @@ describe('SleepsService', () => {
       const payload: CreateSleepRequest = {
         start: new Date('2022-01-01T00:00:00.000Z'),
         end: new Date('2022-01-01T08:00:00.000Z'),
+        segmentedSleeps: [
+          {
+            start: new Date('2022-01-01T10:00:00.000Z'),
+            end: new Date('2022-01-01T11:00:00.000Z'),
+          },
+        ],
       }
       const authUser = { id: '1' }
       jest.spyOn(authService, 'getAuthUser').mockResolvedValue(authUser as any)
@@ -87,56 +112,187 @@ describe('SleepsService', () => {
       const sleep = await service.create(req, payload)
       expect(sleep.start).toEqual(payload.start)
       expect(sleep.end).toEqual(payload.end)
+
+      expect(sleep.segmentedSleeps).toHaveLength(1)
+      expect(sleep.segmentedSleeps[0].start).toEqual(
+        payload.segmentedSleeps[0].start,
+      )
+      expect(sleep.segmentedSleeps[0].end).toEqual(
+        payload.segmentedSleeps[0].end,
+      )
     })
 
-    test('既存のSleepと重複する場合は409エラーが返される', async () => {
-      const req = {} as Request
+    const testCases = [
+      [
+        new Date('2022-01-01T02:00:00.000Z'),
+        new Date('2022-01-01T06:00:00.000Z'),
+      ],
+      [
+        new Date('2022-01-01T00:00:00.000Z'),
+        new Date('2022-01-01T08:00:00.000Z'),
+      ],
+      [
+        new Date('2022-01-01T00:00:00.000Z'),
+        new Date('2022-01-01T04:00:00.000Z'),
+      ],
+      [
+        new Date('2022-01-01T04:00:00.000Z'),
+        new Date('2022-01-01T08:00:00.000Z'),
+      ],
+      [
+        new Date('2022-01-01T04:00:00.000Z'),
+        new Date('2022-01-01T06:00:00.000Z'),
+      ],
+      [
+        new Date('2022-01-01T00:00:00.000Z'),
+        new Date('2022-01-01T02:00:00.000Z'),
+      ],
+      [
+        new Date('2022-01-01T06:00:00.000Z'),
+        new Date('2022-01-01T08:00:00.000Z'),
+      ],
+    ]
 
-      const authUser = { id: '1' }
-      jest.spyOn(authService, 'getAuthUser').mockResolvedValue(authUser as any)
+    describe('Sleepが既存のSleepと重複する場合は409エラーが返される', () => {
+      test.each(testCases)('start: %p, end: %p', async (start, end) => {
+        const req = {} as Request
+        const authUser = { id: '1' }
+        jest
+          .spyOn(authService, 'getAuthUser')
+          .mockResolvedValue(authUser as any)
 
-      const user = await UserFactory.createForConnect({
-        id: authUser.id,
-        config: { create: await ConfigFactory.build() },
+        const user = await UserFactory.createForConnect({
+          id: authUser.id,
+          config: { create: await ConfigFactory.build() },
+        })
+
+        await SleepFactory.create({
+          user: { connect: user },
+          start: new Date('2022-01-01T02:00:00.000Z'),
+          end: new Date('2022-01-01T06:00:00.000Z'),
+        })
+
+        const payload: CreateSleepRequest = {
+          start,
+          end,
+          segmentedSleeps: [],
+        }
+        await expect(service.create(req, payload)).rejects.toThrowError(
+          ConflictException,
+        )
       })
+    })
 
-      await SleepFactory.create({
-        user: { connect: user },
-        start: new Date('2022-01-01T02:00:00.000Z'),
-        end: new Date('2022-01-01T06:00:00.000Z'),
+    describe('Sleepが既存のSegmentedSleepと重複する場合は409エラーが返される', () => {
+      test.each(testCases)('start: %p, end: %p', async (start, end) => {
+        const req = {} as Request
+        const authUser = { id: '1' }
+        jest
+          .spyOn(authService, 'getAuthUser')
+          .mockResolvedValue(authUser as any)
+
+        const user = await UserFactory.createForConnect({
+          id: authUser.id,
+          config: { create: await ConfigFactory.build() },
+        })
+
+        await SleepFactory.create({
+          user: { connect: user },
+          start: new Date('2021-12-01T00:00:00.000Z'),
+          end: new Date('2021-12-01T08:00:00.000Z'),
+          segmentedSleeps: {
+            create: await SegmentedSleepFactory.build({
+              start: new Date('2022-01-01T02:00:00.000Z'),
+              end: new Date('2022-01-01T06:00:00.000Z'),
+            }),
+          },
+        })
+
+        const payload: CreateSleepRequest = {
+          start,
+          end,
+          segmentedSleeps: [],
+        }
+        await expect(service.create(req, payload)).rejects.toThrowError(
+          ConflictException,
+        )
       })
+    })
 
-      const payload1: CreateSleepRequest = {
-        start: new Date('2022-01-01T00:00:00.000Z'),
-        end: new Date('2022-01-01T08:00:00.000Z'),
-      }
-      await expect(service.create(req, payload1)).rejects.toThrowError(
-        ConflictException,
-      )
+    describe('SegmentedSleepが既存のSleepと重複する場合は409エラーが返される', () => {
+      test.each(testCases)('start: %p, end: %p', async (start, end) => {
+        const req = {} as Request
+        const authUser = { id: '1' }
+        jest
+          .spyOn(authService, 'getAuthUser')
+          .mockResolvedValue(authUser as any)
 
-      const payload2: CreateSleepRequest = {
-        start: new Date('2022-01-01T00:00:00.000Z'),
-        end: new Date('2022-01-01T04:00:00.000Z'),
-      }
-      await expect(service.create(req, payload2)).rejects.toThrowError(
-        ConflictException,
-      )
+        const user = await UserFactory.createForConnect({
+          id: authUser.id,
+          config: { create: await ConfigFactory.build() },
+        })
 
-      const payload3: CreateSleepRequest = {
-        start: new Date('2022-01-01T04:00:00.000Z'),
-        end: new Date('2022-01-01T08:00:00.000Z'),
-      }
-      await expect(service.create(req, payload3)).rejects.toThrowError(
-        ConflictException,
-      )
+        await SleepFactory.create({
+          user: { connect: user },
+          start: new Date('2022-01-01T02:00:00.000Z'),
+          end: new Date('2022-01-01T06:00:00.000Z'),
+        })
 
-      const payload4: CreateSleepRequest = {
-        start: new Date('2022-01-01T04:00:00.000Z'),
-        end: new Date('2022-01-01T06:00:00.000Z'),
-      }
-      await expect(service.create(req, payload4)).rejects.toThrowError(
-        ConflictException,
-      )
+        const payload: CreateSleepRequest = {
+          start: new Date('2021-12-01T00:00:00.000Z'),
+          end: new Date('2021-12-01T08:00:00.000Z'),
+          segmentedSleeps: [
+            {
+              start,
+              end,
+            },
+          ],
+        }
+        await expect(service.create(req, payload)).rejects.toThrowError(
+          ConflictException,
+        )
+      })
+    })
+
+    describe('SegmentedSleepが既存のSegmentedSleepと重複する場合は409エラーが返される', () => {
+      test.each(testCases)('start: %p, end: %p', async (start, end) => {
+        const req = {} as Request
+        const authUser = { id: '1' }
+        jest
+          .spyOn(authService, 'getAuthUser')
+          .mockResolvedValue(authUser as any)
+
+        const user = await UserFactory.createForConnect({
+          id: authUser.id,
+          config: { create: await ConfigFactory.build() },
+        })
+
+        await SleepFactory.create({
+          user: { connect: user },
+          start: new Date('2021-12-01T00:00:00.000Z'),
+          end: new Date('2021-12-01T08:00:00.000Z'),
+          segmentedSleeps: {
+            create: await SegmentedSleepFactory.build({
+              start: new Date('2022-01-01T02:00:00.000Z'),
+              end: new Date('2022-01-01T06:00:00.000Z'),
+            }),
+          },
+        })
+
+        const payload: CreateSleepRequest = {
+          start: new Date('2021-05-01T00:00:00.000Z'),
+          end: new Date('2021-05-01T08:00:00.000Z'),
+          segmentedSleeps: [
+            {
+              start,
+              end,
+            },
+          ],
+        }
+        await expect(service.create(req, payload)).rejects.toThrowError(
+          ConflictException,
+        )
+      })
     })
   })
 })

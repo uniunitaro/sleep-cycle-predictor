@@ -1,5 +1,6 @@
 import type { User } from "@prisma/client";
 import type { Sleep } from "@prisma/client";
+import type { SegmentedSleep } from "@prisma/client";
 import type { Config } from "@prisma/client";
 import type { PredictionSrcDuration } from "@prisma/client";
 import { Prisma } from "@prisma/client";
@@ -45,6 +46,7 @@ type SleepFactoryDefineInput = {
     start?: Date;
     end?: Date;
     user: SleepuserFactory | Prisma.UserCreateNestedOneWithoutSleepsInput;
+    segmentedSleeps?: Prisma.SegmentedSleepCreateNestedManyWithoutSleepInput;
 };
 type SleepFactoryDefineOptions = {
     defaultData: Resolver<SleepFactoryDefineInput, BuildDataOptions>;
@@ -60,6 +62,31 @@ export interface SleepFactoryInterface {
     createForConnect(inputData?: Partial<Prisma.SleepCreateInput>): PromiseLike<Pick<Sleep, "id">>;
 }
 export declare function defineSleepFactory(options: SleepFactoryDefineOptions): SleepFactoryInterface;
+type SegmentedSleepsleepFactory = {
+    _factoryFor: "Sleep";
+    build: () => PromiseLike<Prisma.SleepCreateNestedOneWithoutSegmentedSleepsInput["create"]>;
+};
+type SegmentedSleepFactoryDefineInput = {
+    createdAt?: Date;
+    updatedAt?: Date;
+    start?: Date;
+    end?: Date;
+    sleep: SegmentedSleepsleepFactory | Prisma.SleepCreateNestedOneWithoutSegmentedSleepsInput;
+};
+type SegmentedSleepFactoryDefineOptions = {
+    defaultData: Resolver<SegmentedSleepFactoryDefineInput, BuildDataOptions>;
+};
+export interface SegmentedSleepFactoryInterface {
+    readonly _factoryFor: "SegmentedSleep";
+    build(inputData?: Partial<Prisma.SegmentedSleepCreateInput>): PromiseLike<Prisma.SegmentedSleepCreateInput>;
+    buildCreateInput(inputData?: Partial<Prisma.SegmentedSleepCreateInput>): PromiseLike<Prisma.SegmentedSleepCreateInput>;
+    buildList(inputData: number | readonly Partial<Prisma.SegmentedSleepCreateInput>[]): PromiseLike<Prisma.SegmentedSleepCreateInput[]>;
+    pickForConnect(inputData: SegmentedSleep): Pick<SegmentedSleep, "id">;
+    create(inputData?: Partial<Prisma.SegmentedSleepCreateInput>): PromiseLike<SegmentedSleep>;
+    createList(inputData: number | readonly Partial<Prisma.SegmentedSleepCreateInput>[]): PromiseLike<SegmentedSleep[]>;
+    createForConnect(inputData?: Partial<Prisma.SegmentedSleepCreateInput>): PromiseLike<Pick<SegmentedSleep, "id">>;
+}
+export declare function defineSegmentedSleepFactory(options: SegmentedSleepFactoryDefineOptions): SegmentedSleepFactoryInterface;
 type ConfiguserFactory = {
     _factoryFor: "User";
     build: () => PromiseLike<Prisma.UserCreateNestedOneWithoutConfigInput["create"]>;

@@ -28,7 +28,7 @@ const SleepInputModal: FC<Omit<ModalProps, 'children'>> = (props) => {
     // TODO アラート追加
     if (!isBefore(start, end)) return
 
-    createSleep({ start, end })
+    createSleep({ start, end, segmentedSleeps: [] })
   }
 
   const handleClickAddWithClose = () => {

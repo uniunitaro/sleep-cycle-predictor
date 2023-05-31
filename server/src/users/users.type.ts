@@ -1,12 +1,7 @@
-export type GetMeResponse = {
-  id: string
-  nickname: string
-  email: string | null
-}
+import { User } from '@prisma/client'
 
-export type CreateUserResponse = GetMeResponse
+export type GetMeResponse = User
 
-export type GetUserResponse = {
-  id: string
-  nickname: string
-}
+export type CreateUserResponse = User
+
+export type GetUserResponse = Omit<User, 'email'>

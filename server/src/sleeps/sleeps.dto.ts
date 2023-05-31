@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer'
-import { IsDate } from 'class-validator'
+import { IsArray, IsDate } from 'class-validator'
 import { IsAfter } from 'src/libs/customValidation'
 
 export class GetSleepsRequest {
@@ -14,6 +14,19 @@ export class GetSleepsRequest {
 }
 
 export class CreateSleepRequest {
+  @IsDate()
+  @Type(() => Date)
+  start: Date
+
+  @IsAfter('start')
+  @IsDate()
+  @Type(() => Date)
+  end: Date
+
+  @IsArray()
+  segmentedSleeps: SegmentedSleep[]
+}
+class SegmentedSleep {
   @IsDate()
   @Type(() => Date)
   start: Date

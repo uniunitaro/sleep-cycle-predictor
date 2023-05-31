@@ -21,11 +21,6 @@ export class UsersService {
         where: {
           id: authUser.id,
         },
-        select: {
-          id: true,
-          nickname: true,
-          email: true,
-        },
       })
     } catch {
       throw new NotFoundException()
@@ -47,11 +42,6 @@ export class UsersService {
         nickname: payload.nickname,
         config: { create: {} },
       },
-      select: {
-        id: true,
-        nickname: true,
-        email: true,
-      },
     })
   }
 
@@ -62,6 +52,8 @@ export class UsersService {
           id: userId,
         },
         select: {
+          createdAt: true,
+          updatedAt: true,
           id: true,
           nickname: true,
         },
