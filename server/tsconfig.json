@@ -17,6 +17,6 @@
     "strictBindCallApply": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-    "types": ["@types/jest", "@quramy/jest-prisma"]
+    "types": ["@types/jest", "@quramy/jest-prisma-node"]
   }
 }

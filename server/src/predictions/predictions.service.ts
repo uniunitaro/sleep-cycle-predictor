@@ -1,5 +1,4 @@
-import { Injectable } from '@nestjs/common'
-import { predictWithLR } from 'src/utils/predictWithLR'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { PrismaService } from 'src/prisma/prisma.service'
 import { AuthService } from 'src/auth/auth.service'
 import { Request } from 'express'
@@ -8,6 +7,8 @@ import {
   GetPredictionsRequest,
 } from './predictions.dto'
 import { GetPredictionsResponse } from './predictions.type'
+import { predictWithLR } from './utils/predictWithLR'
+import { getSrcStart } from './utils/getSrcStart'
 
 @Injectable()
 export class PredictionsService {
@@ -19,11 +20,22 @@ export class PredictionsService {
   ): Promise<GetPredictionsResponse> {
     const authUser = await this.auth.getAuthUser(req)
 
+    const config = await this.prisma.config.findUnique({
+      where: {
+        userId: authUser.id,
+      },
+    })
+    if (!config) {
+      throw new NotFoundException()
+    }
+
+    const srcStart = await getSrcStart(config.predictionSrcDuration)
+
     const sleeps = await this.prisma.sleep.findMany({
       where: {
         userId: authUser.id,
         start: {
-          gte: payload.srcStart,
+          gte: srcStart,
         },
       },
       orderBy: {
@@ -38,12 +50,22 @@ export class PredictionsService {
     userId: string,
     payload: GetPredictionsRequest,
   ): Promise<GetPredictionsResponse> {
+    const config = await this.prisma.config.findUnique({
+      where: {
+        userId: userId,
+      },
+    })
+    if (!config) {
+      throw new NotFoundException()
+    }
+
+    const srcStart = await getSrcStart(config.predictionSrcDuration)
+
     const sleeps = await this.prisma.sleep.findMany({
       where: {
         userId,
         start: {
-          // TODO 本来はsrcStartをユーザー情報に持たせる
-          gte: new Date(2023, 2, 1),
+          gte: srcStart,
         },
       },
       orderBy: {

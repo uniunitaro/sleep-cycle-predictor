@@ -45,6 +45,7 @@ export class UsersService {
         id: authUser.id,
         email: authUser.email,
         nickname: payload.nickname,
+        config: { create: {} },
       },
       select: {
         id: true,

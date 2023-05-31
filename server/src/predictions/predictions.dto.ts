@@ -11,10 +11,6 @@ export class GetMyPredictionsRequest {
   @IsDate()
   @Type(() => Date)
   end: Date
-
-  @IsDate()
-  @Type(() => Date)
-  srcStart: Date
 }
 
 export class GetPredictionsRequest {

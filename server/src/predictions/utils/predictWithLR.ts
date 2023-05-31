@@ -21,10 +21,10 @@ export const predictWithLR = (
           {
             sleep: { ...sleep, start: sleep.start, end: sleeps[i + 1].end },
             duration:
-              getUnixTime(new Date(sleep.end)) -
-              getUnixTime(new Date(sleep.start)) +
-              getUnixTime(new Date(sleeps[i + 1].end)) -
-              getUnixTime(new Date(sleeps[i + 1].start)),
+              getUnixTime(sleep.end) -
+              getUnixTime(sleep.start) +
+              getUnixTime(sleeps[i + 1].end) -
+              getUnixTime(sleeps[i + 1].start),
           },
         ]
       } else if (isSegmentedSleep(sleep, sleeps[i - 1])) {
@@ -33,9 +33,7 @@ export const predictWithLR = (
       return [
         {
           sleep,
-          duration:
-            getUnixTime(new Date(sleep.end)) -
-            getUnixTime(new Date(sleep.start)),
+          duration: getUnixTime(sleep.end) - getUnixTime(sleep.start),
         },
       ]
     },

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { ConflictException, Injectable } from '@nestjs/common'
 import { Request } from 'express'
 import { AuthService } from 'src/auth/auth.service'
 import { PrismaService } from 'src/prisma/prisma.service'
@@ -41,6 +41,44 @@ export class SleepsService {
     payload: CreateSleepRequest,
   ): Promise<CreateSleepResponse> {
     const authUser = await this.auth.getAuthUser(req)
+
+    // 既存のSleepと重複していないかチェック
+    const sleeps = await this.prisma.sleep.findMany({
+      where: {
+        userId: authUser.id,
+        OR: [
+          {
+            start: {
+              lte: payload.start,
+            },
+            end: {
+              gte: payload.start,
+            },
+          },
+          {
+            start: {
+              lte: payload.end,
+            },
+            end: {
+              gte: payload.end,
+            },
+          },
+          {
+            start: {
+              gte: payload.start,
+            },
+            end: {
+              lte: payload.end,
+            },
+          },
+        ],
+      },
+    })
+    if (sleeps.length > 0) {
+      throw new ConflictException(
+        '既に記録されている睡眠データと重複しています。',
+      )
+    }
 
     return this.prisma.sleep.create({
       data: {
