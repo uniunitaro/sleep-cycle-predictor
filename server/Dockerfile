@@ -8,4 +8,4 @@ COPY . .
 RUN npm run build
 ENV NODE_ENV production
 RUN npm prune --production
-CMD [ "node", "dist/main.js" ]
+CMD [ "node", "dist/src/main.js" ]
