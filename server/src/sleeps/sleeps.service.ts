@@ -29,7 +29,11 @@ export class SleepsService {
         start: 'asc',
       },
       include: {
-        segmentedSleeps: true,
+        segmentedSleeps: {
+          orderBy: {
+            start: 'asc',
+          },
+        },
       },
     })
   }
@@ -183,7 +187,11 @@ export class SleepsService {
         segmentedSleeps: { createMany: { data: payload.segmentedSleeps } },
       },
       include: {
-        segmentedSleeps: true,
+        segmentedSleeps: {
+          orderBy: {
+            start: 'asc',
+          },
+        },
       },
     })
   }

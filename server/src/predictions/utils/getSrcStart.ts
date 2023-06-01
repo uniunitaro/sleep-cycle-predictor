@@ -19,6 +19,8 @@ export const getSrcStart = async (
       return getZonedStartOfDayInUtc(subMonths(new Date(), 2))
     case 'month3':
       return getZonedStartOfDayInUtc(subMonths(new Date(), 3))
+    case 'month4':
+      return getZonedStartOfDayInUtc(subMonths(new Date(), 4))
     case 'month6':
       return getZonedStartOfDayInUtc(subMonths(new Date(), 6))
     case 'year1':

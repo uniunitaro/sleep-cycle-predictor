@@ -71,6 +71,7 @@ describe('MySleepsController', () => {
       const payload: CreateSleepRequest = {
         start: new Date('2022-01-01T00:00:00.000Z'),
         end: new Date('2022-01-01T08:00:00.000Z'),
+        segmentedSleeps: [],
       }
 
       const expected = 'result'
@@ -82,6 +83,7 @@ describe('MySleepsController', () => {
       const payload: CreateSleepRequest = {
         start: new Date('2022-01-01T08:00:00.000Z'),
         end: new Date('2022-01-01T00:00:00.000Z'),
+        segmentedSleeps: [],
       }
 
       const target: ValidationPipe = new ValidationPipe({

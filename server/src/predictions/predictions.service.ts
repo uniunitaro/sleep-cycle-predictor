@@ -41,6 +41,13 @@ export class PredictionsService {
       orderBy: {
         start: 'asc',
       },
+      include: {
+        segmentedSleeps: {
+          orderBy: {
+            start: 'asc',
+          },
+        },
+      },
     })
 
     return predictWithLR(sleeps, payload.start, payload.end)
@@ -70,6 +77,13 @@ export class PredictionsService {
       },
       orderBy: {
         start: 'asc',
+      },
+      include: {
+        segmentedSleeps: {
+          orderBy: {
+            start: 'asc',
+          },
+        },
       },
     })
 

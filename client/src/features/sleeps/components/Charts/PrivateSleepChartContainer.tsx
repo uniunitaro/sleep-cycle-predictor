@@ -1,5 +1,5 @@
 import { FC, useState } from 'react'
-import { endOfMonth, isAfter, startOfDay, startOfMonth } from 'date-fns'
+import { endOfMonth, startOfMonth } from 'date-fns'
 import { useSleeps } from '../../apis/useSleeps'
 import { useMyPredictions } from '../../apis/usePredictions'
 import SleepChart from './SleepChart'
@@ -13,11 +13,9 @@ const PrivateSleepChartContainer: FC = () => {
     end: endDate,
   })
 
-  const today = startOfDay(new Date())
-  const predictionsStart = isAfter(startDate, today) ? startDate : today
   const { data: predictions, isLoading: isPredictionsLoading } =
     useMyPredictions({
-      start: predictionsStart,
+      start: startDate,
       end: endDate,
     })
 

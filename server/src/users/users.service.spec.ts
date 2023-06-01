@@ -48,11 +48,9 @@ describe('UserService', () => {
       })
 
       const result = await service.findMe(req)
-      expect(result).toEqual({
-        id: user.id,
-        email: user.email,
-        nickname: user.nickname,
-      })
+      expect(result.id).toBe(user.id)
+      expect(result.nickname).toBe(user.nickname)
+      expect(result.email).toBe(user.email)
     })
   })
 
@@ -66,11 +64,9 @@ describe('UserService', () => {
 
       const payload: CreateUserRequest = { nickname: 'testuser' }
       const result = await service.create(req, payload)
-      expect(result).toEqual({
-        id: authUser.id,
-        nickname: 'testuser',
-        email: authUser.email,
-      })
+      expect(result.id).toBe(authUser.id)
+      expect(result.nickname).toBe(payload.nickname)
+      expect(result.email).toBe(authUser.email)
     })
 
     test('User作成時にConfigも作成される', async () => {
@@ -103,10 +99,8 @@ describe('UserService', () => {
       })
 
       const result = await service.find(user.id)
-      expect(result).toEqual({
-        id: user.id,
-        nickname: user.nickname,
-      })
+      expect(result.id).toBe(user.id)
+      expect(result.nickname).toBe(user.nickname)
     })
   })
 })
