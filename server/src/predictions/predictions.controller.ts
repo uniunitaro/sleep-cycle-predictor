@@ -33,6 +33,6 @@ export class PredictionsController {
     @Param('userId') userId: string,
     @Query() getPredictionsRequest: GetPredictionsRequest,
   ) {
-    return this.predictionsService.getPredictions(userId, getPredictionsRequest)
+    return this.predictionsService.get(userId, getPredictionsRequest)
   }
 }

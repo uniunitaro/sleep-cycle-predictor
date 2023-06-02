@@ -6,8 +6,9 @@ import {
   GetMeResponse,
   GetUserResponse,
   CreateUserResponse,
+  UpdateUserResponse,
 } from './users.type'
-import { CreateUserRequest } from './users.dto'
+import { CreateUserRequest, UpdateUserRequest } from './users.dto'
 
 @Injectable()
 export class UsersService {
@@ -45,11 +46,46 @@ export class UsersService {
     })
   }
 
-  async find(userId: string): Promise<GetUserResponse> {
+  async update(
+    req: Request,
+    payload: UpdateUserRequest,
+  ): Promise<UpdateUserResponse> {
+    const authUser = await this.auth.getAuthUser(req)
+
+    try {
+      return await this.prisma.user.update({
+        where: {
+          id: authUser.id,
+        },
+        data: {
+          email: authUser.email,
+          nickname: payload.nickname,
+        },
+      })
+    } catch {
+      throw new NotFoundException()
+    }
+  }
+
+  async remove(req: Request): Promise<void> {
+    const authUser = await this.auth.getAuthUser(req)
+
+    try {
+      await this.prisma.user.delete({
+        where: {
+          id: authUser.id,
+        },
+      })
+    } catch {
+      throw new NotFoundException()
+    }
+  }
+
+  async find(id: string): Promise<GetUserResponse> {
     try {
       return await this.prisma.user.findUniqueOrThrow({
         where: {
-          id: userId,
+          id,
         },
         select: {
           createdAt: true,

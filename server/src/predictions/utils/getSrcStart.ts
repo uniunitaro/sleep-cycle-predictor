@@ -2,9 +2,9 @@ import { Config } from '@prisma/client'
 import { startOfDay, subMonths, subWeeks, subYears } from 'date-fns'
 import { utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz'
 
-export const getSrcStart = async (
+export const getSrcStart = (
   duration: Config['predictionSrcDuration'],
-): Promise<Date> => {
+): Date => {
   const getZonedStartOfDayInUtc = (date: Date) =>
     zonedTimeToUtc(startOfDay(utcToZonedTime(date, 'Asia/Tokyo')), 'Asia/Tokyo')
 

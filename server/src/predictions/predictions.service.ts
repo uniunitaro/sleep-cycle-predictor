@@ -29,7 +29,7 @@ export class PredictionsService {
       throw new NotFoundException()
     }
 
-    const srcStart = await getSrcStart(config.predictionSrcDuration)
+    const srcStart = getSrcStart(config.predictionSrcDuration)
 
     const sleeps = await this.prisma.sleep.findMany({
       where: {
@@ -53,7 +53,7 @@ export class PredictionsService {
     return predictWithLR(sleeps, payload.start, payload.end)
   }
 
-  async getPredictions(
+  async get(
     userId: string,
     payload: GetPredictionsRequest,
   ): Promise<GetPredictionsResponse> {
@@ -66,7 +66,7 @@ export class PredictionsService {
       throw new NotFoundException()
     }
 
-    const srcStart = await getSrcStart(config.predictionSrcDuration)
+    const srcStart = getSrcStart(config.predictionSrcDuration)
 
     const sleeps = await this.prisma.sleep.findMany({
       where: {

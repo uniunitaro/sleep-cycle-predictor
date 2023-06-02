@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { Request } from 'express'
-import { ConfigFactory, UserFactory } from 'src/test/factories'
+import { ConfigFactory, SleepFactory, UserFactory } from 'src/test/factories'
 import { PrismaService } from '../prisma/prisma.service'
 import { AuthService } from '../auth/auth.service'
 import { UsersService } from './users.service'
-import { CreateUserRequest } from './users.dto'
+import { CreateUserRequest, UpdateUserRequest } from './users.dto'
 
 describe('UserService', () => {
   let service: UsersService
@@ -84,6 +84,57 @@ describe('UserService', () => {
       })
       expect(config).not.toBeNull()
       expect(config?.userId).toBe(authUser.id)
+    })
+  })
+
+  describe('update', () => {
+    test('Userが更新される', async () => {
+      const req = {} as Request
+      const authUser = { id: '1' }
+      jest.spyOn(authService, 'getAuthUser').mockResolvedValue(authUser as any)
+
+      const user = await UserFactory.create({
+        id: authUser.id,
+        config: { create: await ConfigFactory.build() },
+      })
+
+      const payload: UpdateUserRequest = { nickname: 'updateduser' }
+      const result = await service.update(req, payload)
+      expect(result.id).toBe(user.id)
+      expect(result.nickname).toBe(payload.nickname)
+    })
+
+    test('Userが見つからなかったらエラーを返す', async () => {
+      const req = {} as Request
+      const authUser = { id: 'invalid-id' }
+      jest.spyOn(authService, 'getAuthUser').mockResolvedValue(authUser as any)
+
+      const payload: UpdateUserRequest = { nickname: 'updateduser' }
+      await expect(service.update(req, payload)).rejects.toThrow()
+    })
+  })
+
+  describe('remove', () => {
+    test('Userが削除される', async () => {
+      const req = {} as Request
+      const authUser = { id: '1' }
+      jest.spyOn(authService, 'getAuthUser').mockResolvedValue(authUser as any)
+
+      await UserFactory.create({
+        id: authUser.id,
+        config: { create: await ConfigFactory.build() },
+        sleeps: { create: await SleepFactory.buildList(5) },
+      })
+
+      await expect(service.remove(req)).resolves.not.toThrow()
+    })
+
+    test('Userが見つからなかったらエラーを返す', async () => {
+      const req = {} as Request
+      const authUser = { id: 'invalid-id' }
+      jest.spyOn(authService, 'getAuthUser').mockResolvedValue(authUser as any)
+
+      await expect(service.remove(req)).rejects.toThrow()
     })
   })
 

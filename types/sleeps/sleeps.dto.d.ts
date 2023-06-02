@@ -3,12 +3,12 @@ export declare class GetSleepsRequest {
     end: Date;
 }
 export declare class CreateSleepRequest {
-    start: Date;
-    end: Date;
-    segmentedSleeps: SegmentedSleep[];
+    sleeps: Sleep[];
 }
-declare class SegmentedSleep {
+declare class Sleep {
     start: Date;
     end: Date;
+}
+export declare class UpdateSleepRequest extends CreateSleepRequest {
 }
 export {};

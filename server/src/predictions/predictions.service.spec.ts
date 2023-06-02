@@ -1,6 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { Request } from 'express'
-import { ConfigFactory, SleepFactory, UserFactory } from 'src/test/factories'
+import {
+  ConfigFactory,
+  SegmentedSleepFactory,
+  SleepFactory,
+  UserFactory,
+} from 'src/test/factories'
 import { PrismaService } from '../prisma/prisma.service'
 import { AuthService } from '../auth/auth.service'
 import { PredictionsService } from './predictions.service'
@@ -10,9 +15,7 @@ import {
 } from './predictions.dto'
 
 jest.mock('./utils/getSrcStart', () => ({
-  getSrcStart: jest
-    .fn()
-    .mockResolvedValue(new Date('2022-01-01T00:00:00.000Z')),
+  getSrcStart: jest.fn().mockReturnValue(new Date('2022-01-01T00:00:00.000Z')),
 }))
 
 describe('PredictionsService', () => {
@@ -54,7 +57,20 @@ describe('PredictionsService', () => {
           create: await SleepFactory.buildList([
             {
               start: new Date('2022-01-02T00:00:00.000Z'),
-              end: new Date('2022-01-02T08:00:00.000Z'),
+              end: new Date('2022-01-02T02:00:00.000Z'),
+              segmentedSleeps: {
+                // わざと降順でcreateしている
+                create: await SegmentedSleepFactory.buildList([
+                  {
+                    start: new Date('2022-01-02T07:00:00.000Z'),
+                    end: new Date('2022-01-02T08:00:00.000Z'),
+                  },
+                  {
+                    start: new Date('2022-01-02T03:00:00.000Z'),
+                    end: new Date('2022-01-02T05:00:00.000Z'),
+                  },
+                ]),
+              },
             },
             {
               start: new Date('2022-01-03T01:00:00.000Z'),
@@ -94,7 +110,7 @@ describe('PredictionsService', () => {
         },
       })
 
-      const result = await service.getPredictions(userId, payload)
+      const result = await service.get(userId, payload)
 
       expect(result).toHaveLength(1)
     })

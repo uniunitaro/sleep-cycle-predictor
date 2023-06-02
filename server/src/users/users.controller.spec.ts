@@ -28,7 +28,7 @@ describe('UsersController', () => {
   })
 
   describe('create', () => {
-    test('createが正しく呼ばれる', async () => {
+    test('createが呼ばれる', async () => {
       const req = {} as Request
       const payload: CreateUserRequest = {
         nickname: 'testuser',
@@ -41,7 +41,7 @@ describe('UsersController', () => {
   })
 
   describe('find', () => {
-    test('findが正しく呼ばれる', async () => {
+    test('findが呼ばれる', async () => {
       const userId = '123'
 
       const expected = 'result'
@@ -63,6 +63,8 @@ describe('MeController', () => {
           provide: UsersService,
           useFactory: () => ({
             findMe: jest.fn().mockResolvedValue('result'),
+            update: jest.fn().mockResolvedValue('result'),
+            remove: jest.fn().mockResolvedValue('result'),
           }),
         },
       ],
@@ -75,12 +77,42 @@ describe('MeController', () => {
     service = module.get<UsersService>(UsersService)
   })
 
+  test('AuthGuardが適用されている', async () => {
+    const guards = Reflect.getMetadata('__guards__', MeController)
+    const guard = new guards[0]()
+
+    expect(guard).toBeInstanceOf(AuthGuard)
+  })
+
   describe('findMe', () => {
     test('findMeが呼ばれる', async () => {
       const req = {} as Request
 
       const expected = 'result'
       const result = await controller.findMe(req)
+      expect(result).toBe(expected)
+    })
+  })
+
+  describe('update', () => {
+    test('updateが呼ばれる', async () => {
+      const req = {} as Request
+      const payload = {
+        nickname: 'testuser',
+      }
+
+      const expected = 'result'
+      const result = await controller.update(req, payload)
+      expect(result).toBe(expected)
+    })
+  })
+
+  describe('remove', () => {
+    test('removeが呼ばれる', async () => {
+      const req = {} as Request
+
+      const expected = 'result'
+      const result = await controller.remove(req)
       expect(result).toBe(expected)
     })
   })

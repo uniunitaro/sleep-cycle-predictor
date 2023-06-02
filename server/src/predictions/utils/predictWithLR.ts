@@ -1,5 +1,5 @@
 import { SegmentedSleep, Sleep } from '@prisma/client'
-import { fromUnixTime, getUnixTime, isAfter, differenceInHours } from 'date-fns'
+import { fromUnixTime, getUnixTime, isAfter, isBefore, max } from 'date-fns'
 import {
   interquartileRange,
   linearRegression,
@@ -138,10 +138,10 @@ export const predictWithLR = (
   const getPrediction = (
     startDate: Date,
     endDate: Date,
-    index = 0,
+    index = 1,
     result: { start: Date; end: Date }[] = [],
   ): { start: Date; end: Date }[] => {
-    const x = index + combinedSleeps.length
+    const x = index + combinedSleepsWithX[combinedSleepsWithX.length - 1].x
     const y = line(x)
 
     const sleepStart = fromUnixTime(y - meanSleepDuration / 2)
@@ -151,7 +151,8 @@ export const predictWithLR = (
       return result
     }
 
-    if (isAfter(sleepStart, startDate)) {
+    const lastRealSleep = combinedSleeps[combinedSleeps.length - 1]
+    if (isAfter(sleepStart, max([lastRealSleep.sleep.end, startDate]))) {
       result.push({ start: sleepStart, end: sleepEnd })
     }
 

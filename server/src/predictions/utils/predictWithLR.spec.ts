@@ -811,5 +811,22 @@ describe('predictWithLR', () => {
       )
       expect(result).toEqual(expected)
     })
+
+    test('外れ値がある && startよりも後に睡眠が存在するとき、その睡眠の次の予測から返される', () => {
+      const sleepWithOutlier = sleepTestCases.filter((sleep) => sleep.id !== 3)
+
+      const expected = [
+        {
+          start: new Date('2022-01-08T07:00:00.000Z'),
+          end: new Date('2022-01-08T15:00:00.000Z'),
+        },
+      ]
+      const result = predictWithLR.predictWithLR(
+        sleepWithOutlier,
+        new Date('2022-01-07T00:00:00.000Z'),
+        new Date('2022-01-09T00:00:00.000Z'),
+      )
+      expect(result).toEqual(expected)
+    })
   })
 })

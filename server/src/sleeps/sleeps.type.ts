@@ -5,3 +5,4 @@ export type GetSleepsResponse = (Sleep & {
 })[]
 
 export type CreateSleepResponse = Sleep & { segmentedSleeps: SegmentedSleep[] }
+export type UpdateSleepResponse = Sleep & { segmentedSleeps: SegmentedSleep[] }

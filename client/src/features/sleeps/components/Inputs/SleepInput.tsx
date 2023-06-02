@@ -23,7 +23,7 @@ const SleepInput: FC = () => {
     // TODO アラート追加
     if (!isBefore(start, end)) return
 
-    createSleep({ start, end, segmentedSleeps: [] })
+    createSleep({ sleeps: [{ start, end }] })
   }
 
   return (
