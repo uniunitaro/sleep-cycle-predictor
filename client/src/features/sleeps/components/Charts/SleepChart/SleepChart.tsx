@@ -24,12 +24,12 @@ import {
   subMonths,
 } from 'date-fns'
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'
-import { Prediction, Sleep } from '../../types/sleep'
-import SleepBar from './SleepBar'
-import ChartColumn from './ChartColumn'
-import AwesomeLoader from '@/components/AwesomeLoader'
-import CardMdOnly from '@/components/CardMdOnly'
+import ChartColumn from '../ChartColumn'
+import SleepBar from '../SleepBar'
+import AwesomeLoader from '@/components/AwesomeLoader/AwesomeLoader'
+import CardMdOnly from '@/components/CardMdOnly/CardMdOnly'
 import CardBodyMdOnly from '@/components/CardBodyMdOnly'
+import { Prediction, Sleep } from '@/features/sleeps/types/sleep'
 
 type Props = {
   sleeps: Sleep[]
@@ -56,7 +56,8 @@ const SleepChart: FC<Props> = ({
     (date) => {
       const formattedPredictions = predictions?.map((p, i) => ({
         ...p,
-        id: i,
+        // sleepのidと重複しないように負の値にしている
+        id: -i,
         isPrediction: true,
       }))
 

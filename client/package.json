@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "gen:theme-typings": "chakra-cli tokens src/libs/chakraTheme.ts",
-    "postinstall": "patch-package && npm run gen:theme-typings"
+    "postinstall": "patch-package && npm run gen:theme-typings && cd ../server && npm ci",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.0.18",
@@ -35,8 +37,9 @@
     "firebase": "9.16.0",
     "firebase-admin": "^11.6.0",
     "framer-motion": "^10.10.0",
-    "next": "13.2.4",
+    "next": "13.4.3",
     "next-firebase-auth": "^1.0.0-canary.19",
+    "next-superjson-plugin": "^0.5.8",
     "patch-package": "^6.5.1",
     "prettier": "^2.8.8",
     "react": "18.2.0",
@@ -44,6 +47,7 @@
     "react-hook-form": "^7.43.9",
     "react-icons": "^4.8.0",
     "simple-statistics": "^7.8.3",
+    "superjson": "^1.12.3",
     "typescript": "5.0.3",
     "zod": "^3.21.4"
   },
@@ -57,6 +61,21 @@
     }
   },
   "devDependencies": {
-    "@chakra-ui/cli": "^2.3.0"
+    "@chakra-ui/cli": "^2.3.0",
+    "@chakra-ui/storybook-addon": "^4.0.16",
+    "@storybook/addon-essentials": "^7.0.18",
+    "@storybook/addon-interactions": "^7.0.18",
+    "@storybook/addon-links": "^7.0.18",
+    "@storybook/blocks": "^7.0.18",
+    "@storybook/nextjs": "^7.0.18",
+    "@storybook/react": "^7.0.18",
+    "@storybook/testing-library": "^0.0.14-next.2",
+    "eslint-plugin-storybook": "^0.6.12",
+    "msw": "^1.2.1",
+    "msw-storybook-addon": "^1.8.0",
+    "storybook": "^7.0.18"
+  },
+  "msw": {
+    "workerDirectory": "public"
   }
 }

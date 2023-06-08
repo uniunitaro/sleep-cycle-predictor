@@ -1,13 +1,9 @@
 import {
-  Button,
-  ButtonGroup,
   Input,
   InputGroup,
   InputProps,
   Modal,
-  ModalBody,
   ModalContent,
-  ModalFooter,
   ModalOverlay,
   Popover,
   PopoverAnchor,
@@ -17,15 +13,15 @@ import {
   useOutsideClick,
 } from '@chakra-ui/react'
 import { format, isValid, parse } from 'date-fns'
-import { FC, memo, useRef, useState } from 'react'
-import TimePicker from './TimePicker'
+import { FC, memo, useCallback, useEffect, useRef, useState } from 'react'
+import DatePickerWrapper from '../DatePickerWrapper'
 
 type Props = {
   value: Date
   onChange: (value: Date) => void
 } & Omit<InputProps, 'value' | 'onChange'>
 
-const TimeInput: FC<Props> = memo(({ value, onChange, ...rest }) => {
+const DateInput: FC<Props> = memo(({ value, onChange, ...rest }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const popoverContentRef = useRef<HTMLElement>(null)
   useOutsideClick({
@@ -40,40 +36,53 @@ const TimeInput: FC<Props> = memo(({ value, onChange, ...rest }) => {
     },
   })
 
+  const [hasModalRendered, setHasModalRendered] = useState(false)
+  useEffect(() => {
+    if (isOpen) {
+      setHasModalRendered(true)
+    }
+  }, [isOpen])
+
+  const handleCloseModal = () => {
+    setHasModalRendered(false)
+    onClose()
+  }
+
   const inputRef = useRef<HTMLInputElement>(null)
 
-  const formatted = format(value, 'HH:mm')
+  const formatted = format(value, 'yyyy/MM/dd')
   const [inputValue, setInputValue] = useState(formatted)
-  const [oldValue, setOldValue] = useState(value)
+  const [oldInputValue, setOldInputValue] = useState(inputValue)
 
   const handleChangeDate = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value)
   }
 
   const handleBlurDate = (e: React.FocusEvent<HTMLInputElement>) => {
-    const parsedDate = parse(e.target.value, 'HH:mm', new Date())
+    const parsedDate = parse(e.target.value, 'yyyy/MM/dd', new Date())
     if (!isValid(parsedDate)) {
-      setInputValue(format(oldValue, 'HH:mm'))
+      setInputValue(oldInputValue)
       return
     }
 
     onChange(parsedDate)
 
-    setOldValue(parsedDate)
-    setTimePickerValue(parsedDate)
+    const formatted = format(parsedDate, 'yyyy/MM/dd')
+    setOldInputValue(formatted)
   }
 
-  const [timePickerValue, setTimePickerValue] = useState(value)
-  const handleChangeTimePicker = (date: Date) => {
-    setTimePickerValue(date)
-  }
+  const handleClickDate = useCallback(
+    (date: string) => {
+      onChange(new Date(date))
 
-  const handleConfirmTimePicker = () => {
-    onChange(timePickerValue)
-    setInputValue(format(timePickerValue, 'HH:mm'))
-    setOldValue(timePickerValue)
-    onClose()
-  }
+      const formatted = format(new Date(date), 'yyyy/MM/dd')
+      setInputValue(formatted)
+      setOldInputValue(formatted)
+      setHasModalRendered(false)
+      onClose()
+    },
+    [onChange, onClose]
+  )
 
   return (
     <div>
@@ -95,34 +104,32 @@ const TimeInput: FC<Props> = memo(({ value, onChange, ...rest }) => {
           </PopoverAnchor>
         </InputGroup>
         <Show above="md">
-          <PopoverContent ref={popoverContentRef} w="auto"></PopoverContent>
+          <PopoverContent ref={popoverContentRef} w="auto">
+            <DatePickerWrapper
+              value={oldInputValue}
+              colorScheme="green"
+              onChange={handleClickDate}
+            />
+          </PopoverContent>
         </Show>
       </Popover>
       <Show below="md">
         <Modal
           isOpen={isOpen}
-          onClose={onClose}
+          onClose={handleCloseModal}
           returnFocusOnClose={false}
           isCentered
         >
           <ModalOverlay />
-          <ModalContent w={300}>
-            <ModalBody pt="8">
-              <TimePicker
-                value={timePickerValue}
-                onChange={handleChangeTimePicker}
-              />
-            </ModalBody>
-            <ModalFooter>
-              <ButtonGroup colorScheme="green">
-                <Button variant="ghost" onClick={onClose}>
-                  キャンセル
-                </Button>
-                <Button variant="ghost" onClick={handleConfirmTimePicker}>
-                  OK
-                </Button>
-              </ButtonGroup>
-            </ModalFooter>
+          <ModalContent
+            w={300}
+            visibility={hasModalRendered ? 'visible' : 'hidden'}
+          >
+            <DatePickerWrapper
+              value={oldInputValue}
+              colorScheme="green"
+              onChange={handleClickDate}
+            />
           </ModalContent>
         </Modal>
       </Show>
@@ -130,5 +137,5 @@ const TimeInput: FC<Props> = memo(({ value, onChange, ...rest }) => {
   )
 })
 
-TimeInput.displayName = 'TimeInput'
-export default TimeInput
+DateInput.displayName = 'DateInput'
+export default DateInput

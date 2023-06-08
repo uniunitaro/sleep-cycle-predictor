@@ -5,7 +5,7 @@ import { format } from 'date-fns'
 import React, { FC, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { PickerSelectionState } from '@mui/x-date-pickers/internals'
-import HourMinuteInput from './HourMinuteInput'
+import HourMinuteInput from '../HourMinuteInput/HourMinuteInput'
 
 type Schema = {
   hour: string

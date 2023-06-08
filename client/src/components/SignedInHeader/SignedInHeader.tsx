@@ -8,8 +8,8 @@ import {
 } from '@chakra-ui/react'
 import Link from 'next/link'
 import { MoonIcon, SunIcon } from '@chakra-ui/icons'
-import Logo from './Logo'
-import UserMenu from '@/features/users/components/UserMenu'
+import Logo from '../Logo/Logo'
+import UserMenu from '@/features/users/components/UserMenu/UserMenu'
 
 const SignedInHeader = () => {
   const { colorMode, toggleColorMode } = useColorMode()

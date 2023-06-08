@@ -2,7 +2,7 @@ import { FC, useState } from 'react'
 import { endOfMonth, startOfMonth } from 'date-fns'
 import { useSleeps } from '../../apis/useSleeps'
 import { useMyPredictions } from '../../apis/usePredictions'
-import SleepChart from './SleepChart'
+import SleepChart from './SleepChart/SleepChart'
 
 const PrivateSleepChartContainer: FC = () => {
   const [targetDate, setTargetDate] = useState(startOfMonth(new Date()))

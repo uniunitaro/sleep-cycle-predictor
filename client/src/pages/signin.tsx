@@ -19,9 +19,9 @@ import { getApp } from 'firebase/app'
 import { AuthAction, withAuthUser } from 'next-firebase-auth'
 import Head from 'next/head'
 import { NextPageWithLayout } from './_app'
-import PasswordField from '@/components/PasswordField'
-import SignedOutLayout from '@/components/SignedOutLayout'
-import AuthFormCard from '@/features/auths/components/AuthFormCard'
+import PasswordField from '@/components/PasswordField/PasswordField'
+import SignedOutLayout from '@/components/SignedOutLayout/SignedOutLayout'
+import AuthFormCard from '@/features/auths/components/AuthFormCard/AuthFormCard'
 
 // const schema = z.object({
 //   email: z

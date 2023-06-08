@@ -7,7 +7,7 @@ import {
   Spacer,
 } from '@chakra-ui/react'
 import Link from 'next/link'
-import Logo from './Logo'
+import Logo from '../Logo/Logo'
 
 const SignedOutHeader = () => {
   return (

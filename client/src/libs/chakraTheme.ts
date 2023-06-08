@@ -58,7 +58,7 @@ export const theme = extendTheme({
     },
     Button: {
       baseStyle: {
-        borderRadius: 'lg',
+        borderRadius: 'full',
         fontWeight: '700',
         WebkitTapHighlightColor: 'transparent',
       },

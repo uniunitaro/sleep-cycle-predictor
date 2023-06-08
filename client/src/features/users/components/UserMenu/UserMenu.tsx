@@ -9,7 +9,7 @@ import {
 } from '@chakra-ui/react'
 import { getAuth } from 'firebase/auth'
 import { getApp } from 'firebase/app'
-import { useAuthUserInfo } from '../apis/useAuthUserInfo'
+import { useAuthUserInfo } from '../../apis/useAuthUserInfo'
 
 const UserMenu: FC = () => {
   const { data: authUserInfo } = useAuthUserInfo()

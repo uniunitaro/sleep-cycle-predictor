@@ -1,6 +1,8 @@
 import { Box, useColorMode } from '@chakra-ui/react'
 import Image from 'next/image'
 import { FC } from 'react'
+import logoLight from '../../assets/logo-light.png'
+import logoDark from '../../assets/logo-dark.png'
 
 const Logo: FC = () => {
   const { colorMode } = useColorMode()
@@ -9,14 +11,14 @@ const Logo: FC = () => {
     <Box w="160px" h="23px" position="relative">
       {colorMode === 'light' ? (
         <Image
-          src="/logo-light.png"
+          src={logoLight}
           alt="Sleep Predictor"
           fill
           style={{ objectFit: 'contain' }}
         />
       ) : (
         <Image
-          src="/logo-dark.png"
+          src={logoDark}
           alt="Sleep Predictor"
           fill
           style={{ objectFit: 'contain' }}

@@ -10,8 +10,8 @@ import {
 } from '@chakra-ui/react'
 import { FC, useState } from 'react'
 import { isBefore } from 'date-fns'
-import { useCreateSleep } from '../../apis/useSleeps'
-import DateAndTimeInput from './DateAndTimeInput'
+import { useCreateSleep } from '../../../apis/useSleeps'
+import DateAndTimeInput from '../DateAndTimeInput/DateAndTimeInput'
 
 const SleepInput: FC = () => {
   const [start, setStart] = useState(new Date())

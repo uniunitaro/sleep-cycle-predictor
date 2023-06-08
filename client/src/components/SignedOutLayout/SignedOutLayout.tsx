@@ -1,8 +1,8 @@
 import { ReactElement } from 'react'
 import { Box, Flex } from '@chakra-ui/react'
-import SignedInHeader from './SignedInHeader'
+import SignedOutHeader from '../SignedOutHeader/SignedOutHeader'
 
-const SignedInLayout = ({ children }: { children: ReactElement }) => {
+const SignedOutLayout = ({ children }: { children: ReactElement }) => {
   return (
     <Flex
       w="100%"
@@ -15,7 +15,7 @@ const SignedInLayout = ({ children }: { children: ReactElement }) => {
         },
       }}
     >
-      <SignedInHeader />
+      <SignedOutHeader />
       <Box flex="1" minH="0">
         {children}
       </Box>
@@ -23,4 +23,4 @@ const SignedInLayout = ({ children }: { children: ReactElement }) => {
   )
 }
 
-export default SignedInLayout
+export default SignedOutLayout

@@ -2,7 +2,7 @@ import Head from 'next/head'
 import { Button, ButtonGroup, Center, Container } from '@chakra-ui/react'
 import Link from 'next/link'
 import { NextPageWithLayout } from './_app'
-import SignedOutLayout from '@/components/SignedOutLayout'
+import SignedOutLayout from '@/components/SignedOutLayout/SignedOutLayout'
 
 const Index: NextPageWithLayout = () => {
   return (

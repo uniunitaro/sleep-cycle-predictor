@@ -20,9 +20,9 @@ import { useState } from 'react'
 import { useRouter } from 'next/router'
 import { CreateUserRequest } from '@shared-types/users/users.dto'
 import { NextPageWithLayout } from './_app'
-import PasswordField from '@/components/PasswordField'
-import SignedOutLayout from '@/components/SignedOutLayout'
-import AuthFormCard from '@/features/auths/components/AuthFormCard'
+import PasswordField from '@/components/PasswordField/PasswordField'
+import SignedOutLayout from '@/components/SignedOutLayout/SignedOutLayout'
+import AuthFormCard from '@/features/auths/components/AuthFormCard/AuthFormCard'
 import { api } from '@/libs/axios'
 
 const schema = z.object({

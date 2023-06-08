@@ -21,7 +21,7 @@ type AppPropsWithLayout = AppProps & {
 
 initAuth()
 
-const queryClient = new QueryClient({
+export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
@@ -29,7 +29,7 @@ const queryClient = new QueryClient({
   },
 })
 
-const MuiTheme = (colorMode: 'light' | 'dark') =>
+export const MuiTheme = (colorMode: 'light' | 'dark') =>
   createTheme({
     palette: {
       primary: {
