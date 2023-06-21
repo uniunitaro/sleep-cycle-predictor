@@ -5,6 +5,7 @@ import { format } from 'date-fns'
 import React, { FC, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { PickerSelectionState } from '@mui/x-date-pickers/internals'
+import { ThemeProvider, createTheme } from '@mui/material/styles'
 import HourMinuteInput from '../HourMinuteInput/HourMinuteInput'
 
 type Schema = {
@@ -55,6 +56,14 @@ const TimePicker: FC<{ value: Date; onChange: (value: Date) => void }> = ({
       document.removeEventListener('touchstart', listener)
     }
   }, [])
+  const muiThemeColor = useColorModeValue('#38A169', '#9AE6B4')
+  const muiTheme = createTheme({
+    palette: {
+      primary: {
+        main: muiThemeColor,
+      },
+    },
+  })
 
   return (
     <Box
@@ -101,18 +110,20 @@ const TimePicker: FC<{ value: Date; onChange: (value: Date) => void }> = ({
             </Box>
           </HStack>
         </Center>
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <TimeClock
-            value={value}
-            sx={{ mx: '-10px' }}
-            ampm={false}
-            view={selectedField === 'hour' ? 'hours' : 'minutes'}
-            readOnly={!isTouched}
-            onChange={(newValue, selectionState) =>
-              newValue && handleChangeTimeClock(newValue, selectionState)
-            }
-          />
-        </LocalizationProvider>
+        <ThemeProvider theme={muiTheme}>
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <TimeClock
+              value={value}
+              sx={{ mx: '-10px' }}
+              ampm={false}
+              view={selectedField === 'hour' ? 'hours' : 'minutes'}
+              readOnly={!isTouched}
+              onChange={(newValue, selectionState) =>
+                newValue && handleChangeTimeClock(newValue, selectionState)
+              }
+            />
+          </LocalizationProvider>
+        </ThemeProvider>
       </Stack>
     </Box>
   )
