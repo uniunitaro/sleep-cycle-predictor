@@ -4,11 +4,11 @@ import { AuthAction, withAuthUser } from 'next-firebase-auth'
 import { AddIcon } from '@chakra-ui/icons'
 import { NextPageWithLayout } from './_app'
 import SignedInLayout from '@/components/SignedInLayout/SignedInLayout'
-import SleepInput from '@/features/sleeps/components/Inputs/SleepInput/SleepInput'
+import SleepInput from '@/features/sleeps/components/inputs/SleepInput/SleepInput'
 import FAB from '@/components/FAB/FAB'
-import SleepInputModal from '@/features/sleeps/components/Inputs/SleepInputModal/SleepInputModal'
+import SleepInputModal from '@/features/sleeps/components/inputs/SleepInputModal/SleepInputModal'
 import { useHistoriedModal } from '@/hooks/useHistoriedModal'
-import PrivateSleepChartContainer from '@/features/sleeps/components/Charts/PrivateSleepChartContainer'
+import PrivateSleepChartContainer from '@/features/sleeps/components/charts/PrivateSleepChartContainer'
 
 const Home: NextPageWithLayout = () => {
   const { isOpen, onOpen, onClose } = useHistoriedModal()

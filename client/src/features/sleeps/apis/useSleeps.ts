@@ -18,7 +18,15 @@ export const sleepKeys = createQueryKeys('sleeps', {
     queryFn: (): Promise<Sleep[]> =>
       api
         .get<GetSleepsResponse>('/api/users/me/sleeps', { params: payload })
-        .then((res) => res.data),
+        .then((res) =>
+          res.data.map((sleep) => ({
+            id: sleep.id,
+            sleeps: [
+              { start: sleep.start, end: sleep.end },
+              ...sleep.segmentedSleeps,
+            ],
+          }))
+        ),
   }),
 })
 
@@ -29,7 +37,13 @@ export const useCreateSleep = () => {
     (payload) => {
       return api
         .post<CreateSleepResponse>('/api/users/me/sleeps', payload)
-        .then((res) => res.data)
+        .then((res) => ({
+          id: res.data.id,
+          sleeps: [
+            { start: res.data.start, end: res.data.end },
+            ...res.data.segmentedSleeps,
+          ],
+        }))
     },
     {
       onSuccess: async () => {

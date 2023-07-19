@@ -16,6 +16,7 @@ export class GetSleepsRequest {
 export class CreateSleepRequest {
   @IsArray()
   @ArrayNotEmpty()
+  @Type(() => Sleep)
   sleeps: Sleep[]
 }
 class Sleep {

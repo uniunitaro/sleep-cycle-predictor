@@ -31,6 +31,9 @@ const DateInput: FC<Props> = memo(({ value, onChange, ...rest }) => {
         popoverContentRef.current &&
         inputRef.current !== document.activeElement
       ) {
+        setTimeout(() => {
+          setHasModalRendered(false)
+        }, 100)
         onClose()
       }
     },
@@ -78,7 +81,9 @@ const DateInput: FC<Props> = memo(({ value, onChange, ...rest }) => {
       const formatted = format(new Date(date), 'yyyy/MM/dd')
       setInputValue(formatted)
       setOldInputValue(formatted)
-      setHasModalRendered(false)
+      setTimeout(() => {
+        setHasModalRendered(false)
+      }, 100)
       onClose()
     },
     [onChange, onClose]
@@ -90,6 +95,7 @@ const DateInput: FC<Props> = memo(({ value, onChange, ...rest }) => {
         isOpen={isOpen}
         placement="bottom-start"
         initialFocusRef={inputRef}
+        isLazy
       >
         <InputGroup>
           <PopoverAnchor>
@@ -104,7 +110,13 @@ const DateInput: FC<Props> = memo(({ value, onChange, ...rest }) => {
           </PopoverAnchor>
         </InputGroup>
         <Show above="md">
-          <PopoverContent ref={popoverContentRef} w="auto">
+          <PopoverContent
+            ref={popoverContentRef}
+            w="auto"
+            sx={{
+              visibility: hasModalRendered ? 'visible' : 'hidden !important',
+            }}
+          >
             <DatePickerWrapper
               value={oldInputValue}
               colorScheme="green"

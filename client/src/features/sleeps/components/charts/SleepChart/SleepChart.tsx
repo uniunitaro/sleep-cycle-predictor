@@ -61,7 +61,17 @@ const SleepChart: FC<Props> = ({
         isPrediction: true,
       }))
 
-      const dailySleeps = [...(sleeps ?? []), ...(formattedPredictions ?? [])]
+      const formattedSleeps = sleeps?.flatMap((sleep) =>
+        sleep.sleeps.map((s) => ({
+          ...s,
+          id: sleep.id,
+        }))
+      )
+
+      const dailySleeps = [
+        ...(formattedSleeps ?? []),
+        ...(formattedPredictions ?? []),
+      ]
         ?.filter((s) => isSameDay(s.start, date) || isSameDay(s.end, date))
         .map((sleep) => {
           const start = isSameDay(sleep.start, date) ? sleep.start : date

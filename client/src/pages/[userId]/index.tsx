@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { NextPageWithLayout } from '../_app'
 import SignedOutLayout from '@/components/SignedOutLayout/SignedOutLayout'
-import PublicSleepChartContainer from '@/features/sleeps/components/Charts/PublicSleepChartContainer'
+import PublicSleepChartContainer from '@/features/sleeps/components/charts/PublicSleepChartContainer'
 import { getUser } from '@/features/users/apis/useUser'
 import { User } from '@/features/users/types/user'
 

@@ -1,7 +1,9 @@
 export type Sleep = {
   id: number
-  start: Date
-  end: Date
+  sleeps: {
+    start: Date
+    end: Date
+  }[]
 }
 
 export type Prediction = {

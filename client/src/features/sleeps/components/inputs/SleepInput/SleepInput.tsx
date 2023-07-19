@@ -3,31 +3,32 @@ import {
   Card,
   CardBody,
   CardHeader,
-  FormControl,
-  FormLabel,
   Heading,
   Stack,
 } from '@chakra-ui/react'
 import { FC, useState } from 'react'
 import { isBefore } from 'date-fns'
 import { useCreateSleep } from '../../../apis/useSleeps'
-import DateAndTimeInput from '../DateAndTimeInput/DateAndTimeInput'
+import SleepInputForm from '../SleepInputForm/SleepInputForm'
 
 const SleepInput: FC = () => {
-  const [start, setStart] = useState(new Date())
-  const [end, setEnd] = useState(new Date())
+  const [sleeps, setSleeps] = useState([
+    { start: new Date(), end: new Date(), id: 1 },
+  ])
 
   const { mutate: createSleep, isLoading } = useCreateSleep()
 
   const handleSubmit = () => {
     // TODO アラート追加
-    if (!isBefore(start, end)) return
+    // if (!isBefore(start, end)) return
 
-    createSleep({ sleeps: [{ start, end }] })
+    createSleep({
+      sleeps: sleeps.map((sleep) => ({ ...sleep, id: undefined })),
+    })
   }
 
   return (
-    <Card>
+    <Card overflowY="auto">
       <CardHeader>
         <Heading size="md" fontWeight="normal">
           睡眠記録を追加
@@ -36,16 +37,7 @@ const SleepInput: FC = () => {
       <CardBody>
         <form>
           <Stack spacing="10">
-            <Stack spacing="5">
-              <FormControl>
-                <FormLabel htmlFor="sleep-start">就寝日時</FormLabel>
-                <DateAndTimeInput value={start} onChange={setStart} />
-              </FormControl>
-              <FormControl>
-                <FormLabel htmlFor="sleep-end">起床日時</FormLabel>
-                <DateAndTimeInput value={end} onChange={setEnd} />
-              </FormControl>
-            </Stack>
+            <SleepInputForm sleeps={sleeps} onChange={setSleeps} />
             <Button
               colorScheme="green"
               type="button"

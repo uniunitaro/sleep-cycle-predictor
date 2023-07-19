@@ -1,8 +1,6 @@
 import {
   Button,
   ButtonGroup,
-  FormControl,
-  FormLabel,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -11,24 +9,26 @@ import {
   ModalHeader,
   ModalOverlay,
   ModalProps,
-  Stack,
 } from '@chakra-ui/react'
 import { FC, useState } from 'react'
 import { isBefore } from 'date-fns'
 import { useCreateSleep } from '../../../apis/useSleeps'
-import DateAndTimeInput from '../DateAndTimeInput/DateAndTimeInput'
+import SleepInputForm from '../SleepInputForm/SleepInputForm'
 
 const SleepInputModal: FC<Omit<ModalProps, 'children'>> = (props) => {
-  const [start, setStart] = useState(new Date())
-  const [end, setEnd] = useState(new Date())
+  const [sleeps, setSleeps] = useState([
+    { start: new Date(), end: new Date(), id: 1 },
+  ])
 
   const { mutate: createSleep, isLoading } = useCreateSleep()
 
   const handleSubmit = () => {
     // TODO アラート追加
-    if (!isBefore(start, end)) return
+    // if (!isBefore(start, end)) return
 
-    createSleep({ sleeps: [{ start, end }] })
+    createSleep({
+      sleeps: sleeps.map((sleep) => ({ ...sleep, id: undefined })),
+    })
   }
 
   const handleClickAddWithClose = () => {
@@ -37,25 +37,14 @@ const SleepInputModal: FC<Omit<ModalProps, 'children'>> = (props) => {
   }
 
   return (
-    <Modal autoFocus={false} isCentered {...props}>
+    <Modal autoFocus={false} isCentered scrollBehavior="inside" {...props}>
       <ModalOverlay />
       <ModalContent mx="4">
         <ModalHeader>睡眠記録を追加</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <form>
-            <Stack spacing="10">
-              <Stack spacing="5">
-                <FormControl>
-                  <FormLabel htmlFor="sleep-start">就寝日時</FormLabel>
-                  <DateAndTimeInput value={start} onChange={setStart} />
-                </FormControl>
-                <FormControl>
-                  <FormLabel htmlFor="sleep-end">起床日時</FormLabel>
-                  <DateAndTimeInput value={end} onChange={setEnd} />
-                </FormControl>
-              </Stack>
-            </Stack>
+            <SleepInputForm sleeps={sleeps} onChange={setSleeps} />
           </form>
         </ModalBody>
         <ModalFooter pt="7">
