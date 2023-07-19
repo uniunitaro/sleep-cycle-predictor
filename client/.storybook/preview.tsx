@@ -4,10 +4,10 @@ import { ChakraProvider, useColorMode } from '@chakra-ui/react'
 import { useEffect } from 'react'
 import React from 'react'
 import { QueryClientProvider } from '@tanstack/react-query'
-import { queryClient, MuiTheme } from '../src/pages/_app'
+import { queryClient } from '../src/pages/_app'
 import { initialize, mswDecorator } from 'msw-storybook-addon'
-import { ThemeProvider } from '@mui/material'
 import { handlers } from '../src/libs/msw'
+import { ThemeProvider, createTheme } from '@mui/material/styles'
 
 interface ColorModeProps {
   colorMode: 'light' | 'dark'
@@ -38,13 +38,22 @@ export const globalTypes = {
   },
 }
 
+const muiTheme = (color: 'light' | 'dark') =>
+  createTheme({
+    palette: {
+      primary: {
+        main: color === 'light' ? '#38A169' : '#9AE6B4',
+      },
+    },
+  })
+
 initialize()
 
 export const decorators = [
   (Story, context) => {
     return (
       <QueryClientProvider client={queryClient}>
-        <ThemeProvider theme={MuiTheme(context.globals.colorMode)}>
+        <ThemeProvider theme={muiTheme(context.globals.colorMode)}>
           <ChakraProvider theme={theme}>
             <ColorMode colorMode={context.globals.colorMode}>
               <Story />
