@@ -1,5 +1,5 @@
 import { useDisclosure } from '@chakra-ui/react'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 
 export const useHistoriedModal = (): ReturnType<typeof useDisclosure> => {
