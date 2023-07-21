@@ -1,3 +1,8 @@
+'use client'
+
+import { FC } from 'react'
+import { AddIcon } from '@chakra-ui/icons'
+import DateAndTimeInput from '../DateAndTimeInput/DateAndTimeInput'
 import {
   Box,
   Button,
@@ -6,10 +11,7 @@ import {
   FormControl,
   FormLabel,
   Stack,
-} from '@chakra-ui/react'
-import { FC } from 'react'
-import { AddIcon } from '@chakra-ui/icons'
-import DateAndTimeInput from '../DateAndTimeInput/DateAndTimeInput'
+} from '@/components/chakra'
 
 const SleepInputForm: FC<{
   sleeps: { start: Date; end: Date; id: number }[]

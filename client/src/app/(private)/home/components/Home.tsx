@@ -2,12 +2,12 @@
 
 import { FC } from 'react'
 import { AddIcon } from '@chakra-ui/icons'
-import { Box, Container, Grid, Show } from '@/app/_components/chakra'
+import { Box, Container, Grid, Show } from '@/components/chakra'
 import { useHistoriedModal } from '@/hooks/useHistoriedModal'
-import SleepInput from '@/app/(sleep)/components/inputs/SleepInput/SleepInput'
-import PrivateSleepChartContainer from '@/app/(sleep)/components/charts/PrivateSleepChartContainer'
-import FAB from '@/app/_components/FAB/FAB'
-import SleepInputModal from '@/app/(sleep)/components/inputs/SleepInputModal/SleepInputModal'
+import FAB from '@/components/FAB/FAB'
+import PrivateSleepChartContainer from '@/features/sleeps/components/charts/PrivateSleepChartContainer'
+import SleepInput from '@/features/sleeps/components/inputs/SleepInput/SleepInput'
+import SleepInputModal from '@/features/sleeps/components/inputs/SleepInputModal/SleepInputModal'
 
 const Home: FC = () => {
   const { isOpen, onOpen, onClose } = useHistoriedModal()

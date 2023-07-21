@@ -1,5 +1,5 @@
-import { Card } from '@chakra-ui/react'
 import React, { FC } from 'react'
+import { Card } from '@/components/chakra'
 
 const AuthFormCard: FC<{ children: React.ReactNode }> = ({ children }) => {
   return (

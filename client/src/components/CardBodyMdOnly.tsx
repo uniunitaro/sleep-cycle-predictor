@@ -1,5 +1,5 @@
-import { CardBody, CardBodyProps } from '@chakra-ui/react'
 import { FC, memo } from 'react'
+import { CardBody, CardBodyProps } from './chakra'
 
 const CardBodyMdOnly: FC<CardBodyProps> = memo(({ children, ...rest }) => {
   return (

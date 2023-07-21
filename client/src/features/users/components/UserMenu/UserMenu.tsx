@@ -1,4 +1,9 @@
+'use client'
+
 import { FC } from 'react'
+import { getAuth } from 'firebase/auth'
+import { getApp } from 'firebase/app'
+import { useAuthUserInfo } from '../../apis/useAuthUserInfo'
 import {
   Avatar,
   Button,
@@ -6,10 +11,7 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@chakra-ui/react'
-import { getAuth } from 'firebase/auth'
-import { getApp } from 'firebase/app'
-import { useAuthUserInfo } from '../../apis/useAuthUserInfo'
+} from '@/components/chakra'
 
 const UserMenu: FC = () => {
   const { data: authUserInfo } = useAuthUserInfo()

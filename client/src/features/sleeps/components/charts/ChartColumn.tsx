@@ -1,7 +1,9 @@
-import { Box, BoxProps, Center, useColorModeValue } from '@chakra-ui/react'
+'use client'
+
 import { format, getDay } from 'date-fns'
 import { ja } from 'date-fns/locale'
 import { FC, memo } from 'react'
+import { Box, BoxProps, Center, useColorModeValue } from '@/components/chakra'
 
 type Props = {
   date: Date

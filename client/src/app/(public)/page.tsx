@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Button, ButtonGroup, Center, Container } from '../_components/chakra'
+import { Button, ButtonGroup, Center, Container } from '@/components/chakra'
 
 const IndexPage = () => {
   return (

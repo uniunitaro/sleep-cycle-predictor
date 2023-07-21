@@ -1,3 +1,9 @@
+'use client'
+
+import { FC, useState } from 'react'
+import { isBefore } from 'date-fns'
+import { useCreateSleep } from '../../../apis/useSleeps'
+import SleepInputForm from '../SleepInputForm/SleepInputForm'
 import {
   Button,
   ButtonGroup,
@@ -9,11 +15,7 @@ import {
   ModalHeader,
   ModalOverlay,
   ModalProps,
-} from '@chakra-ui/react'
-import { FC, useState } from 'react'
-import { isBefore } from 'date-fns'
-import { useCreateSleep } from '../../../apis/useSleeps'
-import SleepInputForm from '../SleepInputForm/SleepInputForm'
+} from '@/components/chakra'
 
 const SleepInputModal: FC<Omit<ModalProps, 'children'>> = (props) => {
   const [sleeps, setSleeps] = useState([

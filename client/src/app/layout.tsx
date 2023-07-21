@@ -1,11 +1,10 @@
 import { Metadata } from 'next'
-import Providers from './_components/Providers'
+import Providers from '@/components/Providers'
 
 export const metadata: Metadata = {
   title: 'Sleep Cycle Predictor',
   description: '毎日ずれてゆくあなたの睡眠サイクルを華麗に予測！',
   robots: { index: false },
-  viewport: 'width=device-width, initial-scale=1',
 }
 
 export default function RootLayout({

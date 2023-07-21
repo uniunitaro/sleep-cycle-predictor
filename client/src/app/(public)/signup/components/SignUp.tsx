@@ -8,8 +8,7 @@ import { getApp } from 'firebase/app'
 import { FC, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { CreateUserRequest } from '@shared-types/users/users.dto'
-import AuthFormCard from '../../components/AuthFormCard/AuthFormCard'
-import PasswordField from '@/app/_components/PasswordField/PasswordField'
+import PasswordField from '@/components/PasswordField/PasswordField'
 import { api } from '@/libs/axios'
 import {
   Alert,
@@ -22,7 +21,8 @@ import {
   Heading,
   Input,
   Stack,
-} from '@/app/_components/chakra'
+} from '@/components/chakra'
+import AuthFormCard from '@/features/auths/components/AuthFormCard/AuthFormCard'
 
 const schema = z.object({
   nickname: z.string().nonempty({ message: 'ニックネームを入力してください' }),

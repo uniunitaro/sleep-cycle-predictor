@@ -1,16 +1,5 @@
-import {
-  Box,
-  Center,
-  Flex,
-  HStack,
-  Heading,
-  Icon,
-  IconButton,
-  Stack,
-  StackDivider,
-  VStack,
-  useDimensions,
-} from '@chakra-ui/react'
+'use client'
+
 import { FC, useRef, useState } from 'react'
 import {
   addDays,
@@ -26,6 +15,19 @@ import {
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'
 import ChartColumn from '../ChartColumn'
 import SleepBar from '../SleepBar'
+import {
+  Box,
+  Center,
+  Flex,
+  HStack,
+  Heading,
+  Icon,
+  IconButton,
+  Stack,
+  StackDivider,
+  VStack,
+  useDimensions,
+} from '@/components/chakra'
 import AwesomeLoader from '@/components/AwesomeLoader/AwesomeLoader'
 import CardMdOnly from '@/components/CardMdOnly/CardMdOnly'
 import CardBodyMdOnly from '@/components/CardBodyMdOnly'

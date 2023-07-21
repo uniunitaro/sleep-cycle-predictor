@@ -1,5 +1,5 @@
 import { Box, Flex } from '@/components/chakra'
-import SignedOutHeader from '@/components/SignedOutHeader/SignedOutHeader'
+import SignedInHeader from '@/components/SignedInHeader/SignedInHeader'
 
 export default function PublicLayout({
   children,
@@ -18,7 +18,7 @@ export default function PublicLayout({
         },
       }}
     >
-      <SignedOutHeader />
+      <SignedInHeader />
       <Box flex="1" minH="0">
         {children}
       </Box>

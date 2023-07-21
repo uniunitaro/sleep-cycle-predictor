@@ -1,3 +1,9 @@
+'use client'
+
+import { FC, useState } from 'react'
+import { isBefore } from 'date-fns'
+import { useCreateSleep } from '../../../apis/useSleeps'
+import SleepInputForm from '../SleepInputForm/SleepInputForm'
 import {
   Button,
   Card,
@@ -5,11 +11,7 @@ import {
   CardHeader,
   Heading,
   Stack,
-} from '@chakra-ui/react'
-import { FC, useState } from 'react'
-import { isBefore } from 'date-fns'
-import { useCreateSleep } from '../../../apis/useSleeps'
-import SleepInputForm from '../SleepInputForm/SleepInputForm'
+} from '@/components/chakra'
 
 const SleepInput: FC = () => {
   const [sleeps, setSleeps] = useState([

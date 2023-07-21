@@ -1,5 +1,7 @@
-import { Box, BoxProps, useColorModeValue } from '@chakra-ui/react'
+'use client'
+
 import { FC, memo } from 'react'
+import { Box, BoxProps, useColorModeValue } from '@/components/chakra'
 
 type Props = {
   isHovered: boolean

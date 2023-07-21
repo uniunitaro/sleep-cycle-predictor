@@ -1,3 +1,8 @@
+'use client'
+
+import Link from 'next/link'
+import { MoonIcon, SunIcon } from '@chakra-ui/icons'
+import Logo from '@/components/Logo/Logo'
 import {
   Container,
   Flex,
@@ -5,10 +10,7 @@ import {
   IconButton,
   Spacer,
   useColorMode,
-} from '@chakra-ui/react'
-import Link from 'next/link'
-import { MoonIcon, SunIcon } from '@chakra-ui/icons'
-import Logo from '../Logo/Logo'
+} from '@/components/chakra'
 import UserMenu from '@/features/users/components/UserMenu/UserMenu'
 
 const SignedInHeader = () => {

@@ -1,4 +1,5 @@
-import { Box, Center, HStack, Stack, useColorModeValue } from '@chakra-ui/react'
+'use client'
+
 import { LocalizationProvider, TimeClock } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { format } from 'date-fns'
@@ -7,6 +8,13 @@ import { useForm } from 'react-hook-form'
 import { PickerSelectionState } from '@mui/x-date-pickers/internals'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import HourMinuteInput from '../HourMinuteInput/HourMinuteInput'
+import {
+  Box,
+  Center,
+  HStack,
+  Stack,
+  useColorModeValue,
+} from '@/components/chakra'
 
 type Schema = {
   hour: string

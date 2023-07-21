@@ -1,3 +1,8 @@
+'use client'
+
+import { format, isValid, parse } from 'date-fns'
+import { FC, memo, useCallback, useEffect, useRef, useState } from 'react'
+import DatePickerWrapper from '../DatePickerWrapper'
 import {
   Input,
   InputGroup,
@@ -11,10 +16,7 @@ import {
   Show,
   useDisclosure,
   useOutsideClick,
-} from '@chakra-ui/react'
-import { format, isValid, parse } from 'date-fns'
-import { FC, memo, useCallback, useEffect, useRef, useState } from 'react'
-import DatePickerWrapper from '../DatePickerWrapper'
+} from '@/components/chakra'
 
 type Props = {
   value: Date

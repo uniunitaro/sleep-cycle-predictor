@@ -1,5 +1,5 @@
-import { CardHeader, CardHeaderProps } from '@chakra-ui/react'
 import { FC, memo } from 'react'
+import { CardHeader, CardHeaderProps } from './chakra'
 
 const CardHeaderMdOnly: FC<CardHeaderProps> = memo(({ children, ...rest }) => {
   return (

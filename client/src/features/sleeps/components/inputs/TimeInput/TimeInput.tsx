@@ -1,3 +1,8 @@
+'use client'
+
+import { format, isValid, parse } from 'date-fns'
+import { FC, memo, useRef, useState } from 'react'
+import TimePicker from '../TimePicker/TimePicker'
 import {
   Button,
   ButtonGroup,
@@ -15,10 +20,7 @@ import {
   Show,
   useDisclosure,
   useOutsideClick,
-} from '@chakra-ui/react'
-import { format, isValid, parse } from 'date-fns'
-import { FC, memo, useRef, useState } from 'react'
-import TimePicker from '../TimePicker/TimePicker'
+} from '@/components/chakra'
 
 type Props = {
   value: Date

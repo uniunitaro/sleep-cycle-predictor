@@ -15,7 +15,7 @@ import {
   Heading,
   Input,
   Stack,
-} from '@/app/_components/chakra'
+} from '@/components/chakra'
 import PasswordField from '@/components/PasswordField/PasswordField'
 import AuthFormCard from '@/features/auths/components/AuthFormCard/AuthFormCard'
 

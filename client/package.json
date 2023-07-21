@@ -48,7 +48,7 @@
     "react-icons": "^4.8.0",
     "simple-statistics": "^7.8.3",
     "superjson": "^1.12.3",
-    "typescript": "5.0.3",
+    "typescript": "5.1.6",
     "zod": "^3.21.4"
   },
   "overrides": {

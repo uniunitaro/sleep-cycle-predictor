@@ -1,5 +1,7 @@
-import { Input, InputProps, useColorModeValue } from '@chakra-ui/react'
+'use client'
+
 import { forwardRef } from 'react'
+import { Input, InputProps, useColorModeValue } from '@/components/chakra'
 
 type Props = {
   isSelected?: boolean

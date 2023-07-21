@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import {
   Button,
   ButtonGroup,
@@ -5,9 +6,8 @@ import {
   Flex,
   Show,
   Spacer,
-} from '@chakra-ui/react'
-import Link from 'next/link'
-import Logo from '../Logo/Logo'
+} from '@/components/chakra'
+import Logo from '@/components/Logo/Logo'
 
 const SignedOutHeader = () => {
   return (

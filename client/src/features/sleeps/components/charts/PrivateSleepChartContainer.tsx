@@ -1,3 +1,5 @@
+'use client'
+
 import { FC, useState } from 'react'
 import { endOfMonth, startOfMonth } from 'date-fns'
 import { useSleeps } from '../../apis/useSleeps'
