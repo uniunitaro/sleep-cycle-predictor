@@ -31,7 +31,7 @@ import {
 import AwesomeLoader from '@/components/AwesomeLoader/AwesomeLoader'
 import CardMdOnly from '@/components/CardMdOnly/CardMdOnly'
 import CardBodyMdOnly from '@/components/CardBodyMdOnly'
-import { Prediction, Sleep } from '@/features/sleeps/types/sleep'
+import { Prediction, Sleep } from '@/features/sleep/types/sleep'
 
 type Props = {
   sleeps: Sleep[]

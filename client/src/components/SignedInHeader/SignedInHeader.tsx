@@ -11,7 +11,7 @@ import {
   Spacer,
   useColorMode,
 } from '@/components/chakra'
-import UserMenu from '@/features/users/components/UserMenu/UserMenu'
+import UserMenu from '@/features/user/components/UserMenu/UserMenu'
 
 const SignedInHeader = () => {
   const { colorMode, toggleColorMode } = useColorMode()

@@ -1,7 +1,7 @@
 import { FC } from 'react'
 import { Box, Container, Flex, Heading } from '@/components/chakra'
-import { User } from '@/features/users/types/user'
-import PublicSleepChartContainer from '@/features/sleeps/components/charts/PublicSleepChartContainer'
+import { User } from '@/features/user/types/user'
+import PublicSleepChartContainer from '@/features/sleep/components/charts/PublicSleepChartContainer'
 
 // TODO テスタビリティ的にasyncなRSCはContainerコンポーネント的に扱うべきかも
 

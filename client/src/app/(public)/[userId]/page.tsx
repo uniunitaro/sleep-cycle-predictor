@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import UserPublicPage from './components/UserPublicPage'
-import { getUser } from '@/features/users/apis/useUser'
+import { getUser } from '@/features/user/apis/useUser'
 
 type Props = { params: { userId: string } }
 

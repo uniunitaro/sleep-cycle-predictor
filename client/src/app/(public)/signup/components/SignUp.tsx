@@ -22,7 +22,7 @@ import {
   Input,
   Stack,
 } from '@/components/chakra'
-import AuthFormCard from '@/features/auths/components/AuthFormCard/AuthFormCard'
+import AuthFormCard from '@/features/auth/components/AuthFormCard/AuthFormCard'
 
 const schema = z.object({
   nickname: z.string().nonempty({ message: 'ニックネームを入力してください' }),

@@ -17,7 +17,7 @@ import {
   Stack,
 } from '@/components/chakra'
 import PasswordField from '@/components/PasswordField/PasswordField'
-import AuthFormCard from '@/features/auths/components/AuthFormCard/AuthFormCard'
+import AuthFormCard from '@/features/auth/components/AuthFormCard/AuthFormCard'
 
 type Schema = { email: string; password: string }
 
