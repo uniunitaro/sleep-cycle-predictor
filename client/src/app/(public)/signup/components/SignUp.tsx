@@ -5,7 +5,7 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
 import { getApp } from 'firebase/app'
-import { FC, useState } from 'react'
+import { FC, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { CreateUserRequest } from '@shared-types/users/users.dto'
 import PasswordField from '@/components/PasswordField/PasswordField'
@@ -23,6 +23,9 @@ import {
   Stack,
 } from '@/components/chakra'
 import AuthFormCard from '@/features/auth/components/AuthFormCard/AuthFormCard'
+import { signUp } from '@/features/auth/repositories/signUp'
+
+export const runtime = 'nodejs'
 
 const schema = z.object({
   nickname: z.string().nonempty({ message: 'ニックネームを入力してください' }),
@@ -49,28 +52,19 @@ const SignUp: FC = () => {
   const [error, setError] = useState<boolean>(false)
 
   const router = useRouter()
+  const [, startTransition] = useTransition()
   const onSubmit: SubmitHandler<Schema> = async (data) => {
-    const auth = getAuth(getApp())
-    try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        data.email,
-        data.password
-      )
-
-      const token = await userCredential.user.getIdToken()
-      await api.post(
-        '/api/users',
-        { nickname: data.nickname } satisfies CreateUserRequest,
-        {
-          headers: { Authorization: token },
-        }
-      )
-
-      router.push('/home')
-    } catch {
-      setError(true)
-    }
+    startTransition(async () => {
+      const { error } = await signUp({
+        email: data.email,
+        password: data.password,
+      })
+      if (error) {
+        setError(true)
+      } else {
+        router.replace('/home')
+      }
+    })
   }
 
   return (

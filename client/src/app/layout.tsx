@@ -7,6 +7,8 @@ export const metadata: Metadata = {
   robots: { index: false },
 }
 
+export const runtime = 'edge'
+
 export default function RootLayout({
   children,
 }: {

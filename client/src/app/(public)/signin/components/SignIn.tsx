@@ -1,10 +1,9 @@
 'use client'
 
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 import { FC, useState } from 'react'
-import { getApp } from 'firebase/app'
 import { useRouter } from 'next/navigation'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import {
   Alert,
   AlertIcon,
@@ -31,14 +30,17 @@ const SignIn: FC = () => {
   const [error, setError] = useState<boolean>(false)
 
   const router = useRouter()
+  const supabase = createClientComponentClient()
   const onSubmit: SubmitHandler<Schema> = async (data) => {
-    const auth = getAuth(getApp())
-    try {
-      await signInWithEmailAndPassword(auth, data.email, data.password)
-      router.push('/home')
-    } catch (e) {
+    const { error } = await supabase.auth.signInWithPassword({
+      email: data.email,
+      password: data.password,
+    })
+    if (error) {
       setError(true)
+      return
     }
+    router.push('/home')
   }
 
   return (
