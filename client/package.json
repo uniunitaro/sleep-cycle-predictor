@@ -10,18 +10,25 @@
     "gen:theme-typings": "chakra-cli tokens src/libs/chakraTheme.ts",
     "postinstall": "patch-package && npm run gen:theme-typings && cd ../server && npm ci",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "db:generate": "drizzle-kit generate:mysql --config drizzle.config.ts",
+    "db:push": "npm run with-env tsx src/db/migrate.ts",
+    "with-env": "dotenv -e .env.local --"
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.0.18",
     "@chakra-ui/next-js": "^2.1.2",
     "@chakra-ui/react": "^2.5.5",
+    "@edge-runtime/cookies": "^3.2.2",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@hookform/resolvers": "^3.0.1",
     "@lukemorales/query-key-factory": "^1.2.0",
     "@mui/material": "^5.12.0",
     "@mui/x-date-pickers": "^6.1.0",
+    "@planetscale/database": "^1.8.0",
+    "@supabase/auth-helpers-nextjs": "^0.7.3",
+    "@supabase/supabase-js": "^2.26.0",
     "@tanstack/react-query": "^4.29.1",
     "@types/node": "18.15.11",
     "@types/react": "^18.2.15",
@@ -31,6 +38,7 @@
     "chakra-datetime-picker": "^1.1.7",
     "date-fns": "^2.29.3",
     "date-fns-tz": "^2.0.0",
+    "drizzle-orm": "^0.27.2",
     "eslint": "8.37.0",
     "eslint-config-next": "^13.4.10",
     "eslint-config-prettier": "^8.8.0",
@@ -70,10 +78,13 @@
     "@storybook/nextjs": "^7.1.0",
     "@storybook/react": "^7.1.0",
     "@storybook/testing-library": "^0.2.0",
+    "dotenv-cli": "^7.2.1",
+    "drizzle-kit": "^0.19.10",
     "eslint-plugin-storybook": "^0.6.13",
     "msw": "^1.2.3",
     "msw-storybook-addon": "^1.8.0",
-    "storybook": "^7.1.0"
+    "storybook": "^7.1.0",
+    "tsx": "^3.12.7"
   },
   "msw": {
     "workerDirectory": "public"
