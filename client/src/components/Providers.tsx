@@ -19,9 +19,9 @@ const Providers: FC<{ children: ReactNode }> = ({ children }) => {
     <>
       <ColorModeScript />
       <QueryClientProvider client={queryClient}>
-        <CacheProvider>
-          <ChakraProvider theme={theme}>{children}</ChakraProvider>
-        </CacheProvider>
+        {/* <CacheProvider> */}
+        <ChakraProvider theme={theme}>{children}</ChakraProvider>
+        {/* </CacheProvider> */}
       </QueryClientProvider>
     </>
   )
