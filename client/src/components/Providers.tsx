@@ -5,7 +5,6 @@ import { CacheProvider } from '@chakra-ui/next-js'
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { theme } from '@/libs/chakraTheme'
-import { initAuth } from '@/libs/firebase'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -16,8 +15,6 @@ const queryClient = new QueryClient({
 })
 
 const Providers: FC<{ children: ReactNode }> = ({ children }) => {
-  initAuth()
-
   return (
     <>
       <ColorModeScript />

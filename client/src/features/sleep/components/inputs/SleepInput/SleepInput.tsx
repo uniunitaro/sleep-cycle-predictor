@@ -1,8 +1,7 @@
 'use client'
 
-import { FC, useState } from 'react'
+import { FC, useState, useTransition } from 'react'
 import { isBefore } from 'date-fns'
-import { useCreateSleep } from '../../../apis/useSleeps'
 import SleepInputForm from '../SleepInputForm/SleepInputForm'
 import {
   Button,
@@ -12,20 +11,19 @@ import {
   Heading,
   Stack,
 } from '@/components/chakra'
+import { addSleep } from '@/features/sleep/repositories/sleeps'
 
 const SleepInput: FC = () => {
   const [sleeps, setSleeps] = useState([
     { start: new Date(), end: new Date(), id: 1 },
   ])
 
-  const { mutate: createSleep, isLoading } = useCreateSleep()
-
+  const [isLoading, startTransition] = useTransition()
   const handleSubmit = () => {
     // TODO アラート追加
     // if (!isBefore(start, end)) return
-
-    createSleep({
-      sleeps: sleeps.map((sleep) => ({ ...sleep, id: undefined })),
+    startTransition(async () => {
+      await addSleep(sleeps.map((sleep) => ({ ...sleep, id: undefined })))
     })
   }
 

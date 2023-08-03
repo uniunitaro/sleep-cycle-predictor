@@ -56,6 +56,7 @@ const SignUp: FC = () => {
   const onSubmit: SubmitHandler<Schema> = async (data) => {
     startTransition(async () => {
       const { error } = await signUp({
+        nickname: data.nickname,
         email: data.email,
         password: data.password,
       })

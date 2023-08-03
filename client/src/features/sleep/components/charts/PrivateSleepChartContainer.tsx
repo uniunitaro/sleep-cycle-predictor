@@ -2,33 +2,61 @@
 
 import { FC, useState } from 'react'
 import { endOfMonth, startOfMonth } from 'date-fns'
-import { useSleeps } from '../../apis/useSleeps'
-import { useMyPredictions } from '../../apis/usePredictions'
+import { AddIcon } from '@chakra-ui/icons'
+import SleepInput from '../inputs/SleepInput/SleepInput'
+import SleepInputModal from '../inputs/SleepInputModal/SleepInputModal'
+import { Prediction, Sleep } from '../../types/sleep'
 import SleepChart from './SleepChart/SleepChart'
+import { Box, Container, Grid, Show } from '@/components/chakra'
+import FAB from '@/components/FAB/FAB'
+import { useHistoriedModal } from '@/hooks/useHistoriedModal'
 
-const PrivateSleepChartContainer: FC = () => {
+const PrivateSleepChartContainer: FC<{
+  sleeps: Sleep[]
+  predictions: Prediction[]
+}> = ({ sleeps, predictions }) => {
   const [targetDate, setTargetDate] = useState(startOfMonth(new Date()))
   const startDate = targetDate
   const endDate = endOfMonth(targetDate)
-  const { data: sleeps, isLoading: isSleepsLoading } = useSleeps({
-    start: startDate,
-    end: endDate,
-  })
 
-  const { data: predictions, isLoading: isPredictionsLoading } =
-    useMyPredictions({
-      start: startDate,
-      end: endDate,
-    })
+  const { isOpen, onOpen, onClose } = useHistoriedModal()
 
   return (
-    <SleepChart
-      sleeps={sleeps ?? []}
-      predictions={predictions ?? []}
-      isLoading={isSleepsLoading || isPredictionsLoading}
-      targetDate={targetDate}
-      setTargetDate={setTargetDate}
-    />
+    <Box as="main" h="100%">
+      <Container
+        maxW="8xl"
+        h="100%"
+        px={{ base: 0, md: 4 }}
+        py={{ base: 0, md: 4 }}
+        bg={{ base: 'contentBg', md: 'transparent' }}
+      >
+        <Grid
+          h="100%"
+          templateColumns={{ base: undefined, md: '1fr 320px' }}
+          gap="4"
+        >
+          <SleepChart
+            sleeps={sleeps}
+            predictions={predictions}
+            isLoading={false}
+            targetDate={targetDate}
+            setTargetDate={setTargetDate}
+          />
+          <Show above="md">
+            <SleepInput />
+          </Show>
+        </Grid>
+        <Show below="md">
+          <FAB
+            icon={<AddIcon />}
+            aria-label="睡眠記録を追加"
+            colorScheme="green"
+            onClick={onOpen}
+          />
+          <SleepInputModal isOpen={isOpen} onClose={onClose} />
+        </Show>
+      </Container>
+    </Box>
   )
 }
 
