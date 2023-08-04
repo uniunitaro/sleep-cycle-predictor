@@ -9,6 +9,7 @@ import {
   getAuthUserIdWithServerAction,
   getAuthUserIdWithServerComponent,
 } from '@/utils/getAuthUserId'
+import { Result } from '@/types/global'
 
 export const addSleep = async (
   sleeps: { start: Date; end: Date }[]
@@ -36,9 +37,7 @@ export const getSleeps = async ({
 }: {
   start: Date
   end: Date
-}): Promise<
-  { sleeps: Sleep[]; error?: undefined } | { sleeps?: undefined; error: true }
-> => {
+}): Promise<Result<{ sleeps: Sleep[] }, true>> => {
   try {
     const { userId, error } = await getAuthUserIdWithServerComponent()
     if (error) throw error
@@ -62,6 +61,7 @@ export const getSleeps = async ({
       })),
     }
   } catch (e) {
+    console.error(e)
     return { error: true }
   }
 }

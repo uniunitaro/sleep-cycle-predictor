@@ -1,21 +1,11 @@
-'use client'
-
 import Link from 'next/link'
-import { MoonIcon, SunIcon } from '@chakra-ui/icons'
+import { FC, Suspense } from 'react'
+import ColorModeToggle from '../ColorModeToggle'
 import Logo from '@/components/Logo/Logo'
-import {
-  Container,
-  Flex,
-  HStack,
-  IconButton,
-  Spacer,
-  useColorMode,
-} from '@/components/chakra'
-import UserMenu from '@/features/user/components/UserMenu/UserMenu'
+import { Container, Flex, HStack, Spacer } from '@/components/chakra'
+import UserMenuContainer from '@/features/user/components/UserMenu/UserMenuContainer'
 
-const SignedInHeader = () => {
-  const { colorMode, toggleColorMode } = useColorMode()
-
+const SignedInHeader: FC = () => {
   return (
     <header>
       <Container maxW="8xl" height="16">
@@ -25,13 +15,10 @@ const SignedInHeader = () => {
           </Link>
           <Spacer />
           <HStack spacing="4">
-            <IconButton
-              icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
-              aria-label="ダークモードを切り替え"
-              variant="ghost"
-              onClick={toggleColorMode}
-            />
-            <UserMenu />
+            <ColorModeToggle />
+            <Suspense>
+              <UserMenuContainer />
+            </Suspense>
           </HStack>
         </Flex>
       </Container>

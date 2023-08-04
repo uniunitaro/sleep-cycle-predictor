@@ -23,7 +23,7 @@ import {
   Stack,
 } from '@/components/chakra'
 import AuthFormCard from '@/features/auth/components/AuthFormCard/AuthFormCard'
-import { signUp } from '@/features/auth/repositories/signUp'
+import { signUp } from '@/features/auth/server/signUp'
 
 export const runtime = 'nodejs'
 

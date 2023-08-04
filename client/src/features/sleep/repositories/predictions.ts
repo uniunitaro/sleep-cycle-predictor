@@ -7,6 +7,7 @@ import { predictWithLR } from '../utils/predictWithLR'
 import { getAuthUserIdWithServerComponent } from '@/utils/getAuthUserId'
 import { db } from '@/db'
 import { config, segmentedSleep, sleep } from '@/db/schema'
+import { Result } from '@/types/global'
 
 export const getPredictions = async ({
   start,
@@ -14,10 +15,7 @@ export const getPredictions = async ({
 }: {
   start: Date
   end: Date
-}): Promise<
-  | { predictions: Prediction[]; error?: undefined }
-  | { predictions?: undefined; error: true }
-> => {
+}): Promise<Result<{ predictions: Prediction[] }, true>> => {
   try {
     const { userId, error } = await getAuthUserIdWithServerComponent()
     if (error) throw error
@@ -41,6 +39,7 @@ export const getPredictions = async ({
     const predictions = predictWithLR(sleeps, start, end)
     return { predictions }
   } catch (e) {
+    console.error(e)
     return { error: true }
   }
 }

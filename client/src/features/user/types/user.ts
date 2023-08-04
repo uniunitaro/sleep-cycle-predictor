@@ -1,6 +1,5 @@
-import { GetUserResponse } from '@shared-types/users/users.type'
-import { GetMeResponse } from '@shared-types/users/users.type'
+import { User as DBUser } from '@/db/schema'
 
-export type AuthUserInfo = GetMeResponse
+export type AuthUser = DBUser
 
-export type User = GetUserResponse
+export type User = Omit<DBUser, 'email'>

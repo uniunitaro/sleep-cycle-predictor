@@ -15,7 +15,7 @@ const SignedInLayout = ({ children }: { children: ReactElement }) => {
         },
       }}
     >
-      <SignedInHeader />
+      {/* <SignedInHeader /> */}
       <Box flex="1" minH="0">
         {children}
       </Box>

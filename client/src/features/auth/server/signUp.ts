@@ -1,7 +1,6 @@
 'use server'
 
 import { cookies } from 'next/headers'
-import { RequestCookies } from '@edge-runtime/cookies'
 import { createServerActionClient } from '@supabase/auth-helpers-nextjs'
 import { db } from '@/db'
 import { user } from '@/db/schema'
@@ -15,7 +14,6 @@ export const signUp = async ({
   email: string
   password: string
 }): Promise<{ error?: boolean }> => {
-  // const cookies = new RequestCookies() as any
   try {
     const supabase = createServerActionClient({ cookies })
 
@@ -35,6 +33,7 @@ export const signUp = async ({
     })
     return {}
   } catch (e) {
+    console.error(e)
     return { error: true }
   }
 }

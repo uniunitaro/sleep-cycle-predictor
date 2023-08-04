@@ -3,6 +3,7 @@ import dynamic from 'next/dynamic'
 import { getSleeps } from '@/features/sleep/repositories/sleeps'
 import { getPredictions } from '@/features/sleep/repositories/predictions'
 const Home: FC = async () => {
+  // TODO エラー処理
   const { sleeps, error } = await getSleeps({
     start: new Date(2023, 6, 31),
     end: new Date(2023, 7, 31),
