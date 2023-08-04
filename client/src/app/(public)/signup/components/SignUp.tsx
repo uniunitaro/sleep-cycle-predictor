@@ -3,8 +3,6 @@
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
-import { getApp } from 'firebase/app'
 import { FC, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { CreateUserRequest } from '@shared-types/users/users.dto'
