@@ -1,5 +1,12 @@
 import { Metadata } from 'next'
-import { addDays, endOfMonth, startOfMonth, subDays } from 'date-fns'
+import {
+  addDays,
+  addMonths,
+  endOfMonth,
+  startOfMonth,
+  subDays,
+  subMonths,
+} from 'date-fns'
 import Home from './components/Home'
 import { getSleeps } from '@/features/sleep/repositories/sleeps'
 import { getMyPredictions } from '@/features/sleep/repositories/predictions'
@@ -19,13 +26,13 @@ const HomePage = async ({ searchParams }: { searchParams: SearchParams }) => {
 
   // TODO エラー処理
   const { sleeps, error } = await getSleeps({
-    start: subDays(startOfMonth(targetDate ?? new Date()), 1),
-    end: addDays(endOfMonth(targetDate ?? new Date()), 1),
+    start: subDays(startOfMonth(subMonths(targetDate, 1)), 1),
+    end: addDays(endOfMonth(addMonths(targetDate, 1)), 1),
   })
 
   const { predictions, error: predictionsError } = await getMyPredictions({
-    start: subDays(startOfMonth(targetDate ?? new Date()), 1),
-    end: addDays(endOfMonth(targetDate ?? new Date()), 1),
+    start: subDays(startOfMonth(subMonths(targetDate, 1)), 1),
+    end: addDays(endOfMonth(addMonths(targetDate, 1)), 1),
   })
 
   return (

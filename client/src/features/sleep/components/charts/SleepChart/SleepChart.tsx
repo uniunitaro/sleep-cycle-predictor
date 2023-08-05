@@ -3,13 +3,23 @@
 import { FC, useRef, useState } from 'react'
 import {
   addDays,
+  addMonths,
   differenceInMilliseconds,
   eachDayOfInterval,
   endOfMonth,
   endOfWeek,
   isSameDay,
+  startOfMonth,
+  startOfWeek,
+  subMonths,
 } from 'date-fns'
-import { usePathname } from 'next/navigation'
+import {
+  PanInfo,
+  isValidMotionProp,
+  motion,
+  useAnimationControls,
+} from 'framer-motion'
+import { useRouter } from 'next/navigation'
 import ChartColumn from '../ChartColumn'
 import SleepBar from '../SleepBar'
 import ChartHeader from '../ChartHeader'
@@ -21,34 +31,34 @@ import {
   Stack,
   StackDivider,
   VStack,
+  chakra,
+  shouldForwardProp,
   useDimensions,
 } from '@/components/chakra'
-import AwesomeLoader from '@/components/AwesomeLoader/AwesomeLoader'
 import CardMdOnly from '@/components/CardMdOnly/CardMdOnly'
 import CardBodyMdOnly from '@/components/CardBodyMdOnly'
 import { Prediction, Sleep } from '@/features/sleep/types/sleep'
+import { useCalendarControlLinks } from '@/features/sleep/hooks/useCalendarControlLinks'
 
 type Props = {
   sleeps: Sleep[]
   predictions: Prediction[]
-  isLoading: boolean
   targetDate: Date
 }
-const SleepChart: FC<Props> = ({
-  sleeps,
-  predictions,
-  isLoading,
-  targetDate,
-}) => {
+const SleepChart: FC<Props> = ({ sleeps, predictions, targetDate }) => {
   const [displayMode, setDisplayMode] = useState<'month' | 'week'>('month')
-  const startDate = targetDate
+  const startDate =
+    displayMode === 'month' ? startOfMonth(targetDate) : startOfWeek(targetDate)
   const endDate =
     displayMode === 'month' ? endOfMonth(targetDate) : endOfWeek(targetDate)
 
   const headerHeight = 48
 
-  const dailySleeps = eachDayOfInterval({ start: startDate, end: endDate }).map(
-    (date) => {
+  const generateDailySleeps = (startDate: Date, endDate: Date) => {
+    const dailySleeps = eachDayOfInterval({
+      start: startDate,
+      end: endDate,
+    }).map((date) => {
       const formattedPredictions = predictions?.map((p, i) => ({
         ...p,
         // sleepのidと重複しないように負の値にしている
@@ -89,10 +99,19 @@ const SleepChart: FC<Props> = ({
         date,
         sleeps: dailySleeps,
       }
-    }
-  )
+    })
+    return dailySleeps
+  }
 
-  const [hoveredSleepId, setHoveredSleepId] = useState<number>()
+  const dailySleeps = generateDailySleeps(startDate, endDate)
+  const previousDailySleeps = generateDailySleeps(
+    startOfMonth(subMonths(targetDate, 1)),
+    endOfMonth(subMonths(targetDate, 1))
+  )
+  const nextDailySleeps = generateDailySleeps(
+    startOfMonth(addMonths(targetDate, 1)),
+    endOfMonth(addMonths(targetDate, 1))
+  )
 
   const chartRef = useRef<HTMLDivElement>(null)
   const chartDimensions = useDimensions(chartRef, true)
@@ -104,6 +123,37 @@ const SleepChart: FC<Props> = ({
     (chartContainerDimensions?.contentBox.height ?? 0) -
     (chartDimensions?.contentBox.height ?? 0)
 
+  const dragContainerRef = useRef<HTMLDivElement>(null)
+  const dragContainerDimensions = useDimensions(dragContainerRef, true)
+  const dragContainerWidth = dragContainerDimensions?.contentBox.width ?? 0
+
+  const controls = useAnimationControls()
+  const router = useRouter()
+  const { previousLink, nextLink } = useCalendarControlLinks(targetDate)
+  const handleDragEnd = async (info: PanInfo) => {
+    console.log(info.offset.x, info.delta.x, info.point.x, info.velocity.x)
+    const shouldSnapToPrevious =
+      info.offset.x > dragContainerWidth / 2 || info.velocity.x > 100
+    const shouldSnapToNext =
+      info.offset.x < -dragContainerWidth / 2 || info.velocity.x < -100
+
+    if (shouldSnapToPrevious) {
+      console.log('previous')
+      await controls.start('previous')
+      router.push(previousLink)
+    } else if (shouldSnapToNext) {
+      console.log('next')
+      await controls.start('next')
+      router.push(nextLink)
+    } else {
+      console.log('current')
+      controls.start('current')
+    }
+  }
+  const ChakraBox = chakra(motion.div, {
+    shouldForwardProp: (prop) =>
+      isValidMotionProp(prop) || shouldForwardProp(prop),
+  })
   return (
     <CardMdOnly h="100%">
       <CardBodyMdOnly h="100%" py={{ base: 2, md: 5 }}>
@@ -111,17 +161,6 @@ const SleepChart: FC<Props> = ({
           <ChartHeader targetDate={targetDate} />
           <Flex flex="1" overflowY="auto">
             <Flex position="relative" flex="1" minH="400px" overflowX="auto">
-              {isLoading && (
-                <Center
-                  position="absolute"
-                  w="100%"
-                  h="100%"
-                  backdropFilter="blur(2px)"
-                  zIndex="5"
-                >
-                  <AwesomeLoader />
-                </Center>
-              )}
               <VStack mr="3" fontSize="xs" spacing="0" pl={{ base: 4, md: 0 }}>
                 <Box
                   h={`calc(${headerHeight}px - ((100% - ${
@@ -140,7 +179,7 @@ const SleepChart: FC<Props> = ({
                   </Center>
                 ))}
               </VStack>
-              <Flex flex="1" overflowX="scroll" ref={chartContainerRef}>
+              <Flex flex="1" ref={chartContainerRef}>
                 <Flex position="relative" flex="1" ref={chartRef}>
                   <Box>
                     <Box h={`${headerHeight}px`} />
@@ -155,41 +194,62 @@ const SleepChart: FC<Props> = ({
                       </Box>
                     ))}
                   </Box>
-                  <HStack
-                    divider={<StackDivider />}
-                    spacing="0"
-                    align="start"
+                  <Flex
+                    ref={dragContainerRef}
                     flex="1"
+                    position="relative"
+                    overflowX="hidden"
                   >
-                    {dailySleeps.map(({ date, sleeps }) => (
-                      <ChartColumn
-                        key={date.toString()}
-                        date={date}
-                        w={`${100 / dailySleeps.length}%`}
-                        h="100%"
-                        px="1"
+                    <ChakraBox
+                      display="flex"
+                      flex="1"
+                      drag="x"
+                      dragConstraints={{
+                        left: -dragContainerWidth,
+                        right: dragContainerWidth,
+                      }}
+                      onDragEnd={(_, info) => handleDragEnd(info)}
+                      animate={controls}
+                      variants={{
+                        current: { x: 0 },
+                        previous: { x: dragContainerWidth },
+                        next: { x: -dragContainerWidth },
+                      }}
+                      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                      // @ts-ignore
+                      transition={{ duration: 0.3 }}
+                    >
+                      <Flex
+                        flex="1"
+                        position="absolute"
+                        w="full"
+                        h="full"
+                        right="100%"
+                        overflowX="scroll"
                       >
-                        <Box position="relative" height="100%" flex="1">
-                          {sleeps &&
-                            sleeps.map((sleep) => (
-                              <SleepBar
-                                key={date.toString() + sleep.id}
-                                isHovered={hoveredSleepId === sleep.id}
-                                position="absolute"
-                                w="100%"
-                                h={`${sleep.barHeightPercentage}%`}
-                                top={`${sleep.barTopPercentage}%`}
-                                barColor={sleep.isPrediction ? 'blue' : 'brand'}
-                                onMouseEnter={() => setHoveredSleepId(sleep.id)}
-                                onMouseLeave={() =>
-                                  setHoveredSleepId(undefined)
-                                }
-                              />
-                            ))}
-                        </Box>
-                      </ChartColumn>
-                    ))}
-                  </HStack>
+                        <ChartContent dailySleeps={previousDailySleeps} />
+                      </Flex>
+                      <Flex
+                        flex="1"
+                        position="absolute"
+                        w="full"
+                        h="full"
+                        overflowX="hidden"
+                      >
+                        <ChartContent dailySleeps={dailySleeps} />
+                      </Flex>
+                      <Flex
+                        flex="1"
+                        position="absolute"
+                        w="full"
+                        h="full"
+                        left="100%"
+                        overflowX="scroll"
+                      >
+                        <ChartContent dailySleeps={nextDailySleeps} />
+                      </Flex>
+                    </ChakraBox>
+                  </Flex>
                 </Flex>
               </Flex>
             </Flex>
@@ -197,6 +257,52 @@ const SleepChart: FC<Props> = ({
         </Stack>
       </CardBodyMdOnly>
     </CardMdOnly>
+  )
+}
+
+type DailySleep = {
+  date: Date
+  sleeps: {
+    start: Date
+    end: Date
+    barHeightPercentage: number
+    barTopPercentage: number
+    isPrediction: unknown
+    id: number
+  }[]
+}
+const ChartContent: FC<{ dailySleeps: DailySleep[] }> = ({ dailySleeps }) => {
+  const [hoveredSleepId, setHoveredSleepId] = useState<number>()
+
+  return (
+    <HStack divider={<StackDivider />} spacing="0" align="start" flex="1">
+      {dailySleeps.map(({ date, sleeps }) => (
+        <ChartColumn
+          key={date.toString()}
+          date={date}
+          w={`${100 / dailySleeps.length}%`}
+          h="100%"
+          px="1"
+        >
+          <Box position="relative" height="100%" flex="1">
+            {sleeps &&
+              sleeps.map((sleep) => (
+                <SleepBar
+                  key={date.toString() + sleep.id}
+                  isHovered={hoveredSleepId === sleep.id}
+                  position="absolute"
+                  w="100%"
+                  h={`${sleep.barHeightPercentage}%`}
+                  top={`${sleep.barTopPercentage}%`}
+                  barColor={sleep.isPrediction ? 'blue' : 'brand'}
+                  onMouseEnter={() => setHoveredSleepId(sleep.id)}
+                  onMouseLeave={() => setHoveredSleepId(undefined)}
+                />
+              ))}
+          </Box>
+        </ChartColumn>
+      ))}
+    </HStack>
   )
 }
 

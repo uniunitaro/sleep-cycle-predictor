@@ -8,12 +8,7 @@ const PublicSleepChartContainer: FC<{
   targetDate: Date
 }> = ({ predictions, targetDate }) => {
   return (
-    <SleepChart
-      sleeps={[]}
-      predictions={predictions}
-      isLoading={false}
-      targetDate={targetDate}
-    />
+    <SleepChart sleeps={[]} predictions={predictions} targetDate={targetDate} />
   )
 }
 

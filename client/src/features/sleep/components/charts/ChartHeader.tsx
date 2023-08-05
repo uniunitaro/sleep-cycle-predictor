@@ -1,39 +1,20 @@
 'use client'
 
-import { format, subMonths, addMonths, startOfMonth } from 'date-fns'
+import { format } from 'date-fns'
 import Link from 'next/link'
 import { FC } from 'react'
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'
-import { usePathname, useSearchParams } from 'next/navigation'
+import { useCalendarControlLinks } from '../../hooks/useCalendarControlLinks'
 import { HStack, Heading, Icon, IconButton } from '@/components/chakra'
 
 const ChartHeader: FC<{ targetDate: Date }> = ({ targetDate }) => {
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
-
-  const leftButtonDate = format(
-    startOfMonth(subMonths(targetDate, 1)),
-    'yyyy-MM-dd'
-  )
-  const leftButtonSearchParams = new URLSearchParams([
-    ...Array.from(searchParams.entries()).filter(([key]) => key !== 'date'),
-    ['date', leftButtonDate],
-  ])
-
-  const rightButtonDate = format(
-    startOfMonth(addMonths(targetDate, 1)),
-    'yyyy-MM-dd'
-  )
-  const rightButtonSearchParams = new URLSearchParams([
-    ...Array.from(searchParams.entries()).filter(([key]) => key !== 'date'),
-    ['date', rightButtonDate],
-  ])
+  const { previousLink, nextLink } = useCalendarControlLinks(targetDate)
 
   return (
     <HStack px={{ base: 4, md: 0 }}>
       <IconButton
         as={Link}
-        href={`${pathname}?${leftButtonSearchParams.toString()}`}
+        href={previousLink}
         icon={<Icon as={FaChevronLeft} color="secondaryGray" />}
         aria-label="前の月を表示"
         size="sm"
@@ -44,7 +25,7 @@ const ChartHeader: FC<{ targetDate: Date }> = ({ targetDate }) => {
       </Heading>
       <IconButton
         as={Link}
-        href={`${pathname}?${rightButtonSearchParams.toString()}`}
+        href={nextLink}
         icon={<Icon as={FaChevronRight} color="secondaryGray" />}
         aria-label="次の月を表示"
         size="sm"

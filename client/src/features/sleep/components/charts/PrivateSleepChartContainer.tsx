@@ -34,7 +34,6 @@ const PrivateSleepChartContainer: FC<{
           <SleepChart
             sleeps={sleeps}
             predictions={predictions}
-            isLoading={false}
             targetDate={targetDate}
           />
           <Show above="md">
