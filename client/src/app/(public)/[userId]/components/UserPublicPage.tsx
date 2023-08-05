@@ -1,11 +1,21 @@
 import { FC } from 'react'
+import dynamic from 'next/dynamic'
 import { Box, Container, Flex, Heading } from '@/components/chakra'
 import { User } from '@/features/user/types/user'
-import PublicSleepChartContainer from '@/features/sleep/components/charts/PublicSleepChartContainer'
+import { Prediction } from '@/features/sleep/types/sleep'
 
 // TODO テスタビリティ的にasyncなRSCはContainerコンポーネント的に扱うべきかも
 
-const UserPublicPage: FC<{ user: User }> = ({ user }) => {
+const UserPublicPage: FC<{
+  user: User
+  predictions: Prediction[]
+  targetDate: Date
+}> = ({ user, predictions, targetDate }) => {
+  const PublicSleepChartContainer = dynamic(
+    () =>
+      import('@/features/sleep/components/charts/PublicSleepChartContainer'),
+    { ssr: false }
+  )
   return (
     <Box as="main" h="100%">
       <Container
@@ -20,7 +30,11 @@ const UserPublicPage: FC<{ user: User }> = ({ user }) => {
             {user && `${user.nickname}さんの睡眠予測`}
           </Heading>
           <Box flex="1" minH="0">
-            <PublicSleepChartContainer userId={user.id} />
+            <PublicSleepChartContainer
+              userId={user.id}
+              predictions={predictions}
+              targetDate={targetDate}
+            />
           </Box>
         </Flex>
       </Container>

@@ -7,3 +7,5 @@
 export type Result<T, E> =
   | (T & { error?: undefined })
   | ({ [K in keyof T]?: undefined } & { error: E })
+
+export type SearchParams = { [key: string]: string | string[] | undefined }

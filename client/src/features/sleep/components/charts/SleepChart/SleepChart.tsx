@@ -3,26 +3,21 @@
 import { FC, useRef, useState } from 'react'
 import {
   addDays,
-  addMonths,
   differenceInMilliseconds,
   eachDayOfInterval,
   endOfMonth,
   endOfWeek,
-  format,
   isSameDay,
-  subMonths,
 } from 'date-fns'
-import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'
+import { usePathname } from 'next/navigation'
 import ChartColumn from '../ChartColumn'
 import SleepBar from '../SleepBar'
+import ChartHeader from '../ChartHeader'
 import {
   Box,
   Center,
   Flex,
   HStack,
-  Heading,
-  Icon,
-  IconButton,
   Stack,
   StackDivider,
   VStack,
@@ -38,14 +33,12 @@ type Props = {
   predictions: Prediction[]
   isLoading: boolean
   targetDate: Date
-  setTargetDate: (date: Date) => void
 }
 const SleepChart: FC<Props> = ({
   sleeps,
   predictions,
   isLoading,
   targetDate,
-  setTargetDate,
 }) => {
   const [displayMode, setDisplayMode] = useState<'month' | 'week'>('month')
   const startDate = targetDate
@@ -115,25 +108,7 @@ const SleepChart: FC<Props> = ({
     <CardMdOnly h="100%">
       <CardBodyMdOnly h="100%" py={{ base: 2, md: 5 }}>
         <Stack h="100%">
-          <HStack px={{ base: 4, md: 0 }}>
-            <IconButton
-              icon={<Icon as={FaChevronLeft} color="secondaryGray" />}
-              aria-label="前の月を表示"
-              size="sm"
-              variant="ghost"
-              onClick={() => setTargetDate(subMonths(targetDate, 1))}
-            />
-            <Heading size="md" fontWeight="normal">
-              {format(startDate, 'yyyy年M月')}
-            </Heading>
-            <IconButton
-              icon={<Icon as={FaChevronRight} color="secondaryGray" />}
-              aria-label="次の月を表示"
-              size="sm"
-              variant="ghost"
-              onClick={() => setTargetDate(addMonths(targetDate, 1))}
-            />
-          </HStack>
+          <ChartHeader targetDate={targetDate} />
           <Flex flex="1" overflowY="auto">
             <Flex position="relative" flex="1" minH="400px" overflowX="auto">
               {isLoading && (

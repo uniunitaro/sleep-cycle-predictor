@@ -27,7 +27,6 @@ export const Default: StoryObj<typeof SleepChart> = {
     predictions,
     isLoading: false,
     targetDate: new Date(2023, 0, 1),
-    setTargetDate: () => undefined,
   },
   parameters: {
     layout: 'fullscreen',

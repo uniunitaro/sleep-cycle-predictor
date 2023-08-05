@@ -1,7 +1,6 @@
 'use client'
 
-import { FC, useState } from 'react'
-import { endOfMonth, startOfMonth } from 'date-fns'
+import { FC } from 'react'
 import { AddIcon } from '@chakra-ui/icons'
 import SleepInput from '../inputs/SleepInput/SleepInput'
 import SleepInputModal from '../inputs/SleepInputModal/SleepInputModal'
@@ -14,11 +13,8 @@ import { useHistoriedModal } from '@/hooks/useHistoriedModal'
 const PrivateSleepChartContainer: FC<{
   sleeps: Sleep[]
   predictions: Prediction[]
-}> = ({ sleeps, predictions }) => {
-  const [targetDate, setTargetDate] = useState(startOfMonth(new Date()))
-  const startDate = targetDate
-  const endDate = endOfMonth(targetDate)
-
+  targetDate: Date
+}> = ({ sleeps, predictions, targetDate }) => {
   const { isOpen, onOpen, onClose } = useHistoriedModal()
 
   return (
@@ -40,7 +36,6 @@ const PrivateSleepChartContainer: FC<{
             predictions={predictions}
             isLoading={false}
             targetDate={targetDate}
-            setTargetDate={setTargetDate}
           />
           <Show above="md">
             <SleepInput />

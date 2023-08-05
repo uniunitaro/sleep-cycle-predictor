@@ -10,16 +10,15 @@ import { config, segmentedSleep, sleep } from '@/db/schema'
 import { Result } from '@/types/global'
 
 export const getPredictions = async ({
+  userId,
   start,
   end,
 }: {
+  userId: string
   start: Date
   end: Date
 }): Promise<Result<{ predictions: Prediction[] }, true>> => {
   try {
-    const { userId, error } = await getAuthUserIdWithServerComponent()
-    if (error) throw error
-
     const userConfig = await db.query.config.findFirst({
       where: eq(config.userId, userId),
     })
@@ -42,4 +41,20 @@ export const getPredictions = async ({
     console.error(e)
     return { error: true }
   }
+}
+
+export const getMyPredictions = async ({
+  start,
+  end,
+}: {
+  start: Date
+  end: Date
+}): Promise<Result<{ predictions: Prediction[] }, true>> => {
+  const { userId, error } = await getAuthUserIdWithServerComponent()
+  if (error) {
+    console.error(error)
+    return { error: true }
+  }
+
+  return getPredictions({ userId, start, end })
 }

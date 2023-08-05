@@ -1,29 +1,18 @@
-'use client'
-
-import { FC, useState } from 'react'
-import { endOfMonth, startOfMonth } from 'date-fns'
+import { FC } from 'react'
+import { Prediction } from '../../types/sleep'
 import SleepChart from './SleepChart/SleepChart'
 
-const PublicSleepChartContainer: FC<{ userId: string }> = ({ userId }) => {
-  const [targetDate, setTargetDate] = useState(startOfMonth(new Date()))
-  const startDate = targetDate
-  const endDate = endOfMonth(targetDate)
-
-  // const { data: predictions, isLoading: isPredictionsLoading } = usePredictions(
-  //   userId,
-  //   {
-  //     start: startDate,
-  //     end: endDate,
-  //   }
-  // )
-
+const PublicSleepChartContainer: FC<{
+  userId: string
+  predictions: Prediction[]
+  targetDate: Date
+}> = ({ predictions, targetDate }) => {
   return (
     <SleepChart
       sleeps={[]}
-      predictions={[]}
+      predictions={predictions}
       isLoading={false}
       targetDate={targetDate}
-      setTargetDate={setTargetDate}
     />
   )
 }
