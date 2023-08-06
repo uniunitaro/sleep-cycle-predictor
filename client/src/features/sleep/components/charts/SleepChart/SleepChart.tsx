@@ -1,6 +1,6 @@
 'use client'
 
-import { FC, useRef, useState } from 'react'
+import { FC, ReactNode, RefObject, useEffect, useRef, useState } from 'react'
 import {
   addDays,
   addMonths,
@@ -18,6 +18,7 @@ import {
   isValidMotionProp,
   motion,
   useAnimationControls,
+  useDragControls,
 } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import ChartColumn from '../ChartColumn'
@@ -123,37 +124,8 @@ const SleepChart: FC<Props> = ({ sleeps, predictions, targetDate }) => {
     (chartContainerDimensions?.contentBox.height ?? 0) -
     (chartDimensions?.contentBox.height ?? 0)
 
-  const dragContainerRef = useRef<HTMLDivElement>(null)
-  const dragContainerDimensions = useDimensions(dragContainerRef, true)
-  const dragContainerWidth = dragContainerDimensions?.contentBox.width ?? 0
+  const currentChartRef = useRef<HTMLDivElement>(null)
 
-  const controls = useAnimationControls()
-  const router = useRouter()
-  const { previousLink, nextLink } = useCalendarControlLinks(targetDate)
-  const handleDragEnd = async (info: PanInfo) => {
-    console.log(info.offset.x, info.delta.x, info.point.x, info.velocity.x)
-    const shouldSnapToPrevious =
-      info.offset.x > dragContainerWidth / 2 || info.velocity.x > 100
-    const shouldSnapToNext =
-      info.offset.x < -dragContainerWidth / 2 || info.velocity.x < -100
-
-    if (shouldSnapToPrevious) {
-      console.log('previous')
-      await controls.start('previous')
-      router.push(previousLink)
-    } else if (shouldSnapToNext) {
-      console.log('next')
-      await controls.start('next')
-      router.push(nextLink)
-    } else {
-      console.log('current')
-      controls.start('current')
-    }
-  }
-  const ChakraBox = chakra(motion.div, {
-    shouldForwardProp: (prop) =>
-      isValidMotionProp(prop) || shouldForwardProp(prop),
-  })
   return (
     <CardMdOnly h="100%">
       <CardBodyMdOnly h="100%" py={{ base: 2, md: 5 }}>
@@ -194,62 +166,41 @@ const SleepChart: FC<Props> = ({ sleeps, predictions, targetDate }) => {
                       </Box>
                     ))}
                   </Box>
-                  <Flex
-                    ref={dragContainerRef}
-                    flex="1"
-                    position="relative"
-                    overflowX="hidden"
+                  <DragContainer
+                    targetDate={targetDate}
+                    currentChartRef={currentChartRef}
                   >
-                    <ChakraBox
-                      display="flex"
+                    <Flex
                       flex="1"
-                      drag="x"
-                      dragConstraints={{
-                        left: -dragContainerWidth,
-                        right: dragContainerWidth,
-                      }}
-                      onDragEnd={(_, info) => handleDragEnd(info)}
-                      animate={controls}
-                      variants={{
-                        current: { x: 0 },
-                        previous: { x: dragContainerWidth },
-                        next: { x: -dragContainerWidth },
-                      }}
-                      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                      // @ts-ignore
-                      transition={{ duration: 0.3 }}
+                      position="absolute"
+                      w="full"
+                      h="full"
+                      right="100%"
+                      overflowX="scroll"
                     >
-                      <Flex
-                        flex="1"
-                        position="absolute"
-                        w="full"
-                        h="full"
-                        right="100%"
-                        overflowX="scroll"
-                      >
-                        <ChartContent dailySleeps={previousDailySleeps} />
-                      </Flex>
-                      <Flex
-                        flex="1"
-                        position="absolute"
-                        w="full"
-                        h="full"
-                        overflowX="hidden"
-                      >
-                        <ChartContent dailySleeps={dailySleeps} />
-                      </Flex>
-                      <Flex
-                        flex="1"
-                        position="absolute"
-                        w="full"
-                        h="full"
-                        left="100%"
-                        overflowX="scroll"
-                      >
-                        <ChartContent dailySleeps={nextDailySleeps} />
-                      </Flex>
-                    </ChakraBox>
-                  </Flex>
+                      <ChartContent dailySleeps={previousDailySleeps} />
+                    </Flex>
+                    <Flex
+                      ref={currentChartRef}
+                      flex="1"
+                      position="absolute"
+                      w="full"
+                      h="full"
+                      overflowX="scroll"
+                    >
+                      <ChartContent dailySleeps={dailySleeps} />
+                    </Flex>
+                    <Flex
+                      flex="1"
+                      position="absolute"
+                      w="full"
+                      h="full"
+                      left="100%"
+                      overflowX="scroll"
+                    >
+                      <ChartContent dailySleeps={nextDailySleeps} />
+                    </Flex>
+                  </DragContainer>
                 </Flex>
               </Flex>
             </Flex>
@@ -257,6 +208,146 @@ const SleepChart: FC<Props> = ({ sleeps, predictions, targetDate }) => {
         </Stack>
       </CardBodyMdOnly>
     </CardMdOnly>
+  )
+}
+
+const DragContainer: FC<{
+  targetDate: Date
+  currentChartRef: RefObject<HTMLDivElement>
+  children: ReactNode
+}> = ({ targetDate, currentChartRef, children }) => {
+  const ChakraBox = chakra(motion.div, {
+    shouldForwardProp: (prop) =>
+      isValidMotionProp(prop) || shouldForwardProp(prop),
+  })
+
+  const dragContainerRef = useRef<HTMLDivElement>(null)
+  const dragContainerDimensions = useDimensions(dragContainerRef, true)
+  const dragContainerWidth = dragContainerDimensions?.contentBox.width ?? 0
+
+  const dragControls = useDragControls()
+  const controls = useAnimationControls()
+
+  const touchStartX = useRef<number>()
+  const canStartDrag = useRef(false)
+  const isDragging = useRef(false)
+  const currentEdgeType = useRef<'left' | 'right'>()
+
+  const handleTouchStart = (e: TouchEvent) => {
+    touchStartX.current = e.touches[0].pageX
+  }
+  const handleTouchMove = (e: TouchEvent) => {
+    // スクロールの端に到達していて、さらに端の方向にスクロールをしようとした場合にスクロール判定を消す
+    const chartRef = currentChartRef.current
+    if (!chartRef) return
+
+    const isOnLeftEdge = chartRef.scrollLeft === 0
+    const isOnRightEdge =
+      Math.abs(
+        (chartRef.scrollWidth ?? 0) -
+          (chartRef.clientWidth ?? 0) -
+          (chartRef.scrollLeft ?? 0)
+      ) < 1
+
+    // 左方向へのスワイプ = 右へ移動
+    const isSwipingLeft = e.touches[0].pageX < (touchStartX.current ?? 0)
+    // 右方向へのスワイプ = 左へ移動
+    const isSwipingRight = e.touches[0].pageX > (touchStartX.current ?? 0)
+
+    if ((isOnLeftEdge && isSwipingRight) || (isOnRightEdge && isSwipingLeft)) {
+      e.preventDefault()
+
+      currentEdgeType.current = isOnLeftEdge ? 'left' : 'right'
+      if (!isDragging.current) {
+        canStartDrag.current = true
+      }
+    }
+  }
+  const handleTouchEnd = () => {
+    isDragging.current = false
+  }
+
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType !== 'touch') {
+      dragControls.start(e)
+    }
+  }
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (canStartDrag.current) {
+      dragControls.start(e)
+      canStartDrag.current = false
+      isDragging.current = true
+    }
+  }
+
+  const router = useRouter()
+  const { previousLink, nextLink } = useCalendarControlLinks(targetDate)
+  const handleDragEnd = async (info: PanInfo) => {
+    const shouldSnapToPrevious =
+      currentEdgeType.current !== 'right' &&
+      (info.offset.x > dragContainerWidth / 2 || info.velocity.x > 100)
+    const shouldSnapToNext =
+      currentEdgeType.current !== 'left' &&
+      (info.offset.x < -dragContainerWidth / 2 || info.velocity.x < -100)
+
+    currentEdgeType.current = undefined
+
+    if (shouldSnapToPrevious) {
+      await controls.start('previous')
+      router.push(previousLink)
+    } else if (shouldSnapToNext) {
+      await controls.start('next')
+      router.push(nextLink)
+    } else {
+      controls.start('current')
+    }
+  }
+
+  useEffect(() => {
+    const chartRef = currentChartRef.current
+    chartRef?.addEventListener('touchstart', handleTouchStart)
+    chartRef?.addEventListener('touchmove', handleTouchMove)
+    chartRef?.addEventListener('touchend', handleTouchEnd)
+    return () => {
+      chartRef?.removeEventListener('touchstart', handleTouchStart)
+      chartRef?.removeEventListener('touchmove', handleTouchMove)
+      chartRef?.removeEventListener('touchend', handleTouchEnd)
+    }
+  })
+
+  return (
+    <Flex
+      ref={dragContainerRef}
+      flex="1"
+      position="relative"
+      overflowX="hidden"
+    >
+      <ChakraBox
+        display="flex"
+        flex="1"
+        dragControls={dragControls}
+        dragListener={false}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        drag={'x'}
+        dragConstraints={{
+          left: -dragContainerWidth,
+          right: dragContainerWidth,
+        }}
+        onDragEnd={(_, info) => handleDragEnd(info)}
+        animate={controls}
+        variants={{
+          current: { x: 0 },
+          previous: { x: dragContainerWidth },
+          next: { x: -dragContainerWidth },
+        }}
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        transition={{ duration: 0.3 }}
+      >
+        {children}
+      </ChakraBox>
+    </Flex>
   )
 }
 

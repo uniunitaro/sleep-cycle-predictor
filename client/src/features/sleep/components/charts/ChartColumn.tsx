@@ -25,6 +25,7 @@ const ChartColumn: FC<Props & BoxProps> = memo(
         minW={`${colMinWidth}px`}
         display="flex"
         flexDirection="column"
+        userSelect="none"
         {...rest}
       >
         <Center h={`${headerHeight}px`} flexDirection="column">
