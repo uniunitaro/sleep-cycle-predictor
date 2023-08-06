@@ -2,13 +2,13 @@
 
 import { format } from 'date-fns'
 import Link from 'next/link'
-import { FC } from 'react'
+import { FC, memo } from 'react'
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'
-import { useCalendarControlLinks } from '../../hooks/useCalendarControlLinks'
+import { useCalendarControl } from '../../hooks/useCalendarControl'
 import { HStack, Heading, Icon, IconButton } from '@/components/chakra'
 
-const ChartHeader: FC<{ targetDate: Date }> = ({ targetDate }) => {
-  const { previousLink, nextLink } = useCalendarControlLinks(targetDate)
+const ChartHeader: FC<{ targetDate: Date }> = memo(({ targetDate }) => {
+  const { previousLink, nextLink } = useCalendarControl(targetDate)
 
   return (
     <HStack px={{ base: 4, md: 0 }}>
@@ -33,6 +33,7 @@ const ChartHeader: FC<{ targetDate: Date }> = ({ targetDate }) => {
       />
     </HStack>
   )
-}
+})
 
+ChartHeader.displayName = 'ChartHeader'
 export default ChartHeader

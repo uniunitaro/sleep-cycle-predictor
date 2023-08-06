@@ -1,6 +1,15 @@
 'use client'
 
-import { FC, ReactNode, RefObject, useEffect, useRef, useState } from 'react'
+import {
+  FC,
+  ReactNode,
+  RefObject,
+  useEffect,
+  useRef,
+  useState,
+  experimental_useOptimistic as useOptimistic,
+  memo,
+} from 'react'
 import {
   addDays,
   addMonths,
@@ -15,7 +24,6 @@ import {
 } from 'date-fns'
 import {
   PanInfo,
-  isValidMotionProp,
   motion,
   useAnimationControls,
   useDragControls,
@@ -32,26 +40,31 @@ import {
   Stack,
   StackDivider,
   VStack,
-  chakra,
-  shouldForwardProp,
   useDimensions,
 } from '@/components/chakra'
 import CardMdOnly from '@/components/CardMdOnly/CardMdOnly'
 import CardBodyMdOnly from '@/components/CardBodyMdOnly'
 import { Prediction, Sleep } from '@/features/sleep/types/sleep'
-import { useCalendarControlLinks } from '@/features/sleep/hooks/useCalendarControlLinks'
+import { useCalendarControl } from '@/features/sleep/hooks/useCalendarControl'
 
 type Props = {
   sleeps: Sleep[]
   predictions: Prediction[]
   targetDate: Date
 }
-const SleepChart: FC<Props> = ({ sleeps, predictions, targetDate }) => {
+const SleepChart: FC<Props> = memo(({ sleeps, predictions, targetDate }) => {
   const [displayMode, setDisplayMode] = useState<'month' | 'week'>('month')
+  const [optimisticTargetDate, setOptimisticTargetDate] =
+    useOptimistic(targetDate)
+
   const startDate =
-    displayMode === 'month' ? startOfMonth(targetDate) : startOfWeek(targetDate)
+    displayMode === 'month'
+      ? startOfMonth(optimisticTargetDate)
+      : startOfWeek(optimisticTargetDate)
   const endDate =
-    displayMode === 'month' ? endOfMonth(targetDate) : endOfWeek(targetDate)
+    displayMode === 'month'
+      ? endOfMonth(optimisticTargetDate)
+      : endOfWeek(optimisticTargetDate)
 
   const headerHeight = 48
 
@@ -106,12 +119,12 @@ const SleepChart: FC<Props> = ({ sleeps, predictions, targetDate }) => {
 
   const dailySleeps = generateDailySleeps(startDate, endDate)
   const previousDailySleeps = generateDailySleeps(
-    startOfMonth(subMonths(targetDate, 1)),
-    endOfMonth(subMonths(targetDate, 1))
+    startOfMonth(subMonths(optimisticTargetDate, 1)),
+    endOfMonth(subMonths(optimisticTargetDate, 1))
   )
   const nextDailySleeps = generateDailySleeps(
-    startOfMonth(addMonths(targetDate, 1)),
-    endOfMonth(addMonths(targetDate, 1))
+    startOfMonth(addMonths(optimisticTargetDate, 1)),
+    endOfMonth(addMonths(optimisticTargetDate, 1))
   )
 
   const chartRef = useRef<HTMLDivElement>(null)
@@ -169,37 +182,25 @@ const SleepChart: FC<Props> = ({ sleeps, predictions, targetDate }) => {
                   <DragContainer
                     targetDate={targetDate}
                     currentChartRef={currentChartRef}
+                    onDateChange={(date) => setOptimisticTargetDate(date)}
                   >
-                    <Flex
-                      flex="1"
-                      position="absolute"
-                      w="full"
-                      h="full"
-                      right="100%"
-                      overflowX="scroll"
-                    >
-                      <ChartContent dailySleeps={previousDailySleeps} />
-                    </Flex>
-                    <Flex
-                      ref={currentChartRef}
-                      flex="1"
-                      position="absolute"
-                      w="full"
-                      h="full"
-                      overflowX="scroll"
-                    >
-                      <ChartContent dailySleeps={dailySleeps} />
-                    </Flex>
-                    <Flex
-                      flex="1"
-                      position="absolute"
-                      w="full"
-                      h="full"
-                      left="100%"
-                      overflowX="scroll"
-                    >
-                      <ChartContent dailySleeps={nextDailySleeps} />
-                    </Flex>
+                    {[previousDailySleeps, dailySleeps, nextDailySleeps].map(
+                      (dailySleeps, i) => (
+                        <Flex
+                          key={dailySleeps[0].date.getTime()}
+                          ref={i === 1 ? currentChartRef : undefined}
+                          flex="1"
+                          position="absolute"
+                          w="full"
+                          h="full"
+                          right={i === 0 ? '100%' : undefined}
+                          left={i === 2 ? '100%' : undefined}
+                          overflowX="scroll"
+                        >
+                          <ChartContent dailySleeps={dailySleeps} />
+                        </Flex>
+                      )
+                    )}
                   </DragContainer>
                 </Flex>
               </Flex>
@@ -209,18 +210,16 @@ const SleepChart: FC<Props> = ({ sleeps, predictions, targetDate }) => {
       </CardBodyMdOnly>
     </CardMdOnly>
   )
-}
+})
+
+SleepChart.displayName = 'SleepChart'
 
 const DragContainer: FC<{
   targetDate: Date
   currentChartRef: RefObject<HTMLDivElement>
+  onDateChange: (date: Date) => void
   children: ReactNode
-}> = ({ targetDate, currentChartRef, children }) => {
-  const ChakraBox = chakra(motion.div, {
-    shouldForwardProp: (prop) =>
-      isValidMotionProp(prop) || shouldForwardProp(prop),
-  })
-
+}> = ({ targetDate, currentChartRef, onDateChange, children }) => {
   const dragContainerRef = useRef<HTMLDivElement>(null)
   const dragContainerDimensions = useDimensions(dragContainerRef, true)
   const dragContainerWidth = dragContainerDimensions?.contentBox.width ?? 0
@@ -267,11 +266,6 @@ const DragContainer: FC<{
     isDragging.current = false
   }
 
-  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (e.pointerType !== 'touch') {
-      dragControls.start(e)
-    }
-  }
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     if (canStartDrag.current) {
       dragControls.start(e)
@@ -281,23 +275,41 @@ const DragContainer: FC<{
   }
 
   const router = useRouter()
-  const { previousLink, nextLink } = useCalendarControlLinks(targetDate)
+  const { previousLink, nextLink, previousDate, nextDate } =
+    useCalendarControl(targetDate)
+  useEffect(() => {
+    router.prefetch(previousLink)
+    router.prefetch(nextLink)
+  }, [nextLink, previousLink, router])
+
   const handleDragEnd = async (info: PanInfo) => {
     const shouldSnapToPrevious =
       currentEdgeType.current !== 'right' &&
-      (info.offset.x > dragContainerWidth / 2 || info.velocity.x > 100)
+      (info.offset.x > dragContainerWidth / 2 || info.velocity.x > 20)
     const shouldSnapToNext =
       currentEdgeType.current !== 'left' &&
-      (info.offset.x < -dragContainerWidth / 2 || info.velocity.x < -100)
+      (info.offset.x < -dragContainerWidth / 2 || info.velocity.x < -20)
 
     currentEdgeType.current = undefined
 
     if (shouldSnapToPrevious) {
       await controls.start('previous')
-      router.push(previousLink)
+      // アニメーションが終わったらスクロール位置を戻す
+      controls.start({ x: 0, transition: { duration: 0 } })
+      if (currentChartRef.current) {
+        // 今まで表示していたチャートのスクロール位置を戻す
+        currentChartRef.current.scrollLeft = 0
+      }
+      onDateChange(previousDate)
+      router.push(previousLink, { scroll: false })
     } else if (shouldSnapToNext) {
       await controls.start('next')
-      router.push(nextLink)
+      if (currentChartRef.current) {
+        currentChartRef.current.scrollLeft = 0
+      }
+      controls.start({ x: 0, transition: { duration: 0 } })
+      onDateChange(nextDate)
+      router.push(nextLink, { scroll: false })
     } else {
       controls.start('current')
     }
@@ -322,12 +334,10 @@ const DragContainer: FC<{
       position="relative"
       overflowX="hidden"
     >
-      <ChakraBox
-        display="flex"
-        flex="1"
+      <motion.div
+        style={{ display: 'flex', flex: '1' }}
         dragControls={dragControls}
         dragListener={false}
-        onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         drag={'x'}
         dragConstraints={{
@@ -346,7 +356,7 @@ const DragContainer: FC<{
         transition={{ duration: 0.3 }}
       >
         {children}
-      </ChakraBox>
+      </motion.div>
     </Flex>
   )
 }
