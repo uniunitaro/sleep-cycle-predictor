@@ -11,12 +11,15 @@ import Home from './components/Home'
 import { getSleeps } from '@/features/sleep/repositories/sleeps'
 import { getMyPredictions } from '@/features/sleep/repositories/predictions'
 import { SearchParams } from '@/types/global'
+import { redirectBasedOnAuthState } from '@/features/auth/utils/redirectBasedOnAuthState'
 
 export const metadata: Metadata = {
   title: 'ホーム - Sleep Cycle Predictor',
 }
 
 const HomePage = async ({ searchParams }: { searchParams: SearchParams }) => {
+  await redirectBasedOnAuthState('unauthed', '/signin')
+
   // searchParamで日付が指定されていればその日付、されていなければ今日
   const targetDate = (() => {
     const { date } = searchParams
