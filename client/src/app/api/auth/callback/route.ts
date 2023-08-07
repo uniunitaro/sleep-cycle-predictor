@@ -1,7 +1,7 @@
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
 import { NextResponse } from 'next/server'
-import { RequestCookies } from '@edge-runtime/cookies'
 import type { NextRequest } from 'next/server'
+import { cookies } from 'next/headers'
 
 export const runtime = 'edge'
 
@@ -10,8 +10,7 @@ export const GET = async (request: NextRequest) => {
   const code = requestUrl.searchParams.get('code')
 
   if (code) {
-    const cookies = new RequestCookies(request.headers) as any
-    const supabase = createRouteHandlerClient({ cookies: () => cookies })
+    const supabase = createRouteHandlerClient({ cookies })
     await supabase.auth.exchangeCodeForSession(code)
   }
 
