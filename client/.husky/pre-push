@@ -2,5 +2,5 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 cd client
-npm run typecheck
-npm run test
+pnpm run typecheck
+pnpm run test
