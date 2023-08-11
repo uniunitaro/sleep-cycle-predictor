@@ -1,3 +1,4 @@
+/** @type {import('jest').Config} */
 const config = {
   transform: {
     '^.+\\.(t|j)sx?$': [
@@ -16,6 +17,7 @@ const config = {
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
 }
 
 export default config
