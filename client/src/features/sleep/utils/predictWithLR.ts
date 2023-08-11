@@ -1,4 +1,4 @@
-import { fromUnixTime, getUnixTime, isAfter, isBefore, max } from 'date-fns'
+import { fromUnixTime, getUnixTime, isAfter, max } from 'date-fns'
 import {
   interquartileRange,
   linearRegression,
@@ -6,7 +6,7 @@ import {
   mean,
   median,
 } from 'simple-statistics'
-import { SegmentedSleep, Sleep } from '@/db/schema'
+import { Sleep } from '@/db/schema'
 
 type CombinedSleep = {
   sleep: Sleep
@@ -71,7 +71,7 @@ export const getOutlierSleeps = (
 }
 
 export const predictWithLR = (
-  sleeps: (Sleep & { segmentedSleeps: SegmentedSleep[] })[],
+  sleeps: (Sleep & { segmentedSleeps: Sleep[] })[],
   startDate: Date,
   endDate: Date
 ) => {

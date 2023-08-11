@@ -6,7 +6,7 @@ import { getSrcStart } from '../utils/getSrcStart'
 import { predictWithLR } from '../utils/predictWithLR'
 import { getAuthUserIdWithServerComponent } from '@/utils/getAuthUserId'
 import { db } from '@/db'
-import { config, segmentedSleep, sleep } from '@/db/schema'
+import { config, sleep } from '@/db/schema'
 import { Result } from '@/types/global'
 
 export const getPredictions = async ({
@@ -30,7 +30,7 @@ export const getPredictions = async ({
       orderBy: [asc(sleep.start)],
       with: {
         segmentedSleeps: {
-          orderBy: [asc(segmentedSleep.start)],
+          orderBy: [asc(sleep.start)],
         },
       },
     })

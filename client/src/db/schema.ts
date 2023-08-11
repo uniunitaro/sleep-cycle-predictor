@@ -17,6 +17,7 @@ export const user = mysqlTable('User', {
 })
 
 export type User = InferModel<typeof user>
+export type NewUser = InferModel<typeof user, 'insert'>
 
 export const userRelations = relations(user, ({ one, many }) => ({
   config: one(config, { fields: [user.id], references: [config.userId] }),
@@ -43,6 +44,7 @@ export const config = mysqlTable('Config', {
 })
 
 export type Config = InferModel<typeof config>
+export type NewConfig = InferModel<typeof config, 'insert'>
 
 export const sleep = mysqlTable('Sleep', {
   id: int('id').autoincrement().primaryKey().notNull(),
@@ -51,29 +53,18 @@ export const sleep = mysqlTable('Sleep', {
   userId: varchar('userId', { length: 255 }).notNull(),
   start: datetime('start').notNull(),
   end: datetime('end').notNull(),
+  parentSleepId: int('parentSleepId'),
 })
 
 export type Sleep = InferModel<typeof sleep>
+export type NewSleep = InferModel<typeof sleep, 'insert'>
 
 export const sleepRelations = relations(sleep, ({ one, many }) => ({
   user: one(user, { fields: [sleep.userId], references: [user.id] }),
-  segmentedSleeps: many(segmentedSleep),
-}))
-
-export const segmentedSleep = mysqlTable('SegmentedSleep', {
-  id: int('id').autoincrement().primaryKey().notNull(),
-  createdAt: timestamp('createdAt').defaultNow().notNull(),
-  updatedAt: timestamp('updatedAt').defaultNow().onUpdateNow().notNull(),
-  sleepId: int('sleepId').notNull(),
-  start: datetime('start').notNull(),
-  end: datetime('end').notNull(),
-})
-
-export type SegmentedSleep = InferModel<typeof segmentedSleep>
-
-export const segmentedSleepRelations = relations(segmentedSleep, ({ one }) => ({
-  sleep: one(sleep, {
-    fields: [segmentedSleep.sleepId],
+  segmentedSleeps: many(sleep, { relationName: 'segmentedSleeps' }),
+  parentSleep: one(sleep, {
+    fields: [sleep.parentSleepId],
     references: [sleep.id],
+    relationName: 'segmentedSleeps',
   }),
 }))
