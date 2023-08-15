@@ -51,7 +51,7 @@ const SignIn: FC = () => {
     >
       <AuthFormCard>
         <Stack spacing="7">
-          <Heading size="lg" fontWeight="normal" textAlign="center">
+          <Heading as="h1" size="md" textAlign="center">
             ログイン
           </Heading>
           <form onSubmit={handleSubmit(onSubmit)} noValidate>

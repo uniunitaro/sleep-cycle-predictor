@@ -1,6 +1,6 @@
 'use server'
 
-import { and, asc, eq, gte } from 'drizzle-orm'
+import { and, asc, eq, gte, isNull } from 'drizzle-orm'
 import { Prediction } from '../types/sleep'
 import { getSrcStart } from '../utils/getSrcStart'
 import { predictWithLR } from '../utils/predictWithLR'
@@ -26,7 +26,11 @@ export const getPredictions = async ({
 
     const srcStart = getSrcStart(userConfig.predictionSrcDuration)
     const sleeps = await db.query.sleep.findMany({
-      where: and(eq(sleep.userId, userId), gte(sleep.start, srcStart)),
+      where: and(
+        eq(sleep.userId, userId),
+        gte(sleep.start, srcStart),
+        isNull(sleep.parentSleepId)
+      ),
       orderBy: [asc(sleep.start)],
       with: {
         segmentedSleeps: {

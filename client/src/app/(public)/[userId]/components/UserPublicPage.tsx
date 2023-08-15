@@ -22,7 +22,7 @@ const UserPublicPage: FC<{
         maxW="1000px"
         h="100%"
         px={{ base: 0, md: 4 }}
-        py={{ base: 0, md: 4 }}
+        pb={{ base: 0, md: 4 }}
         bg={{ base: 'contentBg', md: 'transparent' }}
       >
         <Flex direction="column" h="100%">

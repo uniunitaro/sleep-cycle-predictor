@@ -1,6 +1,13 @@
 'use client'
 
-import { FC, useState, useTransition } from 'react'
+import {
+  ComponentProps,
+  forwardRef,
+  useCallback,
+  useEffect,
+  useState,
+  useTransition,
+} from 'react'
 import { isBefore } from 'date-fns'
 import SleepInputForm from '../SleepInputForm/SleepInputForm'
 import {
@@ -15,61 +22,83 @@ import {
   ModalOverlay,
   ModalProps,
 } from '@/components/chakra'
-import { addSleep } from '@/features/sleep/repositories/sleeps'
+import { addSleep, updateSleep } from '@/features/sleep/repositories/sleeps'
+import { Sleep } from '@/features/sleep/types/sleep'
 
-const SleepInputModal: FC<Omit<ModalProps, 'children'>> = (props) => {
-  const [sleeps, setSleeps] = useState([
-    { start: new Date(), end: new Date(), id: 1 },
-  ])
+type SleepInputType = ComponentProps<typeof SleepInputForm>['sleeps']
+type Props = Omit<ModalProps, 'children'> & { originalSleep?: Sleep }
+const SleepInputModal = forwardRef<HTMLDivElement, Props>(
+  ({ originalSleep, ...modalProps }, ref) => {
+    const isUpdate = !!originalSleep
+    const initSleeps = useCallback(
+      (): SleepInputType =>
+        isUpdate
+          ? originalSleep.sleeps.map((sleep, i) => ({ ...sleep, id: i + 1 }))
+          : [{ start: new Date(), end: new Date(), id: 1 }],
+      [isUpdate, originalSleep]
+    )
+    const [sleeps, setSleeps] = useState<SleepInputType>(initSleeps())
 
-  const [isLoading, startTransition] = useTransition()
-  const handleSubmit = () => {
-    // TODO アラート追加
-    // if (!isBefore(start, end)) return
-    startTransition(async () => {
-      await addSleep(sleeps.map((sleep) => ({ ...sleep, id: undefined })))
-    })
+    useEffect(() => {
+      if (!modalProps.isOpen) {
+        setSleeps(initSleeps())
+      }
+    }, [initSleeps, modalProps.isOpen])
+
+    const [isLoading, startTransition] = useTransition()
+    const handleSubmit = () => {
+      // TODO アラート追加
+      // if (!isBefore(start, end)) return
+      startTransition(async () => {
+        isUpdate
+          ? await updateSleep(
+              originalSleep.id,
+              sleeps.map((sleep) => ({ ...sleep, id: undefined }))
+            )
+          : await addSleep(sleeps.map((sleep) => ({ ...sleep, id: undefined })))
+        modalProps.onClose()
+      })
+    }
+
+    return (
+      <Modal autoFocus={false} isCentered {...modalProps}>
+        <ModalOverlay />
+        <ModalContent mx="4" ref={ref}>
+          <ModalHeader>
+            {isUpdate ? '睡眠記録を編集' : '睡眠記録を追加'}
+          </ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <form>
+              <SleepInputForm sleeps={sleeps} onChange={setSleeps} />
+            </form>
+          </ModalBody>
+          <ModalFooter pt="7">
+            <ButtonGroup>
+              <Button
+                colorScheme="green"
+                variant="ghost"
+                onClick={modalProps.onClose}
+                flex="1"
+              >
+                キャンセル
+              </Button>
+              <Button
+                colorScheme="green"
+                isLoading={isLoading}
+                onClick={handleSubmit}
+                flex="1"
+              >
+                {isUpdate ? '更新する' : '追加する'}
+              </Button>
+            </ButtonGroup>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    )
   }
+)
 
-  const handleClickAddWithClose = () => {
-    handleSubmit()
-    props.onClose()
-  }
-
-  return (
-    <Modal autoFocus={false} isCentered scrollBehavior="inside" {...props}>
-      <ModalOverlay />
-      <ModalContent mx="4">
-        <ModalHeader>睡眠記録を追加</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
-          <form>
-            <SleepInputForm sleeps={sleeps} onChange={setSleeps} />
-          </form>
-        </ModalBody>
-        <ModalFooter pt="7">
-          <ButtonGroup>
-            <Button
-              colorScheme="green"
-              variant="outline"
-              isLoading={isLoading}
-              onClick={handleSubmit}
-              flex="1"
-            >
-              続けて入力
-            </Button>
-            <Button
-              colorScheme="green"
-              onClick={handleClickAddWithClose}
-              flex="1"
-            >
-              追加する
-            </Button>
-          </ButtonGroup>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
-  )
-}
+SleepInputModal.displayName = 'SleepInputModal'
 
 export default SleepInputModal

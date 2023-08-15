@@ -1,6 +1,6 @@
 'use client'
 
-import { FC, memo } from 'react'
+import { forwardRef, memo } from 'react'
 import { Box, BoxProps, useColorModeValue } from '@/components/chakra'
 
 type Props = {
@@ -8,20 +8,28 @@ type Props = {
   barColor?: 'brand' | 'blue'
 }
 
-const SleepBar: FC<Props & BoxProps> = memo(
-  ({ isHovered, barColor = 'brand', ...rest }) => {
-    const bg = useColorModeValue(`${barColor}.300`, `${barColor}.500`)
-    const hoveredBg = useColorModeValue(`${barColor}.400`, `${barColor}.400`)
+const SleepBar = memo(
+  forwardRef<HTMLDivElement, Props & BoxProps>(
+    ({ isHovered, barColor = 'brand', ...rest }, ref) => {
+      const hoveredBg = useColorModeValue(`${barColor}.400`, `${barColor}.400`)
 
-    return (
-      <Box
-        bg={isHovered ? hoveredBg : bg}
-        boxShadow={isHovered ? 'md' : 'none'}
-        borderRadius="md"
-        {...rest}
-      />
-    )
-  }
+      return (
+        <Box
+          ref={ref}
+          bg={
+            isHovered
+              ? hoveredBg
+              : barColor === 'brand'
+              ? 'chartBrand'
+              : 'chartBlue'
+          }
+          boxShadow={isHovered ? 'md' : 'none'}
+          borderRadius="md"
+          {...rest}
+        />
+      )
+    }
+  )
 )
 
 SleepBar.displayName = 'SleepBar'

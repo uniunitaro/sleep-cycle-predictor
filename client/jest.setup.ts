@@ -9,8 +9,7 @@ jest.mock('@/db', () => ({
 
 let connection: mysql.Connection
 let db: MySql2Database<typeof schema>
-let jestDb: Parameters<Parameters<typeof db.transaction>[0]>[0] | undefined =
-  undefined
+let jestDb: MySql2Database<typeof schema>
 
 beforeAll(async () => {
   connection = await mysql.createConnection(process.env.DATABASE_URL!)
@@ -21,20 +20,20 @@ afterAll(() => {
   connection.end()
 })
 
-let rollbackTransaction: (value: void) => void
+let rollbackTransaction: () => void
 
 beforeEach(
   () =>
     new Promise<void>((resolve) => {
       db.transaction((tx) => {
-        return new Promise((_, reject) => {
-          jestDb = tx
-          // この方法でのみdbをモックできる
-          // eslint-disable-next-line @typescript-eslint/no-var-requires
-          const actualDb = require('./src/db')
-          actualDb.db = jestDb
-          resolve()
+        jestDb = tx
+        // この方法でのみdbをモックできる
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        const originalDb = require('@/db')
+        originalDb.db = jestDb
+        resolve()
 
+        return new Promise((_, reject) => {
           rollbackTransaction = reject
         })
       }).catch(() => {
@@ -43,7 +42,7 @@ beforeEach(
     })
 )
 
-afterEach(async () => {
+afterEach(() => {
   rollbackTransaction()
 })
 

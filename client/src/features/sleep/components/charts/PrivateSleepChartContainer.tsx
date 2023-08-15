@@ -2,9 +2,9 @@
 
 import { FC } from 'react'
 import { AddIcon } from '@chakra-ui/icons'
-import SleepInput from '../inputs/SleepInput/SleepInput'
 import SleepInputModal from '../inputs/SleepInputModal/SleepInputModal'
 import { Prediction, Sleep } from '../../types/sleep'
+import RightColumn from '../RightColumn'
 import SleepChart from './SleepChart/SleepChart'
 import { Box, Container, Grid, Show } from '@/components/chakra'
 import FAB from '@/components/FAB/FAB'
@@ -23,7 +23,7 @@ const PrivateSleepChartContainer: FC<{
         maxW="8xl"
         h="100%"
         px={{ base: 0, md: 4 }}
-        py={{ base: 0, md: 4 }}
+        pb={{ base: 0, md: 4 }}
         bg={{ base: 'contentBg', md: 'transparent' }}
       >
         <Grid
@@ -37,7 +37,11 @@ const PrivateSleepChartContainer: FC<{
             targetDate={targetDate}
           />
           <Show above="md">
-            <SleepInput />
+            <RightColumn
+              sleeps={sleeps}
+              predictions={predictions}
+              targetDate={targetDate}
+            />
           </Show>
         </Grid>
         <Show below="md">

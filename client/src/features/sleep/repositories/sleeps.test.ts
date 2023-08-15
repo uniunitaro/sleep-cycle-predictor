@@ -1,4 +1,4 @@
-import { addSleep, getSleeps } from './sleeps'
+import { addSleep, deleteSleep, getSleeps, updateSleep } from './sleeps'
 import { db } from '@/db'
 import { sleepFactory } from '@/libs/drizzleFactories'
 
@@ -278,5 +278,254 @@ describe('addSleep', () => {
       const { error } = await addSleep(sleeps)
       expect(error).toEqual({ type: 'overlapInRequest' })
     })
+  })
+})
+
+describe('updateSleep', () => {
+  test('Sleepレコードが更新される', async () => {
+    const originalSleepId = 1
+    await sleepFactory.create({ userId, id: originalSleepId })
+
+    const sleeps = [
+      {
+        start: new Date('2022-01-01T00:00:00.000Z'),
+        end: new Date('2022-01-01T08:00:00.000Z'),
+      },
+      {
+        start: new Date('2022-01-01T10:00:00.000Z'),
+        end: new Date('2022-01-01T11:00:00.000Z'),
+      },
+    ]
+
+    await updateSleep(originalSleepId, sleeps)
+    const sleep = await db.query.sleep.findFirst({
+      with: { segmentedSleeps: true },
+    })
+
+    expect(sleep?.start).toEqual(sleeps[0].start)
+    expect(sleep?.end).toEqual(sleeps[0].end)
+
+    expect(sleep?.segmentedSleeps).toHaveLength(1)
+    expect(sleep?.segmentedSleeps[0].start).toEqual(sleeps[1].start)
+    expect(sleep?.segmentedSleeps[0].end).toEqual(sleeps[1].end)
+  })
+
+  test('SegmentedSleepを含むSleepレコードが更新される', async () => {
+    const originalSleepId = 1
+    await sleepFactory.create([
+      { userId, id: originalSleepId },
+      { userId, parentSleepId: originalSleepId },
+    ])
+
+    const sleeps = [
+      {
+        start: new Date('2022-01-01T00:00:00.000Z'),
+        end: new Date('2022-01-01T08:00:00.000Z'),
+      },
+      {
+        start: new Date('2022-01-01T10:00:00.000Z'),
+        end: new Date('2022-01-01T11:00:00.000Z'),
+      },
+    ]
+
+    await updateSleep(originalSleepId, sleeps)
+    const sleep = await db.query.sleep.findFirst({
+      with: { segmentedSleeps: true },
+    })
+
+    expect(sleep?.start).toEqual(sleeps[0].start)
+    expect(sleep?.end).toEqual(sleeps[0].end)
+
+    expect(sleep?.segmentedSleeps).toHaveLength(1)
+    expect(sleep?.segmentedSleeps[0].start).toEqual(sleeps[1].start)
+    expect(sleep?.segmentedSleeps[0].end).toEqual(sleeps[1].end)
+  })
+
+  test('リクエストのSleepsが昇順に並び替えられて、最早のものがSleepに、それ以外がSegmentedSleepsとして作成される', async () => {
+    const originalSleepId = 1
+    await sleepFactory.create({ userId, id: originalSleepId })
+
+    const sleeps = [
+      {
+        start: new Date('2022-01-01T13:00:00.000Z'),
+        end: new Date('2022-01-01T15:00:00.000Z'),
+      },
+      {
+        start: new Date('2022-01-01T10:00:00.000Z'),
+        end: new Date('2022-01-01T11:00:00.000Z'),
+      },
+      {
+        start: new Date('2022-01-01T00:00:00.000Z'),
+        end: new Date('2022-01-01T08:00:00.000Z'),
+      },
+    ]
+
+    await updateSleep(originalSleepId, sleeps)
+    const sleep = await db.query.sleep.findFirst({
+      with: { segmentedSleeps: true },
+    })
+
+    expect(sleep?.start).toEqual(sleeps[2].start)
+    expect(sleep?.end).toEqual(sleeps[2].end)
+
+    expect(sleep?.segmentedSleeps).toHaveLength(2)
+    expect(sleep?.segmentedSleeps[0].start).toEqual(sleeps[1].start)
+    expect(sleep?.segmentedSleeps[0].end).toEqual(sleeps[1].end)
+    expect(sleep?.segmentedSleeps[1].start).toEqual(sleeps[0].start)
+    expect(sleep?.segmentedSleeps[1].end).toEqual(sleeps[0].end)
+  })
+
+  describe('Sleepが既存のSleepと重複する場合はoverlapWithRecordedエラーが返される', () => {
+    test.each(testCases)('start: %p, end: %p', async (start, end) => {
+      const originalSleepId = 1
+      await sleepFactory.create({ userId, id: originalSleepId })
+
+      await sleepFactory.create({
+        userId,
+        start: new Date('2022-01-01T02:00:00.000Z'),
+        end: new Date('2022-01-01T06:00:00.000Z'),
+      })
+
+      const sleeps = [{ start, end }]
+      const { error } = await updateSleep(originalSleepId, sleeps)
+      expect(error).toEqual({ type: 'overlapWithRecorded' })
+    })
+  })
+
+  describe('Sleepが既存のSegmentedSleepと重複する場合はoverlapWithRecordedエラーが返される', () => {
+    test.each(testCases)('start: %p, end: %p', async (start, end) => {
+      const originalSleepId = 1
+      await sleepFactory.create({ userId, id: originalSleepId })
+
+      await sleepFactory.create([
+        {
+          id: 100,
+          userId,
+          start: new Date('2021-12-01T00:00:00.000Z'),
+          end: new Date('2021-12-01T08:00:00.000Z'),
+        },
+        {
+          userId,
+          start: new Date('2022-01-01T02:00:00.000Z'),
+          end: new Date('2022-01-01T06:00:00.000Z'),
+          parentSleepId: 100,
+        },
+      ])
+
+      const sleeps = [{ start, end }]
+      const { error } = await updateSleep(originalSleepId, sleeps)
+      expect(error).toEqual({ type: 'overlapWithRecorded' })
+    })
+  })
+
+  describe('SegmentedSleepが既存のSleepと重複する場合はoverlapWithRecordedエラーが返される', () => {
+    test.each(testCases)('start: %p, end: %p', async (start, end) => {
+      const originalSleepId = 1
+      await sleepFactory.create({ userId, id: originalSleepId })
+
+      await sleepFactory.create({
+        userId,
+        start: new Date('2022-01-01T02:00:00.000Z'),
+        end: new Date('2022-01-01T06:00:00.000Z'),
+      })
+
+      const sleeps = [
+        {
+          start: new Date('2021-12-01T00:00:00.000Z'),
+          end: new Date('2021-12-01T08:00:00.000Z'),
+        },
+        { start, end },
+      ]
+      const { error } = await updateSleep(originalSleepId, sleeps)
+      expect(error).toEqual({ type: 'overlapWithRecorded' })
+    })
+  })
+
+  describe('SegmentedSleepが既存のSegmentedSleepと重複する場合はoverlapWithRecordedエラーが返される', () => {
+    test.each(testCases)('start: %p, end: %p', async (start, end) => {
+      const originalSleepId = 1
+      await sleepFactory.create({ userId, id: originalSleepId })
+
+      await sleepFactory.create([
+        {
+          id: 100,
+          userId,
+          start: new Date('2021-12-01T00:00:00.000Z'),
+          end: new Date('2021-12-01T08:00:00.000Z'),
+        },
+        {
+          userId,
+          start: new Date('2022-01-01T02:00:00.000Z'),
+          end: new Date('2022-01-01T06:00:00.000Z'),
+          parentSleepId: 100,
+        },
+      ])
+
+      const sleeps = [
+        {
+          start: new Date('2021-12-01T00:00:00.000Z'),
+          end: new Date('2021-12-01T08:00:00.000Z'),
+        },
+        { start, end },
+      ]
+      const { error } = await updateSleep(originalSleepId, sleeps)
+      expect(error).toEqual({ type: 'overlapWithRecorded' })
+    })
+  })
+
+  describe('リクエスト内で重複する場合はoverlapInRequestエラーが返される', () => {
+    test.each(testCases)('start: %p, end: %p', async (start, end) => {
+      const originalSleepId = 1
+      await sleepFactory.create({ userId, id: originalSleepId })
+
+      const sleeps = [
+        {
+          start: new Date('2022-01-01T00:00:00.000Z'),
+          end: new Date('2022-01-01T08:00:00.000Z'),
+        },
+        { start, end },
+      ]
+      const { error } = await updateSleep(originalSleepId, sleeps)
+      expect(error).toEqual({ type: 'overlapInRequest' })
+    })
+  })
+
+  describe('更新前のSleepと重複する場合に誤ってエラーが返されない', () => {
+    test.each(testCases)('start: %p, end: %p', async (start, end) => {
+      const originalSleepId = 1
+      await sleepFactory.create({
+        userId,
+        id: originalSleepId,
+        start: new Date('2022-01-01T02:00:00.000Z'),
+        end: new Date('2022-01-01T06:00:00.000Z'),
+      })
+
+      const sleeps = [{ start, end }]
+      const { error } = await updateSleep(originalSleepId, sleeps)
+      expect(error).toBeUndefined()
+    })
+  })
+})
+
+describe('deleteSleep', () => {
+  test('Sleepレコードが削除される', async () => {
+    const sleepId = 1
+    await sleepFactory.create({ userId, id: sleepId })
+
+    await deleteSleep(sleepId)
+    const sleeps = await db.query.sleep.findMany()
+    expect(sleeps).toHaveLength(0)
+  })
+
+  test('SegmentedSleepを含むSleepレコードがすべて削除される', async () => {
+    const sleepId = 1
+    await sleepFactory.create([
+      { userId, id: sleepId },
+      { userId, parentSleepId: sleepId },
+    ])
+
+    await deleteSleep(sleepId)
+    const sleeps = await db.query.sleep.findMany()
+    expect(sleeps).toHaveLength(0)
   })
 })

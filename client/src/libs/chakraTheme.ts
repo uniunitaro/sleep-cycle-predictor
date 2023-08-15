@@ -1,4 +1,8 @@
-import { StyleFunctionProps, extendTheme } from '@chakra-ui/react'
+import {
+  StyleFunctionProps,
+  extendTheme,
+  theme as originalTheme,
+} from '@chakra-ui/react'
 import { mode } from '@chakra-ui/theme-tools'
 
 // https://github.com/chakra-ui/chakra-ui/blob/main/packages/components/theme/src/foundations/colors.ts
@@ -26,6 +30,14 @@ export const theme = extendTheme({
       contentBg: {
         default: 'white',
         _dark: 'gray.700',
+      },
+      chartBrand: {
+        default: 'brand.300',
+        _dark: 'brand.500',
+      },
+      chartBlue: {
+        default: 'blue.300',
+        _dark: 'blue.500',
       },
     },
   },
@@ -61,6 +73,18 @@ export const theme = extendTheme({
         borderRadius: 'full',
         fontWeight: '700',
         WebkitTapHighlightColor: 'transparent',
+      },
+      variants: {
+        shadow: (props: StyleFunctionProps) => ({
+          ...originalTheme.components.Button.variants?.solid(props),
+          boxShadow:
+            '0px 1px 2px 0px rgba(60,64,67,0.3),0px 1px 3px 1px rgba(60,64,67,0.15)',
+          _hover: {
+            ...originalTheme.components.Button.variants?.solid(props)._hover,
+            boxShadow:
+              '0px 4px 4px 0px rgba(60,64,67,0.3),0px 8px 12px 6px rgba(60,64,67,0.15)',
+          },
+        }),
       },
     },
     Alert: {

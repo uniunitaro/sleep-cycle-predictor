@@ -9,6 +9,7 @@ import {
   useState,
   experimental_useOptimistic as useOptimistic,
   memo,
+  forwardRef,
 } from 'react'
 import {
   addDays,
@@ -32,15 +33,23 @@ import { useRouter } from 'next/navigation'
 import ChartColumn from '../ChartColumn'
 import SleepBar from '../SleepBar'
 import ChartHeader from '../ChartHeader'
+import SleepOverview, { SleepOverviewRef } from '../../Lists/SleepOverview'
 import {
   Box,
   Center,
   Flex,
   HStack,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverContent,
+  PopoverTrigger,
   Stack,
   StackDivider,
   VStack,
   useDimensions,
+  useDisclosure,
+  useOutsideClick,
 } from '@/components/chakra'
 import CardMdOnly from '@/components/CardMdOnly/CardMdOnly'
 import CardBodyMdOnly from '@/components/CardBodyMdOnly'
@@ -68,8 +77,11 @@ const SleepChart: FC<Props> = memo(({ sleeps, predictions, targetDate }) => {
 
   const headerHeight = 48
 
-  const generateDailySleeps = (startDate: Date, endDate: Date) => {
-    const dailySleeps = eachDayOfInterval({
+  const generateDailySleepsList = (
+    startDate: Date,
+    endDate: Date
+  ): DailySleeps[] => {
+    const dailySleepsList = eachDayOfInterval({
       start: startDate,
       end: endDate,
     }).map((date) => {
@@ -99,6 +111,14 @@ const SleepChart: FC<Props> = memo(({ sleeps, predictions, targetDate }) => {
             (differenceInMilliseconds(end, start) / 24 / 60 / 60 / 1000) * 100
           const barTopPercentage =
             (differenceInMilliseconds(start, date) / 24 / 60 / 60 / 1000) * 100
+          const originalSleep = sleeps.find((s) => s.id === sleep.id)
+          const formattedPrediction = formattedPredictions.find(
+            (p) => p.id === sleep.id
+          )
+          const originalPrediction = formattedPrediction && {
+            start: formattedPrediction.start,
+            end: formattedPrediction.end,
+          }
 
           return {
             ...sleep,
@@ -106,7 +126,10 @@ const SleepChart: FC<Props> = memo(({ sleeps, predictions, targetDate }) => {
             end,
             barHeightPercentage,
             barTopPercentage,
-            isPrediction: 'isPrediction' in sleep ? sleep.isPrediction : false,
+            isPrediction:
+              'isPrediction' in sleep ? !!sleep.isPrediction : false,
+            originalSleep,
+            originalPrediction,
           }
         })
       return {
@@ -114,30 +137,28 @@ const SleepChart: FC<Props> = memo(({ sleeps, predictions, targetDate }) => {
         sleeps: dailySleeps,
       }
     })
-    return dailySleeps
+    return dailySleepsList
   }
 
-  const dailySleeps = generateDailySleeps(startDate, endDate)
-  const previousDailySleeps = generateDailySleeps(
+  const dailySleepsList = generateDailySleepsList(startDate, endDate)
+  const previousDailySleepsList = generateDailySleepsList(
     startOfMonth(subMonths(optimisticTargetDate, 1)),
     endOfMonth(subMonths(optimisticTargetDate, 1))
   )
-  const nextDailySleeps = generateDailySleeps(
+  const nextDailySleepsList = generateDailySleepsList(
     startOfMonth(addMonths(optimisticTargetDate, 1)),
     endOfMonth(addMonths(optimisticTargetDate, 1))
   )
 
-  const chartRef = useRef<HTMLDivElement>(null)
-  const chartDimensions = useDimensions(chartRef, true)
+  const currentChartRef = useRef<HTMLDivElement>(null)
+  const currentChartDimensions = useDimensions(currentChartRef, true)
 
-  const chartContainerRef = useRef<HTMLDivElement>(null)
-  const chartContainerDimensions = useDimensions(chartContainerRef, true)
+  const chartContentRef = useRef<HTMLDivElement>(null)
+  const chartContentDimensions = useDimensions(chartContentRef, true)
 
   const scrollBarHeight =
-    (chartContainerDimensions?.contentBox.height ?? 0) -
-    (chartDimensions?.contentBox.height ?? 0)
-
-  const currentChartRef = useRef<HTMLDivElement>(null)
+    (currentChartDimensions?.contentBox.height ?? 0) -
+    (chartContentDimensions?.contentBox.height ?? 0)
 
   return (
     <CardMdOnly h="100%">
@@ -164,12 +185,17 @@ const SleepChart: FC<Props> = memo(({ sleeps, predictions, targetDate }) => {
                   </Center>
                 ))}
               </VStack>
-              <Flex flex="1" ref={chartContainerRef}>
-                <Flex position="relative" flex="1" ref={chartRef}>
+              <Flex flex="1">
+                <Flex position="relative" flex="1">
                   <Box>
                     <Box h={`${headerHeight}px`} />
                     {[...Array(24)].map((_, i) => (
-                      <Box key={i} h={`calc((100% - ${headerHeight}px) / 24)`}>
+                      <Box
+                        key={i}
+                        h={`calc((100% - ${
+                          headerHeight + scrollBarHeight
+                        }px) / 24)`}
+                      >
                         <Box
                           position="absolute"
                           w="100%"
@@ -184,23 +210,28 @@ const SleepChart: FC<Props> = memo(({ sleeps, predictions, targetDate }) => {
                     currentChartRef={currentChartRef}
                     onDateChange={(date) => setOptimisticTargetDate(date)}
                   >
-                    {[previousDailySleeps, dailySleeps, nextDailySleeps].map(
-                      (dailySleeps, i) => (
-                        <Flex
-                          key={dailySleeps[0].date.getTime()}
-                          ref={i === 1 ? currentChartRef : undefined}
-                          flex="1"
-                          position="absolute"
-                          w="full"
-                          h="full"
-                          right={i === 0 ? '100%' : undefined}
-                          left={i === 2 ? '100%' : undefined}
-                          overflowX="scroll"
-                        >
-                          <ChartContent dailySleeps={dailySleeps} />
-                        </Flex>
-                      )
-                    )}
+                    {[
+                      previousDailySleepsList,
+                      dailySleepsList,
+                      nextDailySleepsList,
+                    ].map((dailySleepsList, i) => (
+                      <Flex
+                        key={dailySleepsList[0].date.getTime()}
+                        ref={i === 1 ? currentChartRef : undefined}
+                        flex="1"
+                        position="absolute"
+                        w="full"
+                        h="full"
+                        right={i === 0 ? '100%' : undefined}
+                        left={i === 2 ? '100%' : undefined}
+                        overflowX="scroll"
+                      >
+                        <ChartContent
+                          dailySleepsList={dailySleepsList}
+                          ref={i === 1 ? chartContentRef : undefined}
+                        />
+                      </Flex>
+                    ))}
                   </DragContainer>
                 </Flex>
               </Flex>
@@ -361,43 +392,49 @@ const DragContainer: FC<{
   )
 }
 
-type DailySleep = {
+type DailySleeps = {
   date: Date
   sleeps: {
     start: Date
     end: Date
     barHeightPercentage: number
     barTopPercentage: number
-    isPrediction: unknown
+    isPrediction: boolean
     id: number
+    originalSleep: Sleep | undefined
+    originalPrediction: Prediction | undefined
   }[]
 }
-const ChartContent: FC<{ dailySleeps: DailySleep[] }> = ({ dailySleeps }) => {
+const ChartContent = forwardRef<
+  HTMLDivElement,
+  { dailySleepsList: DailySleeps[] }
+>(({ dailySleepsList }, ref) => {
   const [hoveredSleepId, setHoveredSleepId] = useState<number>()
 
   return (
-    <HStack divider={<StackDivider />} spacing="0" align="start" flex="1">
-      {dailySleeps.map(({ date, sleeps }) => (
+    <HStack
+      divider={<StackDivider />}
+      spacing="0"
+      align="start"
+      flex="1"
+      ref={ref}
+    >
+      {dailySleepsList.map(({ date, sleeps }) => (
         <ChartColumn
           key={date.toString()}
           date={date}
-          w={`${100 / dailySleeps.length}%`}
+          w={`${100 / dailySleepsList.length}%`}
           h="100%"
           px="1"
         >
           <Box position="relative" height="100%" flex="1">
             {sleeps &&
               sleeps.map((sleep) => (
-                <SleepBar
-                  key={date.toString() + sleep.id}
+                <SleepBarWithPopover
+                  key={sleep.start.getTime()}
+                  sleep={sleep}
                   isHovered={hoveredSleepId === sleep.id}
-                  position="absolute"
-                  w="100%"
-                  h={`${sleep.barHeightPercentage}%`}
-                  top={`${sleep.barTopPercentage}%`}
-                  barColor={sleep.isPrediction ? 'blue' : 'brand'}
-                  onMouseEnter={() => setHoveredSleepId(sleep.id)}
-                  onMouseLeave={() => setHoveredSleepId(undefined)}
+                  setHoveredSleepId={setHoveredSleepId}
                 />
               ))}
           </Box>
@@ -405,6 +442,77 @@ const ChartContent: FC<{ dailySleeps: DailySleep[] }> = ({ dailySleeps }) => {
       ))}
     </HStack>
   )
-}
+})
+
+ChartContent.displayName = 'ChartContent'
+
+const SleepBarWithPopover: FC<{
+  sleep: DailySleeps['sleeps'][number]
+  isHovered: boolean
+  setHoveredSleepId: (id: number | undefined) => void
+}> = memo(({ sleep, isHovered, setHoveredSleepId }) => {
+  const { isOpen, onToggle, onClose } = useDisclosure()
+  const popoverContentRef = useRef<HTMLElement>(null)
+  const SleepBarRef = useRef<HTMLDivElement>(null)
+  const sleepOverviewRef = useRef<SleepOverviewRef>(null)
+
+  useOutsideClick({
+    ref: popoverContentRef,
+    handler: (e) => {
+      const isModalOpen = !!sleepOverviewRef.current?.modalRef.current
+      const isClickedSleepBar = SleepBarRef.current?.contains(e.target as Node)
+      console.log(isClickedSleepBar)
+      if (isModalOpen || isClickedSleepBar) return
+
+      onClose()
+    },
+  })
+
+  return (
+    <Popover
+      key={sleep.start.getTime()}
+      isLazy
+      placement="right"
+      closeOnBlur={false}
+      isOpen={isOpen}
+      onClose={onClose}
+      initialFocusRef={popoverContentRef}
+    >
+      <PopoverTrigger>
+        <SleepBar
+          ref={SleepBarRef}
+          isHovered={isHovered}
+          position="absolute"
+          w="100%"
+          h={`${sleep.barHeightPercentage}%`}
+          top={`${sleep.barTopPercentage}%`}
+          barColor={sleep.isPrediction ? 'blue' : 'brand'}
+          onMouseEnter={() => setHoveredSleepId(sleep.id)}
+          onMouseLeave={() => setHoveredSleepId(undefined)}
+          onClick={onToggle}
+          // TODO アクセシビリティ考慮
+          tabIndex={0}
+        />
+      </PopoverTrigger>
+      <PopoverContent w="auto" ref={popoverContentRef}>
+        <PopoverArrow />
+        <PopoverBody>
+          {sleep.originalSleep && (
+            <SleepOverview
+              sleep={sleep.originalSleep}
+              variant="small"
+              ref={sleepOverviewRef}
+            />
+          )}
+          {sleep.originalPrediction && (
+            <SleepOverview prediction={sleep.originalPrediction} />
+          )}
+        </PopoverBody>
+      </PopoverContent>
+    </Popover>
+  )
+})
+
+SleepBarWithPopover.displayName = 'SleepBarWithPopover'
 
 export default SleepChart

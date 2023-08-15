@@ -74,7 +74,7 @@ const SignUp: FC = () => {
     >
       <AuthFormCard>
         <Stack spacing="7">
-          <Heading size="lg" fontWeight="normal" textAlign="center">
+          <Heading as="h1" size="md" textAlign="center">
             新規登録
           </Heading>
           <form onSubmit={handleSubmit(onSubmit)} noValidate>

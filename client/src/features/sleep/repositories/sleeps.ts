@@ -35,7 +35,10 @@ const checkOverlap = async (
       eq(sleep.userId, userId),
       originalSleepId ? ne(sleep.id, originalSleepId) : undefined,
       originalSleepId
-        ? ne(sleep.parentSleepId, originalSleepId ?? 0)
+        ? or(
+            isNull(sleep.parentSleepId),
+            ne(sleep.parentSleepId, originalSleepId)
+          )
         : undefined,
       or(
         ...sleeps.flatMap((s) => [
@@ -84,7 +87,7 @@ export const addSleep = async (
       })
 
       if (segmentedSleeps.length) {
-        const insertId = await getLastInsertId()
+        const insertId = await getLastInsertId(tx)
         await tx.insert(sleep).values(
           segmentedSleeps.map(
             (s) =>
@@ -98,6 +101,81 @@ export const addSleep = async (
         )
       }
     })
+
+    revalidatePath('/home')
+    return {}
+  } catch (e) {
+    console.error(e)
+    return { error: true }
+  }
+}
+
+export const updateSleep = async (
+  id: number,
+  sleeps: { start: Date; end: Date }[]
+): Promise<{ error?: OverlapError | true }> => {
+  try {
+    const { userId, error } = await getAuthUserIdWithServerAction()
+    if (error) throw error
+
+    const originalSleep = await db.query.sleep.findFirst({
+      where: and(eq(sleep.userId, userId), eq(sleep.id, id)),
+    })
+    if (!originalSleep) throw new Error('sleep not found')
+
+    const overlapError = await checkOverlap(userId, sleeps, id)
+    if (overlapError) return { error: overlapError }
+
+    const { firstSleep, segmentedSleeps } = getSleepAndSegmentedSleeps(sleeps)
+
+    await db.transaction(async (tx) => {
+      await tx
+        .update(sleep)
+        .set({
+          userId,
+          start: firstSleep.start,
+          end: firstSleep.end,
+        })
+        .where(eq(sleep.id, id))
+
+      if (segmentedSleeps.length) {
+        await tx.delete(sleep).where(eq(sleep.parentSleepId, id))
+
+        await tx.insert(sleep).values(
+          segmentedSleeps.map(
+            (s) =>
+              ({
+                userId,
+                start: s.start,
+                end: s.end,
+                parentSleepId: id,
+              } satisfies NewSleep)
+          )
+        )
+      }
+    })
+
+    revalidatePath('/home')
+    return {}
+  } catch (e) {
+    console.error(e)
+    return { error: true }
+  }
+}
+
+export const deleteSleep = async (id: number): Promise<{ error?: true }> => {
+  try {
+    const { userId, error } = await getAuthUserIdWithServerAction()
+    if (error) throw error
+
+    await db
+      .delete(sleep)
+      .where(
+        and(
+          eq(sleep.userId, userId),
+          or(eq(sleep.id, id), eq(sleep.parentSleepId, id))
+        )
+      )
 
     revalidatePath('/home')
     return {}
