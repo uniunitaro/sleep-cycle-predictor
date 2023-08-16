@@ -1,5 +1,5 @@
-import { Box, keyframes } from '@chakra-ui/react'
 import { FC } from 'react'
+import { Box, keyframes } from '../chakra'
 
 const AwesomeLoader: FC = () => {
   const keyframe = keyframes`
