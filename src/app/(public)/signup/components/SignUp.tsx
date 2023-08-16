@@ -5,9 +5,7 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FC, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { CreateUserRequest } from '@shared-types/users/users.dto'
 import PasswordField from '@/components/PasswordField/PasswordField'
-import { api } from '@/libs/axios'
 import {
   Alert,
   AlertIcon,
