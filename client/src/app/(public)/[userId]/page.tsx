@@ -1,6 +1,13 @@
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { addDays, endOfMonth, startOfMonth, subDays } from 'date-fns'
+import {
+  addDays,
+  addMonths,
+  endOfMonth,
+  startOfMonth,
+  subDays,
+  subMonths,
+} from 'date-fns'
 import UserPublicPage from './components/UserPublicPage'
 import { getUser } from '@/features/user/repositories/users'
 import { getPredictions } from '@/features/sleep/repositories/predictions'
@@ -40,8 +47,8 @@ const UserPage = async ({ params, searchParams }: Props) => {
 
   const { predictions, error: predictionsError } = await getPredictions({
     userId,
-    start: subDays(startOfMonth(targetDate ?? new Date()), 1),
-    end: addDays(endOfMonth(targetDate ?? new Date()), 1),
+    start: subDays(startOfMonth(subMonths(targetDate, 1)), 1),
+    end: addDays(endOfMonth(addMonths(targetDate, 1)), 1),
   })
   if (predictionsError) {
     notFound()
