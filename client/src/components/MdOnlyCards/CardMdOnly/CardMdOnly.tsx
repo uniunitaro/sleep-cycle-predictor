@@ -1,5 +1,5 @@
 import { FC } from 'react'
-import { Card, CardProps } from '../chakra'
+import { Card, CardProps } from '../../chakra'
 
 const CardMdOnly: FC<CardProps> = ({ children, ...rest }) => {
   return (

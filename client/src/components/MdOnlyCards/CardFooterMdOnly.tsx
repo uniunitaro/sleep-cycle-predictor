@@ -1,5 +1,5 @@
 import { FC, memo } from 'react'
-import { CardFooter, CardFooterProps } from './chakra'
+import { CardFooter, CardFooterProps } from '../chakra'
 
 const CardFooterMdOnly: FC<CardFooterProps> = memo(({ children, ...rest }) => {
   return (

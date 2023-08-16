@@ -51,8 +51,8 @@ import {
   useDisclosure,
   useOutsideClick,
 } from '@/components/chakra'
-import CardMdOnly from '@/components/CardMdOnly/CardMdOnly'
-import CardBodyMdOnly from '@/components/CardBodyMdOnly'
+import CardMdOnly from '@/components/MdOnlyCards/CardMdOnly/CardMdOnly'
+import CardBodyMdOnly from '@/components/MdOnlyCards/CardBodyMdOnly'
 import { Prediction, Sleep } from '@/features/sleep/types/sleep'
 import { useCalendarControl } from '@/features/sleep/hooks/useCalendarControl'
 
