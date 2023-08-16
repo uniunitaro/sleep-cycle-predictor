@@ -32,9 +32,9 @@ export type SleepOverviewRef = {
 
 const SleepOverview = forwardRef<
   SleepOverviewRef,
-  | { sleep: Sleep; prediction?: undefined; variant: 'small' | 'large' }
+  | { sleep: Sleep; prediction?: undefined; variant?: 'default' | 'withMenu' }
   | { sleep?: undefined; prediction: Prediction; variant?: undefined }
->(({ sleep, prediction, variant }, ref) => {
+>(({ sleep, prediction, variant = 'default' }, ref) => {
   const firstSleep = sleep ? sleep?.sleeps[0] : prediction
   const sleeps = sleep ? sleep?.sleeps : [prediction]
 
@@ -92,7 +92,7 @@ const SleepOverview = forwardRef<
           </Flex>
         ))}
       </Box>
-      {sleep && variant === 'small' && (
+      {sleep && variant === 'withMenu' && (
         <Flex align="center">
           <Menu>
             <MenuButton

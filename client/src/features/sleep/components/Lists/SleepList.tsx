@@ -20,7 +20,7 @@ const SleepList: FC<Props> = ({ sleeps, predictions, targetDate }) => {
   return (
     <Stack gap="3">
       {currentMonthSleeps.map((sleep) => (
-        <SleepOverview sleep={sleep} key={sleep.id} variant="small" />
+        <SleepOverview sleep={sleep} key={sleep.id} variant="withMenu" />
       ))}
       {currentMonthPredictions.map((prediction) => (
         <SleepOverview

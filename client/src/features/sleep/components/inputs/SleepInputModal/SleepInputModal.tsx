@@ -61,7 +61,7 @@ const SleepInputModal = forwardRef<HTMLDivElement, Props>(
     }
 
     return (
-      <Modal autoFocus={false} isCentered {...modalProps}>
+      <Modal isCentered {...modalProps}>
         <ModalOverlay />
         <ModalContent mx="4" ref={ref}>
           <ModalHeader>
@@ -76,8 +76,8 @@ const SleepInputModal = forwardRef<HTMLDivElement, Props>(
           <ModalFooter pt="7">
             <ButtonGroup>
               <Button
-                colorScheme="green"
                 variant="ghost"
+                color="secondaryGray"
                 onClick={modalProps.onClose}
                 flex="1"
               >

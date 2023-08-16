@@ -1,16 +1,16 @@
 'use client'
 
-import { forwardRef, useTransition } from 'react'
+import { forwardRef, useRef, useTransition } from 'react'
 import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogCloseButton,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
   Button,
   ButtonGroup,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
   ModalProps,
 } from '@/components/chakra'
 import { deleteSleep } from '@/features/sleep/repositories/sleeps'
@@ -26,18 +26,19 @@ const SleepDeleteModal = forwardRef<HTMLDivElement, Props>(
         modalProps.onClose()
       })
     }
-
+    const cancelRef = useRef<HTMLButtonElement>(null)
     return (
-      <Modal autoFocus={false} isCentered {...modalProps}>
-        <ModalOverlay />
-        <ModalContent mx="4" ref={ref}>
-          <ModalHeader>睡眠記録を削除</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>この睡眠記録を削除しますか？</ModalBody>
-          <ModalFooter pt="7">
+      <AlertDialog leastDestructiveRef={cancelRef} isCentered {...modalProps}>
+        <AlertDialogOverlay />
+        <AlertDialogContent mx="4" ref={ref}>
+          <AlertDialogHeader>睡眠記録を削除</AlertDialogHeader>
+          <AlertDialogCloseButton />
+          <AlertDialogBody>この睡眠記録を削除しますか？</AlertDialogBody>
+          <AlertDialogFooter pt="7">
             <ButtonGroup>
               <Button
-                colorScheme="green"
+                ref={cancelRef}
+                color="secondaryGray"
                 variant="ghost"
                 onClick={modalProps.onClose}
                 flex="1"
@@ -53,9 +54,9 @@ const SleepDeleteModal = forwardRef<HTMLDivElement, Props>(
                 削除する
               </Button>
             </ButtonGroup>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     )
   }
 )

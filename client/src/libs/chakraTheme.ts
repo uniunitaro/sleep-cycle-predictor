@@ -117,10 +117,10 @@ export const theme = extendTheme({
     Modal: {
       parts: ['overlay', 'dialog'],
       baseStyle: {
-        overlay: {
-          bg: 'blackAlpha.400',
-          backdropFilter: 'blur(20px) saturate(180%)',
-        },
+        // overlay: {
+        //   bg: 'blackAlpha.400',
+        //   backdropFilter: 'blur(20px) saturate(180%)',
+        // },
         dialog: {
           borderRadius: 'xl',
         },

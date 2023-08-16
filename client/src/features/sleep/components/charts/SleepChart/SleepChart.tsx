@@ -30,15 +30,21 @@ import {
   useDragControls,
 } from 'framer-motion'
 import { useRouter } from 'next/navigation'
+import { DeleteIcon, EditIcon } from '@chakra-ui/icons'
 import ChartColumn from '../ChartColumn'
 import SleepBar from '../SleepBar'
 import ChartHeader from '../ChartHeader'
 import SleepOverview, { SleepOverviewRef } from '../../Lists/SleepOverview'
+import SleepInputModal from '../../inputs/SleepInputModal/SleepInputModal'
+import SleepDeleteModal from '../../SleepDeleteModal'
 import {
   Box,
+  Button,
   Center,
+  Divider,
   Flex,
   HStack,
+  Hide,
   Popover,
   PopoverArrow,
   PopoverBody,
@@ -47,6 +53,7 @@ import {
   Stack,
   StackDivider,
   VStack,
+  useBreakpointValue,
   useDimensions,
   useDisclosure,
   useOutsideClick,
@@ -55,6 +62,11 @@ import CardMdOnly from '@/components/MdOnlyCards/CardMdOnly/CardMdOnly'
 import CardBodyMdOnly from '@/components/MdOnlyCards/CardBodyMdOnly'
 import { Prediction, Sleep } from '@/features/sleep/types/sleep'
 import { useCalendarControl } from '@/features/sleep/hooks/useCalendarControl'
+import {
+  BottomSheet,
+  BottomSheetBody,
+  BottomSheetProps,
+} from '@/components/BottomSheet/BottomSheet'
 
 type Props = {
   sleeps: Sleep[]
@@ -430,7 +442,7 @@ const ChartContent = forwardRef<
           <Box position="relative" height="100%" flex="1">
             {sleeps &&
               sleeps.map((sleep) => (
-                <SleepBarWithPopover
+                <SleepBarWithDetail
                   key={sleep.start.getTime()}
                   sleep={sleep}
                   isHovered={hoveredSleepId === sleep.id}
@@ -446,7 +458,7 @@ const ChartContent = forwardRef<
 
 ChartContent.displayName = 'ChartContent'
 
-const SleepBarWithPopover: FC<{
+const SleepBarWithDetail: FC<{
   sleep: DailySleeps['sleeps'][number]
   isHovered: boolean
   setHoveredSleepId: (id: number | undefined) => void
@@ -456,63 +468,141 @@ const SleepBarWithPopover: FC<{
   const SleepBarRef = useRef<HTMLDivElement>(null)
   const sleepOverviewRef = useRef<SleepOverviewRef>(null)
 
+  const isMobile = useBreakpointValue({ base: true, md: false })
+
   useOutsideClick({
     ref: popoverContentRef,
     handler: (e) => {
       const isModalOpen = !!sleepOverviewRef.current?.modalRef.current
       const isClickedSleepBar = SleepBarRef.current?.contains(e.target as Node)
-      console.log(isClickedSleepBar)
-      if (isModalOpen || isClickedSleepBar) return
+      if (isMobile || isModalOpen || isClickedSleepBar) return
 
       onClose()
     },
   })
 
   return (
-    <Popover
-      key={sleep.start.getTime()}
-      isLazy
-      placement="right"
-      closeOnBlur={false}
-      isOpen={isOpen}
-      onClose={onClose}
-      initialFocusRef={popoverContentRef}
-    >
-      <PopoverTrigger>
-        <SleepBar
-          ref={SleepBarRef}
-          isHovered={isHovered}
-          position="absolute"
-          w="100%"
-          h={`${sleep.barHeightPercentage}%`}
-          top={`${sleep.barTopPercentage}%`}
-          barColor={sleep.isPrediction ? 'blue' : 'brand'}
-          onMouseEnter={() => setHoveredSleepId(sleep.id)}
-          onMouseLeave={() => setHoveredSleepId(undefined)}
-          onClick={onToggle}
-          // TODO アクセシビリティ考慮
-          tabIndex={0}
-        />
-      </PopoverTrigger>
-      <PopoverContent w="auto" ref={popoverContentRef}>
-        <PopoverArrow />
-        <PopoverBody>
-          {sleep.originalSleep && (
-            <SleepOverview
-              sleep={sleep.originalSleep}
-              variant="small"
-              ref={sleepOverviewRef}
-            />
-          )}
-          {sleep.originalPrediction && (
-            <SleepOverview prediction={sleep.originalPrediction} />
-          )}
-        </PopoverBody>
-      </PopoverContent>
-    </Popover>
+    <>
+      <Popover
+        isLazy
+        placement="right"
+        closeOnBlur={false}
+        isOpen={!isMobile && isOpen}
+        onClose={onClose}
+        initialFocusRef={popoverContentRef}
+      >
+        <PopoverTrigger>
+          <SleepBar
+            ref={SleepBarRef}
+            isHovered={isHovered}
+            position="absolute"
+            w="100%"
+            h={`${sleep.barHeightPercentage}%`}
+            top={`${sleep.barTopPercentage}%`}
+            barColor={sleep.isPrediction ? 'blue' : 'brand'}
+            onMouseEnter={() => setHoveredSleepId(sleep.id)}
+            onMouseLeave={() => setHoveredSleepId(undefined)}
+            onClick={onToggle}
+            // TODO アクセシビリティ考慮
+            tabIndex={0}
+          />
+        </PopoverTrigger>
+        <PopoverContent w="auto" ref={popoverContentRef}>
+          <PopoverArrow />
+          <PopoverBody>
+            {sleep.originalSleep && (
+              <SleepOverview
+                sleep={sleep.originalSleep}
+                variant="withMenu"
+                ref={sleepOverviewRef}
+              />
+            )}
+            {sleep.originalPrediction && (
+              <SleepOverview prediction={sleep.originalPrediction} />
+            )}
+          </PopoverBody>
+        </PopoverContent>
+      </Popover>
+      <Hide above="md">
+        <SleepBottomSheet sleep={sleep} isOpen={isOpen} onClose={onClose} />
+      </Hide>
+    </>
   )
 })
 
-SleepBarWithPopover.displayName = 'SleepBarWithPopover'
+SleepBarWithDetail.displayName = 'SleepBarWithDetail'
+
+const SleepBottomSheet: FC<
+  Omit<BottomSheetProps, 'children'> & {
+    sleep: DailySleeps['sleeps'][number]
+  }
+> = ({ sleep, ...bottomSheetProps }) => {
+  const {
+    isOpen: isEditOpen,
+    onOpen: onEditOpen,
+    onClose: onEditClose,
+  } = useDisclosure()
+  const {
+    isOpen: isDeleteOpen,
+    onOpen: onDeleteOpen,
+    onClose: onDeleteClose,
+  } = useDisclosure()
+
+  return (
+    <BottomSheet {...bottomSheetProps}>
+      <BottomSheetBody px="0">
+        <Box px="6" pb="4">
+          {sleep.originalSleep && <SleepOverview sleep={sleep.originalSleep} />}
+          {sleep.originalPrediction && (
+            <SleepOverview prediction={sleep.originalPrediction} />
+          )}
+        </Box>
+        {sleep.originalSleep && (
+          <Box>
+            <Divider opacity="1" />
+            <Button
+              w="full"
+              h="14"
+              px="6"
+              variant="ghost"
+              rounded="none"
+              leftIcon={<EditIcon color="secondaryGray" />}
+              iconSpacing="6"
+              fontWeight="medium"
+              justifyContent="left"
+              onClick={onEditOpen}
+            >
+              睡眠記録を編集
+            </Button>
+            <Button
+              w="full"
+              h="14"
+              px="6"
+              variant="ghost"
+              rounded="none"
+              justifyContent="left"
+              iconSpacing="6"
+              fontWeight="medium"
+              leftIcon={<DeleteIcon color="secondaryGray" />}
+              onClick={onDeleteOpen}
+            >
+              睡眠記録を削除
+            </Button>
+            <SleepInputModal
+              isOpen={isEditOpen}
+              onClose={onEditClose}
+              originalSleep={sleep.originalSleep}
+            />
+            <SleepDeleteModal
+              isOpen={isDeleteOpen}
+              onClose={onDeleteClose}
+              sleep={sleep.originalSleep}
+            />
+          </Box>
+        )}
+      </BottomSheetBody>
+    </BottomSheet>
+  )
+}
 
 export default SleepChart

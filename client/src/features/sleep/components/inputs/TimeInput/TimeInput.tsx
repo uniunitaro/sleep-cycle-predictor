@@ -116,11 +116,15 @@ const TimeInput: FC<Props> = memo(({ value, onChange, ...rest }) => {
               />
             </ModalBody>
             <ModalFooter>
-              <ButtonGroup colorScheme="green">
-                <Button variant="ghost" onClick={onClose}>
+              <ButtonGroup>
+                <Button variant="ghost" color="secondaryGray" onClick={onClose}>
                   キャンセル
                 </Button>
-                <Button variant="ghost" onClick={handleConfirmTimePicker}>
+                <Button
+                  variant="ghost"
+                  colorScheme="green"
+                  onClick={handleConfirmTimePicker}
+                >
                   OK
                 </Button>
               </ButtonGroup>
