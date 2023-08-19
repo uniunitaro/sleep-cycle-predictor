@@ -30,18 +30,20 @@ import {
   useDragControls,
 } from 'framer-motion'
 import { useRouter } from 'next/navigation'
-import { DeleteIcon, EditIcon } from '@chakra-ui/icons'
+import { useSetAtom } from 'jotai'
 import ChartColumn from '../ChartColumn'
 import SleepBar from '../SleepBar'
 import ChartHeader from '../ChartHeader'
 import SleepOverview, { SleepOverviewRef } from '../../Lists/SleepOverview'
-import SleepInputModal from '../../inputs/SleepInputModal/SleepInputModal'
-import SleepDeleteModal from '../../SleepDeleteModal'
+import GlobalModals from '../../GlobalModals'
+import {
+  isSleepBottomSheetOpenAtom,
+  selectedPredictionAtom,
+  selectedSleepAtom,
+} from '../../atoms/globalModals'
 import {
   Box,
-  Button,
   Center,
-  Divider,
   Flex,
   HStack,
   Hide,
@@ -50,6 +52,7 @@ import {
   PopoverBody,
   PopoverContent,
   PopoverTrigger,
+  Show,
   Stack,
   StackDivider,
   VStack,
@@ -62,11 +65,6 @@ import CardMdOnly from '@/components/MdOnlyCards/CardMdOnly/CardMdOnly'
 import CardBodyMdOnly from '@/components/MdOnlyCards/CardBodyMdOnly'
 import { Prediction, Sleep } from '@/features/sleep/types/sleep'
 import { useCalendarControl } from '@/features/sleep/hooks/useCalendarControl'
-import {
-  BottomSheet,
-  BottomSheetBody,
-  BottomSheetProps,
-} from '@/components/BottomSheet/BottomSheet'
 
 type Props = {
   sleeps: Sleep[]
@@ -97,25 +95,22 @@ const SleepChart: FC<Props> = memo(({ sleeps, predictions, targetDate }) => {
       start: startDate,
       end: endDate,
     }).map((date) => {
-      const formattedPredictions = predictions?.map((p, i) => ({
+      const formattedPredictions = predictions.map((p, i) => ({
         ...p,
         // sleepのidと重複しないように負の値にしている
         id: -i,
         isPrediction: true,
       }))
 
-      const formattedSleeps = sleeps?.flatMap((sleep) =>
+      const formattedSleeps = sleeps.flatMap((sleep) =>
         sleep.sleeps.map((s) => ({
           ...s,
           id: sleep.id,
         }))
       )
 
-      const dailySleeps = [
-        ...(formattedSleeps ?? []),
-        ...(formattedPredictions ?? []),
-      ]
-        ?.filter((s) => isSameDay(s.start, date) || isSameDay(s.end, date))
+      const dailySleeps = [...formattedSleeps, ...formattedPredictions]
+        .filter((s) => isSameDay(s.start, date) || isSameDay(s.end, date))
         .map((sleep) => {
           const start = isSameDay(sleep.start, date) ? sleep.start : date
           const end = isSameDay(sleep.end, date) ? sleep.end : addDays(date, 1)
@@ -173,85 +168,93 @@ const SleepChart: FC<Props> = memo(({ sleeps, predictions, targetDate }) => {
     (chartContentDimensions?.contentBox.height ?? 0)
 
   return (
-    <CardMdOnly h="100%">
-      <CardBodyMdOnly h="100%" py={{ base: 2, md: 5 }}>
-        <Stack h="100%">
-          <ChartHeader targetDate={targetDate} />
-          <Flex flex="1" overflowY="auto">
-            <Flex position="relative" flex="1" minH="400px" overflowX="auto">
-              <VStack mr="3" fontSize="xs" spacing="0" pl={{ base: 4, md: 0 }}>
-                <Box
-                  h={`calc(${headerHeight}px - ((100% - ${
-                    headerHeight + scrollBarHeight
-                  }px) / 24) / 2)`}
-                />
-                {[...Array(24)].map((_, i) => (
-                  <Center
-                    key={i}
-                    h={`calc((100% - ${
+    <>
+      <CardMdOnly h="100%">
+        <CardBodyMdOnly h="100%" py={{ base: 2, md: 5 }}>
+          <Stack h="100%">
+            <ChartHeader targetDate={targetDate} />
+            <Flex flex="1" overflowY="auto">
+              <Flex position="relative" flex="1" minH="400px" overflowX="auto">
+                <VStack
+                  mr="3"
+                  fontSize="xs"
+                  spacing="0"
+                  pl={{ base: 4, md: 0 }}
+                >
+                  <Box
+                    h={`calc(${headerHeight}px - ((100% - ${
                       headerHeight + scrollBarHeight
-                    }px) / 24)`}
-                    color="secondaryGray"
-                  >
-                    {i}:00
-                  </Center>
-                ))}
-              </VStack>
-              <Flex flex="1">
-                <Flex position="relative" flex="1">
-                  <Box>
-                    <Box h={`${headerHeight}px`} />
-                    {[...Array(24)].map((_, i) => (
-                      <Box
-                        key={i}
-                        h={`calc((100% - ${
-                          headerHeight + scrollBarHeight
-                        }px) / 24)`}
-                      >
+                    }px) / 24) / 2)`}
+                  />
+                  {[...Array(24)].map((_, i) => (
+                    <Center
+                      key={i}
+                      h={`calc((100% - ${
+                        headerHeight + scrollBarHeight
+                      }px) / 24)`}
+                      color="secondaryGray"
+                    >
+                      {i}:00
+                    </Center>
+                  ))}
+                </VStack>
+                <Flex flex="1">
+                  <Flex position="relative" flex="1">
+                    <Box>
+                      <Box h={`${headerHeight}px`} />
+                      {[...Array(24)].map((_, i) => (
                         <Box
+                          key={i}
+                          h={`calc((100% - ${
+                            headerHeight + scrollBarHeight
+                          }px) / 24)`}
+                        >
+                          <Box
+                            position="absolute"
+                            w="100%"
+                            borderBottom="1px solid"
+                            borderColor="chakra-border-color"
+                          />
+                        </Box>
+                      ))}
+                    </Box>
+                    <DragContainer
+                      targetDate={targetDate}
+                      currentChartRef={currentChartRef}
+                      onDateChange={(date) => setOptimisticTargetDate(date)}
+                    >
+                      {[
+                        previousDailySleepsList,
+                        dailySleepsList,
+                        nextDailySleepsList,
+                      ].map((dailySleepsList, i) => (
+                        <Flex
+                          key={dailySleepsList[0].date.getTime()}
+                          ref={i === 1 ? currentChartRef : undefined}
+                          flex="1"
                           position="absolute"
-                          w="100%"
-                          borderBottom="1px solid"
-                          borderColor="chakra-border-color"
-                        />
-                      </Box>
-                    ))}
-                  </Box>
-                  <DragContainer
-                    targetDate={targetDate}
-                    currentChartRef={currentChartRef}
-                    onDateChange={(date) => setOptimisticTargetDate(date)}
-                  >
-                    {[
-                      previousDailySleepsList,
-                      dailySleepsList,
-                      nextDailySleepsList,
-                    ].map((dailySleepsList, i) => (
-                      <Flex
-                        key={dailySleepsList[0].date.getTime()}
-                        ref={i === 1 ? currentChartRef : undefined}
-                        flex="1"
-                        position="absolute"
-                        w="full"
-                        h="full"
-                        right={i === 0 ? '100%' : undefined}
-                        left={i === 2 ? '100%' : undefined}
-                        overflowX="scroll"
-                      >
-                        <ChartContent
-                          dailySleepsList={dailySleepsList}
-                          ref={i === 1 ? chartContentRef : undefined}
-                        />
-                      </Flex>
-                    ))}
-                  </DragContainer>
+                          w="full"
+                          h="full"
+                          right={i === 0 ? '100%' : undefined}
+                          left={i === 2 ? '100%' : undefined}
+                          overflowX="scroll"
+                        >
+                          <ChartContent
+                            dailySleepsList={dailySleepsList}
+                            ref={i === 1 ? chartContentRef : undefined}
+                          />
+                        </Flex>
+                      ))}
+                    </DragContainer>
+                  </Flex>
                 </Flex>
               </Flex>
             </Flex>
-          </Flex>
-        </Stack>
-      </CardBodyMdOnly>
-    </CardMdOnly>
+          </Stack>
+        </CardBodyMdOnly>
+      </CardMdOnly>
+      <GlobalModals />
+    </>
   )
 })
 
@@ -382,7 +385,7 @@ const DragContainer: FC<{
         dragControls={dragControls}
         dragListener={false}
         onPointerMove={handlePointerMove}
-        drag={'x'}
+        drag="x"
         dragConstraints={{
           left: -dragContainerWidth,
           right: dragContainerWidth,
@@ -433,7 +436,7 @@ const ChartContent = forwardRef<
     >
       {dailySleepsList.map(({ date, sleeps }) => (
         <ChartColumn
-          key={date.toString()}
+          key={date.getTime()}
           date={date}
           w={`${100 / dailySleepsList.length}%`}
           h="100%"
@@ -481,128 +484,68 @@ const SleepBarWithDetail: FC<{
     },
   })
 
+  const setSelectedSleep = useSetAtom(selectedSleepAtom)
+  const setPrediction = useSetAtom(selectedPredictionAtom)
+  const setIsSleepBottomSheetOpen = useSetAtom(isSleepBottomSheetOpenAtom)
+
+  const handleClick = () => {
+    setSelectedSleep(sleep.originalSleep)
+    setPrediction(sleep.originalPrediction)
+    setIsSleepBottomSheetOpen(true)
+    onToggle()
+  }
+
+  const sleepBar = (
+    <SleepBar
+      ref={SleepBarRef}
+      isHovered={isHovered}
+      position="absolute"
+      w="100%"
+      h={`${sleep.barHeightPercentage}%`}
+      top={`${sleep.barTopPercentage}%`}
+      barColor={sleep.isPrediction ? 'blue' : 'brand'}
+      onMouseEnter={() => setHoveredSleepId(sleep.id)}
+      onMouseLeave={() => setHoveredSleepId(undefined)}
+      onClick={handleClick}
+      // TODO アクセシビリティ考慮
+      tabIndex={0}
+    />
+  )
+
   return (
     <>
-      <Popover
-        isLazy
-        placement="right"
-        closeOnBlur={false}
-        isOpen={!isMobile && isOpen}
-        onClose={onClose}
-        initialFocusRef={popoverContentRef}
-      >
-        <PopoverTrigger>
-          <SleepBar
-            ref={SleepBarRef}
-            isHovered={isHovered}
-            position="absolute"
-            w="100%"
-            h={`${sleep.barHeightPercentage}%`}
-            top={`${sleep.barTopPercentage}%`}
-            barColor={sleep.isPrediction ? 'blue' : 'brand'}
-            onMouseEnter={() => setHoveredSleepId(sleep.id)}
-            onMouseLeave={() => setHoveredSleepId(undefined)}
-            onClick={onToggle}
-            // TODO アクセシビリティ考慮
-            tabIndex={0}
-          />
-        </PopoverTrigger>
-        <PopoverContent w="auto" ref={popoverContentRef}>
-          <PopoverArrow />
-          <PopoverBody>
-            {sleep.originalSleep && (
-              <SleepOverview
-                sleep={sleep.originalSleep}
-                variant="withMenu"
-                ref={sleepOverviewRef}
-              />
-            )}
-            {sleep.originalPrediction && (
-              <SleepOverview prediction={sleep.originalPrediction} />
-            )}
-          </PopoverBody>
-        </PopoverContent>
-      </Popover>
-      <Hide above="md">
-        <SleepBottomSheet sleep={sleep} isOpen={isOpen} onClose={onClose} />
-      </Hide>
+      <Show above="md">
+        <Popover
+          isLazy
+          placement="right"
+          closeOnBlur={false}
+          isOpen={!isMobile && isOpen}
+          onClose={onClose}
+          initialFocusRef={popoverContentRef}
+        >
+          <PopoverTrigger>{sleepBar}</PopoverTrigger>
+          <PopoverContent w="auto" ref={popoverContentRef}>
+            <PopoverArrow />
+            <PopoverBody>
+              {sleep.originalSleep && (
+                <SleepOverview
+                  sleep={sleep.originalSleep}
+                  variant="withMenu"
+                  ref={sleepOverviewRef}
+                />
+              )}
+              {sleep.originalPrediction && (
+                <SleepOverview prediction={sleep.originalPrediction} />
+              )}
+            </PopoverBody>
+          </PopoverContent>
+        </Popover>
+      </Show>
+      <Hide above="md">{sleepBar}</Hide>
     </>
   )
 })
 
 SleepBarWithDetail.displayName = 'SleepBarWithDetail'
-
-const SleepBottomSheet: FC<
-  Omit<BottomSheetProps, 'children'> & {
-    sleep: DailySleeps['sleeps'][number]
-  }
-> = ({ sleep, ...bottomSheetProps }) => {
-  const {
-    isOpen: isEditOpen,
-    onOpen: onEditOpen,
-    onClose: onEditClose,
-  } = useDisclosure()
-  const {
-    isOpen: isDeleteOpen,
-    onOpen: onDeleteOpen,
-    onClose: onDeleteClose,
-  } = useDisclosure()
-
-  return (
-    <BottomSheet {...bottomSheetProps}>
-      <BottomSheetBody px="0">
-        <Box px="6" pb="4">
-          {sleep.originalSleep && <SleepOverview sleep={sleep.originalSleep} />}
-          {sleep.originalPrediction && (
-            <SleepOverview prediction={sleep.originalPrediction} />
-          )}
-        </Box>
-        {sleep.originalSleep && (
-          <Box>
-            <Divider opacity="1" />
-            <Button
-              w="full"
-              h="14"
-              px="6"
-              variant="ghost"
-              rounded="none"
-              leftIcon={<EditIcon color="secondaryGray" />}
-              iconSpacing="6"
-              fontWeight="medium"
-              justifyContent="left"
-              onClick={onEditOpen}
-            >
-              睡眠記録を編集
-            </Button>
-            <Button
-              w="full"
-              h="14"
-              px="6"
-              variant="ghost"
-              rounded="none"
-              justifyContent="left"
-              iconSpacing="6"
-              fontWeight="medium"
-              leftIcon={<DeleteIcon color="secondaryGray" />}
-              onClick={onDeleteOpen}
-            >
-              睡眠記録を削除
-            </Button>
-            <SleepInputModal
-              isOpen={isEditOpen}
-              onClose={onEditClose}
-              originalSleep={sleep.originalSleep}
-            />
-            <SleepDeleteModal
-              isOpen={isDeleteOpen}
-              onClose={onDeleteClose}
-              sleep={sleep.originalSleep}
-            />
-          </Box>
-        )}
-      </BottomSheetBody>
-    </BottomSheet>
-  )
-}
 
 export default SleepChart

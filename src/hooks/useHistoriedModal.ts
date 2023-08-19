@@ -1,35 +1,42 @@
 import { useDisclosure } from '@chakra-ui/react'
-import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
 import { useHandleSearchParams } from './useHandleSearchParams'
 
 export const useHistoriedModal = (): ReturnType<typeof useDisclosure> => {
   const { onOpen: _onOpen, onClose: _onClose, ...rest } = useDisclosure()
 
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const {
-    addSearchParamsWithCurrentPathname,
-    removeSearchParamsWithCurrentPathname,
-  } = useHandleSearchParams()
+  const { addSearchParamsWithCurrentPathname } = useHandleSearchParams()
 
   const onOpen = () => {
     _onOpen()
 
-    router.push(addSearchParamsWithCurrentPathname('modal', 'true'))
+    const currentUrl = document.location.pathname + document.location.search
+    const targetUrl = addSearchParamsWithCurrentPathname('modal', 'true')
+    if (currentUrl === targetUrl) return
+
+    history.pushState(null, '', targetUrl)
   }
 
   const onClose = () => {
     _onClose()
 
-    router.replace(removeSearchParamsWithCurrentPathname('modal'))
+    // 本当はバックしたいが、モーダル内でデータを変更した場合にバックしたページに反映されないので諦める
+    // 近いうちにNextのアップデートでshallow routingが使えるようになるのでそれを待つ
+    // history.back()
   }
 
   useEffect(() => {
-    if (!Array.from(searchParams.keys()).includes('modal')) {
-      _onClose()
+    const listener = () => {
+      if (!document.location.search.includes('modal=true')) {
+        _onClose()
+      }
     }
-  }, [_onClose, searchParams])
+    window.addEventListener('popstate', listener)
+
+    return () => {
+      window.removeEventListener('popstate', listener)
+    }
+  }, [_onClose])
 
   return { onOpen, onClose, ...rest }
 }

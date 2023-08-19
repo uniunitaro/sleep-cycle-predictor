@@ -6,8 +6,8 @@ import TimePicker from '../TimePicker/TimePicker'
 import {
   Button,
   ButtonGroup,
+  Hide,
   Input,
-  InputGroup,
   InputProps,
   Modal,
   ModalBody,
@@ -77,30 +77,32 @@ const TimeInput: FC<Props> = memo(({ value, onChange, ...rest }) => {
     onClose()
   }
 
+  const timeInput = (
+    <Input
+      ref={inputRef}
+      value={inputValue}
+      onChange={handleChangeDate}
+      onBlur={handleBlurDate}
+      onFocus={onOpen}
+      {...rest}
+    />
+  )
   return (
-    <div>
-      <Popover
-        isOpen={isOpen}
-        placement="bottom-start"
-        initialFocusRef={inputRef}
-      >
-        <InputGroup>
-          <PopoverAnchor>
-            <Input
-              ref={inputRef}
-              value={inputValue}
-              onChange={handleChangeDate}
-              onBlur={handleBlurDate}
-              onFocus={onOpen}
-              {...rest}
-            />
-          </PopoverAnchor>
-        </InputGroup>
-        <Show above="md">
-          <PopoverContent ref={popoverContentRef} w="auto"></PopoverContent>
-        </Show>
-      </Popover>
-      <Show below="md">
+    <>
+      <Show above="md">
+        <Popover
+          isOpen={isOpen}
+          placement="bottom-start"
+          initialFocusRef={inputRef}
+        >
+          <PopoverAnchor>{timeInput}</PopoverAnchor>
+          <Show above="md">
+            <PopoverContent ref={popoverContentRef} w="auto"></PopoverContent>
+          </Show>
+        </Popover>
+      </Show>
+      <Hide above="md">
+        {timeInput}
         <Modal
           isOpen={isOpen}
           onClose={onClose}
@@ -131,8 +133,8 @@ const TimeInput: FC<Props> = memo(({ value, onChange, ...rest }) => {
             </ModalFooter>
           </ModalContent>
         </Modal>
-      </Show>
-    </div>
+      </Hide>
+    </>
   )
 })
 

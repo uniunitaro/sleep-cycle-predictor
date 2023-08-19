@@ -4,8 +4,8 @@ import { format, isValid, parse } from 'date-fns'
 import { FC, memo, useCallback, useEffect, useRef, useState } from 'react'
 import DatePickerWrapper from '../DatePickerWrapper'
 import {
+  Hide,
   Input,
-  InputGroup,
   InputProps,
   Modal,
   ModalContent,
@@ -91,43 +91,46 @@ const DateInput: FC<Props> = memo(({ value, onChange, ...rest }) => {
     [onChange, onClose]
   )
 
+  const dateInput = (
+    <Input
+      ref={inputRef}
+      value={inputValue}
+      onChange={handleChangeDate}
+      onBlur={handleBlurDate}
+      onFocus={onOpen}
+      {...rest}
+    />
+  )
+
   return (
-    <div>
-      <Popover
-        isOpen={isOpen}
-        placement="bottom-start"
-        initialFocusRef={inputRef}
-        isLazy
-      >
-        <InputGroup>
-          <PopoverAnchor>
-            <Input
-              ref={inputRef}
-              value={inputValue}
-              onChange={handleChangeDate}
-              onBlur={handleBlurDate}
-              onFocus={onOpen}
-              {...rest}
-            />
-          </PopoverAnchor>
-        </InputGroup>
-        <Show above="md">
-          <PopoverContent
-            ref={popoverContentRef}
-            w="auto"
-            sx={{
-              visibility: hasModalRendered ? 'visible' : 'hidden !important',
-            }}
-          >
-            <DatePickerWrapper
-              value={oldInputValue}
-              colorScheme="green"
-              onChange={handleClickDate}
-            />
-          </PopoverContent>
-        </Show>
-      </Popover>
-      <Show below="md">
+    <>
+      <Show above="md">
+        <Popover
+          isOpen={isOpen}
+          placement="bottom-start"
+          initialFocusRef={inputRef}
+          isLazy
+        >
+          <PopoverAnchor>{dateInput}</PopoverAnchor>
+          <Show above="md">
+            <PopoverContent
+              ref={popoverContentRef}
+              w="auto"
+              sx={{
+                visibility: hasModalRendered ? 'visible' : 'hidden !important',
+              }}
+            >
+              <DatePickerWrapper
+                value={oldInputValue}
+                colorScheme="green"
+                onChange={handleClickDate}
+              />
+            </PopoverContent>
+          </Show>
+        </Popover>
+      </Show>
+      <Hide above="md">
+        {dateInput}
         <Modal
           isOpen={isOpen}
           onClose={handleCloseModal}
@@ -146,8 +149,8 @@ const DateInput: FC<Props> = memo(({ value, onChange, ...rest }) => {
             />
           </ModalContent>
         </Modal>
-      </Show>
-    </div>
+      </Hide>
+    </>
   )
 })
 
