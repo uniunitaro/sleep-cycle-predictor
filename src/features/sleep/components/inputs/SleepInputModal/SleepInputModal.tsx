@@ -12,7 +12,6 @@ import SleepInputForm from '../SleepInputForm/SleepInputForm'
 import {
   Button,
   ButtonGroup,
-  Hide,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -21,16 +20,9 @@ import {
   ModalHeader,
   ModalOverlay,
   ModalProps,
-  Show,
 } from '@/components/chakra'
 import { addSleep, updateSleep } from '@/features/sleep/repositories/sleeps'
 import { Sleep } from '@/features/sleep/types/sleep'
-import {
-  BottomSheet,
-  BottomSheetBody,
-  BottomSheetFooter,
-  BottomSheetHeader,
-} from '@/components/BottomSheet/BottomSheet'
 
 type SleepInputType = ComponentProps<typeof SleepInputForm>['sleeps']
 type Props = Omit<ModalProps, 'children'> & { originalSleep?: Sleep }
@@ -68,80 +60,40 @@ const SleepInputModal = forwardRef<HTMLDivElement, Props>(
     }
 
     return (
-      <>
-        <Show above="md">
-          <Modal isCentered {...modalProps}>
-            <ModalOverlay />
-            <ModalContent mx="4" ref={ref}>
-              <ModalHeader>
-                {isUpdate ? '睡眠記録を編集' : '睡眠記録を追加'}
-              </ModalHeader>
-              <ModalCloseButton />
-              <ModalBody>
-                <form>
-                  <SleepInputForm sleeps={sleeps} onChange={setSleeps} />
-                </form>
-              </ModalBody>
-              <ModalFooter pt="7">
-                <ButtonGroup>
-                  <Button
-                    variant="ghost"
-                    color="secondaryGray"
-                    onClick={modalProps.onClose}
-                    flex="1"
-                  >
-                    キャンセル
-                  </Button>
-                  <Button
-                    colorScheme="green"
-                    isLoading={isLoading}
-                    onClick={handleSubmit}
-                    flex="1"
-                  >
-                    {isUpdate ? '更新する' : '追加する'}
-                  </Button>
-                </ButtonGroup>
-              </ModalFooter>
-            </ModalContent>
-          </Modal>
-        </Show>
-        <Hide above="md">
-          <BottomSheet
-            isOpen={modalProps.isOpen}
-            onClose={modalProps.onClose}
-            autoFocus={false}
-          >
-            <BottomSheetHeader>
-              {isUpdate ? '睡眠記録を編集' : '睡眠記録を追加'}
-            </BottomSheetHeader>
-            <BottomSheetBody>
-              <form>
-                <SleepInputForm sleeps={sleeps} onChange={setSleeps} />
-              </form>
-            </BottomSheetBody>
-            <BottomSheetFooter>
-              <ButtonGroup>
-                <Button
-                  variant="ghost"
-                  color="secondaryGray"
-                  onClick={modalProps.onClose}
-                  flex="1"
-                >
-                  キャンセル
-                </Button>
-                <Button
-                  colorScheme="green"
-                  isLoading={isLoading}
-                  onClick={handleSubmit}
-                  flex="1"
-                >
-                  {isUpdate ? '更新する' : '追加する'}
-                </Button>
-              </ButtonGroup>
-            </BottomSheetFooter>
-          </BottomSheet>
-        </Hide>
-      </>
+      <Modal isCentered scrollBehavior="inside" {...modalProps}>
+        <ModalOverlay />
+        <ModalContent mx="4" ref={ref}>
+          <ModalHeader>
+            {isUpdate ? '睡眠記録を編集' : '睡眠記録を追加'}
+          </ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <form>
+              <SleepInputForm sleeps={sleeps} onChange={setSleeps} />
+            </form>
+          </ModalBody>
+          <ModalFooter pt="7">
+            <ButtonGroup>
+              <Button
+                variant="ghost"
+                color="secondaryGray"
+                onClick={modalProps.onClose}
+                flex="1"
+              >
+                キャンセル
+              </Button>
+              <Button
+                colorScheme="green"
+                isLoading={isLoading}
+                onClick={handleSubmit}
+                flex="1"
+              >
+                {isUpdate ? '更新する' : '追加する'}
+              </Button>
+            </ButtonGroup>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     )
   }
 )

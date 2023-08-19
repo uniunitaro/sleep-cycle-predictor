@@ -73,11 +73,11 @@ export const BottomSheet: FC<BottomSheetProps> = ({
       const startCloseAnimation = async () => {
         contentControls.start({
           y: '100%',
-          transition: { duration: 0.2, ease: 'easeInOut' },
+          transition: { duration: 0.15, ease: 'easeInOut' },
         })
         await overlayControls.start({
           opacity: 0,
-          transition: { duration: 0.2, ease: 'easeInOut' },
+          transition: { duration: 0.15, ease: 'easeInOut' },
         })
       }
 

@@ -14,7 +14,7 @@
     "db:generate": "pnpm run with-env drizzle-kit generate:mysql",
     "db:push": "pnpm run with-env tsx src/db/migrate.ts",
     "with-env": "dotenv -e .env.local --",
-    "prepare": "cd .. && husky install client/.husky",
+    "prepare": "husky install",
     "test": "pnpm test:db:push && dotenv -e .env.test -- jest",
     "test:db:push": "dotenv -e .env.test -- drizzle-kit push:mysql",
     "typecheck": "tsc --noEmit"

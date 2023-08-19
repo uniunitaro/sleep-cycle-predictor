@@ -1,8 +1,7 @@
 'use client'
 
-import { FC } from 'react'
+import { FC, useState } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
-import { Hide } from '@chakra-ui/react'
 import SleepInputModal from './inputs/SleepInputModal/SleepInputModal'
 import SleepDeleteModal from './SleepDeleteModal'
 import {
@@ -13,6 +12,7 @@ import {
   selectedSleepAtom,
 } from './atoms/globalModals'
 import SleepBottomSheet from './charts/SleepBottomSheet'
+import { Hide } from '@/components/chakra'
 
 const GlobalModals: FC = () => {
   const selectedSleep = useAtomValue(selectedSleepAtom)
@@ -29,6 +29,20 @@ const GlobalModals: FC = () => {
   const onEditClose = () => setIsInputModalOpen(false)
   const onDeleteClose = () => setIsDeleteModalOpen(false)
   const onBottomSheetClose = () => setIsSleepBottomSheetOpen(false)
+
+  const [isEditClicked, setIsEditClicked] = useState(false)
+  const [isDeleteClicked, setIsDeleteClicked] = useState(false)
+
+  const handleCloseComplete = () => {
+    if (isEditClicked) {
+      setIsInputModalOpen(true)
+      setIsEditClicked(false)
+    }
+    if (isDeleteClicked) {
+      setIsDeleteModalOpen(true)
+      setIsDeleteClicked(false)
+    }
+  }
 
   return (
     <>
@@ -52,12 +66,13 @@ const GlobalModals: FC = () => {
           onClose={onBottomSheetClose}
           onClickEdit={() => {
             setIsSleepBottomSheetOpen(false)
-            setIsInputModalOpen(true)
+            setIsEditClicked(true)
           }}
           onClickDelete={() => {
             setIsSleepBottomSheetOpen(false)
-            setIsDeleteModalOpen(true)
+            setIsDeleteClicked(true)
           }}
+          onCloseComplete={handleCloseComplete}
         />
       </Hide>
     </>

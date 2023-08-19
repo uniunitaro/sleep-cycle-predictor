@@ -498,7 +498,7 @@ const SleepBarWithDetail: FC<{
   const sleepBar = (
     <SleepBar
       ref={SleepBarRef}
-      isHovered={isHovered}
+      isHoveredOrSelected={isHovered || isOpen}
       position="absolute"
       w="100%"
       h={`${sleep.barHeightPercentage}%`}
@@ -509,6 +509,7 @@ const SleepBarWithDetail: FC<{
       onClick={handleClick}
       // TODO アクセシビリティ考慮
       tabIndex={0}
+      cursor="pointer"
     />
   )
 

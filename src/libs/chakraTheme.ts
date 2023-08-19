@@ -73,16 +73,69 @@ export const theme = extendTheme({
         borderRadius: 'full',
         fontWeight: '700',
         WebkitTapHighlightColor: 'transparent',
+        _hover: {},
+        '@media(hover: hover) and (pointer: fine)': {
+          _hover: {
+            ...originalTheme.components.Button.baseStyle?._hover,
+          },
+        },
       },
       variants: {
+        solid: (props: StyleFunctionProps) => ({
+          _hover: {
+            bg: originalTheme.components.Button.variants?.solid(props).bg,
+          },
+          '@media(hover: hover) and (pointer: fine)': {
+            _hover: {
+              ...originalTheme.components.Button.variants?.solid(props)._hover,
+            },
+          },
+        }),
+        outline: (props: StyleFunctionProps) => ({
+          _hover: {
+            bg: originalTheme.components.Button.variants?.outline(props).bg,
+          },
+          '@media(hover: hover) and (pointer: fine)': {
+            _hover: {
+              ...originalTheme.components.Button.variants?.outline(props),
+            },
+          },
+        }),
+        ghost: (props: StyleFunctionProps) => ({
+          _hover: {
+            bg:
+              originalTheme.components.Button.variants?.ghost(props).bg ??
+              'initial',
+          },
+          '@media(hover: hover) and (pointer: fine)': {
+            _hover: {
+              ...originalTheme.components.Button.variants?.ghost(props)._hover,
+            },
+          },
+        }),
+        link: (props: StyleFunctionProps) => ({
+          _hover: {
+            textDecoration: 'none',
+          },
+          '@media(hover: hover) and (pointer: fine)': {
+            _hover: {
+              ...originalTheme.components.Button.variants?.link(props)._hover,
+            },
+          },
+        }),
         shadow: (props: StyleFunctionProps) => ({
           ...originalTheme.components.Button.variants?.solid(props),
+          _hover: {
+            bg: originalTheme.components.Button.variants?.solid(props).bg,
+          },
           boxShadow:
             '0px 1px 2px 0px rgba(60,64,67,0.3),0px 1px 3px 1px rgba(60,64,67,0.15)',
-          _hover: {
-            ...originalTheme.components.Button.variants?.solid(props)._hover,
-            boxShadow:
-              '0px 4px 4px 0px rgba(60,64,67,0.3),0px 8px 12px 6px rgba(60,64,67,0.15)',
+          '@media(hover: hover) and (pointer: fine)': {
+            _hover: {
+              ...originalTheme.components.Button.variants?.solid(props)._hover,
+              boxShadow:
+                '0px 4px 4px 0px rgba(60,64,67,0.3),0px 8px 12px 6px rgba(60,64,67,0.15)',
+            },
           },
         }),
       },
