@@ -1,11 +1,13 @@
 import { FC } from 'react'
 import dynamic from 'next/dynamic'
 import { Prediction, Sleep } from '@/features/sleep/types/sleep'
+import { DisplayMode } from '@/features/sleep/types/chart'
 const Home: FC<{
   sleeps: Sleep[]
   predictions: Prediction[]
   targetDate: Date
-}> = ({ sleeps, predictions, targetDate }) => {
+  displayMode: DisplayMode
+}> = ({ sleeps, predictions, targetDate, displayMode }) => {
   const PrivateSleepChartContainer = dynamic(
     () =>
       import('@/features/sleep/components/charts/PrivateSleepChartContainer'),
@@ -19,6 +21,7 @@ const Home: FC<{
         sleeps={sleeps}
         predictions={predictions}
         targetDate={targetDate}
+        displayMode={displayMode}
       />
     )
   )

@@ -7,13 +7,13 @@ import {
   useEffect,
   useRef,
   useState,
-  experimental_useOptimistic as useOptimistic,
   memo,
   forwardRef,
 } from 'react'
 import {
   addDays,
   addMonths,
+  addWeeks,
   differenceInMilliseconds,
   eachDayOfInterval,
   endOfMonth,
@@ -22,6 +22,7 @@ import {
   startOfMonth,
   startOfWeek,
   subMonths,
+  subWeeks,
 } from 'date-fns'
 import {
   PanInfo,
@@ -65,207 +66,236 @@ import CardMdOnly from '@/components/MdOnlyCards/CardMdOnly/CardMdOnly'
 import CardBodyMdOnly from '@/components/MdOnlyCards/CardBodyMdOnly'
 import { Prediction, Sleep } from '@/features/sleep/types/sleep'
 import { useCalendarControl } from '@/features/sleep/hooks/useCalendarControl'
+import { DisplayMode } from '@/features/sleep/types/chart'
 
 type Props = {
   sleeps: Sleep[]
   predictions: Prediction[]
   targetDate: Date
+  displayMode: DisplayMode
 }
-const SleepChart: FC<Props> = memo(({ sleeps, predictions, targetDate }) => {
-  const [displayMode, setDisplayMode] = useState<'month' | 'week'>('month')
-  const [optimisticTargetDate, setOptimisticTargetDate] =
-    useOptimistic(targetDate)
+const SleepChart: FC<Props> = memo(
+  ({ sleeps, predictions, targetDate, displayMode }) => {
+    const [optimisticTargetDate, setOptimisticTargetDate] = useState(targetDate)
+    useEffect(() => {
+      setOptimisticTargetDate(targetDate)
+    }, [targetDate])
 
-  const startDate =
-    displayMode === 'month'
-      ? startOfMonth(optimisticTargetDate)
-      : startOfWeek(optimisticTargetDate)
-  const endDate =
-    displayMode === 'month'
-      ? endOfMonth(optimisticTargetDate)
-      : endOfWeek(optimisticTargetDate)
+    const startDate =
+      displayMode === 'month'
+        ? startOfMonth(optimisticTargetDate)
+        : startOfWeek(optimisticTargetDate)
+    const endDate =
+      displayMode === 'month'
+        ? endOfMonth(optimisticTargetDate)
+        : endOfWeek(optimisticTargetDate)
 
-  const headerHeight = 48
+    const headerHeight = 48
 
-  const generateDailySleepsList = (
-    startDate: Date,
-    endDate: Date
-  ): DailySleeps[] => {
-    const dailySleepsList = eachDayOfInterval({
-      start: startDate,
-      end: endDate,
-    }).map((date) => {
-      const formattedPredictions = predictions.map((p, i) => ({
-        ...p,
-        // sleepのidと重複しないように負の値にしている
-        id: -i,
-        isPrediction: true,
-      }))
-
-      const formattedSleeps = sleeps.flatMap((sleep) =>
-        sleep.sleeps.map((s) => ({
-          ...s,
-          id: sleep.id,
+    const generateDailySleepsList = (
+      startDate: Date,
+      endDate: Date
+    ): DailySleeps[] => {
+      const dailySleepsList = eachDayOfInterval({
+        start: startDate,
+        end: endDate,
+      }).map((date) => {
+        const formattedPredictions = predictions.map((p, i) => ({
+          ...p,
+          // sleepのidと重複しないように負の値にしている
+          id: -i,
+          isPrediction: true,
         }))
-      )
 
-      const dailySleeps = [...formattedSleeps, ...formattedPredictions]
-        .filter((s) => isSameDay(s.start, date) || isSameDay(s.end, date))
-        .map((sleep) => {
-          const start = isSameDay(sleep.start, date) ? sleep.start : date
-          const end = isSameDay(sleep.end, date) ? sleep.end : addDays(date, 1)
-          const barHeightPercentage =
-            (differenceInMilliseconds(end, start) / 24 / 60 / 60 / 1000) * 100
-          const barTopPercentage =
-            (differenceInMilliseconds(start, date) / 24 / 60 / 60 / 1000) * 100
-          const originalSleep = sleeps.find((s) => s.id === sleep.id)
-          const formattedPrediction = formattedPredictions.find(
-            (p) => p.id === sleep.id
-          )
-          const originalPrediction = formattedPrediction && {
-            start: formattedPrediction.start,
-            end: formattedPrediction.end,
-          }
+        const formattedSleeps = sleeps.flatMap((sleep) =>
+          sleep.sleeps.map((s) => ({
+            ...s,
+            id: sleep.id,
+          }))
+        )
 
-          return {
-            ...sleep,
-            start,
-            end,
-            barHeightPercentage,
-            barTopPercentage,
-            isPrediction:
-              'isPrediction' in sleep ? !!sleep.isPrediction : false,
-            originalSleep,
-            originalPrediction,
-          }
-        })
-      return {
-        date,
-        sleeps: dailySleeps,
-      }
-    })
-    return dailySleepsList
-  }
+        const dailySleeps = [...formattedSleeps, ...formattedPredictions]
+          .filter((s) => isSameDay(s.start, date) || isSameDay(s.end, date))
+          .map((sleep) => {
+            const start = isSameDay(sleep.start, date) ? sleep.start : date
+            const end = isSameDay(sleep.end, date)
+              ? sleep.end
+              : addDays(date, 1)
+            const barHeightPercentage =
+              (differenceInMilliseconds(end, start) / 24 / 60 / 60 / 1000) * 100
+            const barTopPercentage =
+              (differenceInMilliseconds(start, date) / 24 / 60 / 60 / 1000) *
+              100
+            const originalSleep = sleeps.find((s) => s.id === sleep.id)
+            const formattedPrediction = formattedPredictions.find(
+              (p) => p.id === sleep.id
+            )
+            const originalPrediction = formattedPrediction && {
+              start: formattedPrediction.start,
+              end: formattedPrediction.end,
+            }
 
-  const dailySleepsList = generateDailySleepsList(startDate, endDate)
-  const previousDailySleepsList = generateDailySleepsList(
-    startOfMonth(subMonths(optimisticTargetDate, 1)),
-    endOfMonth(subMonths(optimisticTargetDate, 1))
-  )
-  const nextDailySleepsList = generateDailySleepsList(
-    startOfMonth(addMonths(optimisticTargetDate, 1)),
-    endOfMonth(addMonths(optimisticTargetDate, 1))
-  )
+            return {
+              ...sleep,
+              start,
+              end,
+              barHeightPercentage,
+              barTopPercentage,
+              isPrediction:
+                'isPrediction' in sleep ? !!sleep.isPrediction : false,
+              originalSleep,
+              originalPrediction,
+            }
+          })
+        return {
+          date,
+          sleeps: dailySleeps,
+        }
+      })
+      return dailySleepsList
+    }
 
-  const currentChartRef = useRef<HTMLDivElement>(null)
-  const currentChartDimensions = useDimensions(currentChartRef, true)
+    const dailySleepsList = generateDailySleepsList(startDate, endDate)
+    const previousDailySleepsList = generateDailySleepsList(
+      displayMode === 'month'
+        ? startOfMonth(subMonths(optimisticTargetDate, 1))
+        : startOfWeek(subWeeks(optimisticTargetDate, 1)),
+      displayMode === 'month'
+        ? endOfMonth(subMonths(optimisticTargetDate, 1))
+        : endOfWeek(subWeeks(optimisticTargetDate, 1))
+    )
+    const nextDailySleepsList = generateDailySleepsList(
+      displayMode === 'month'
+        ? startOfMonth(addMonths(optimisticTargetDate, 1))
+        : startOfWeek(addWeeks(optimisticTargetDate, 1)),
+      displayMode === 'month'
+        ? endOfMonth(addMonths(optimisticTargetDate, 1))
+        : endOfWeek(addWeeks(optimisticTargetDate, 1))
+    )
 
-  const chartContentRef = useRef<HTMLDivElement>(null)
-  const chartContentDimensions = useDimensions(chartContentRef, true)
+    const currentChartRef = useRef<HTMLDivElement>(null)
+    const currentChartDimensions = useDimensions(currentChartRef, true)
 
-  const scrollBarHeight =
-    (currentChartDimensions?.contentBox.height ?? 0) -
-    (chartContentDimensions?.contentBox.height ?? 0)
+    const chartContentRef = useRef<HTMLDivElement>(null)
+    const chartContentDimensions = useDimensions(chartContentRef, true)
 
-  return (
-    <>
-      <CardMdOnly h="100%">
-        <CardBodyMdOnly h="100%" py={{ base: 2, md: 5 }}>
-          <Stack h="100%">
-            <ChartHeader targetDate={targetDate} />
-            <Flex flex="1" overflowY="auto">
-              <Flex position="relative" flex="1" minH="400px" overflowX="auto">
-                <VStack
-                  mr="3"
-                  fontSize="xs"
-                  spacing="0"
-                  pl={{ base: 4, md: 0 }}
+    const scrollBarHeight =
+      (currentChartDimensions?.contentBox.height ?? 0) -
+      (chartContentDimensions?.contentBox.height ?? 0)
+
+    return (
+      <>
+        <CardMdOnly h="100%">
+          <CardBodyMdOnly h="100%" py={{ base: 2, md: 5 }}>
+            <Stack h="100%">
+              <ChartHeader
+                targetDate={optimisticTargetDate}
+                displayMode={displayMode}
+              />
+              <Flex flex="1" overflowY="auto">
+                <Flex
+                  position="relative"
+                  flex="1"
+                  minH="400px"
+                  overflowX="auto"
                 >
-                  <Box
-                    h={`calc(${headerHeight}px - ((100% - ${
-                      headerHeight + scrollBarHeight
-                    }px) / 24) / 2)`}
-                  />
-                  {[...Array(24)].map((_, i) => (
-                    <Center
-                      key={i}
-                      h={`calc((100% - ${
+                  <VStack
+                    mr="3"
+                    fontSize="xs"
+                    spacing="0"
+                    pl={{ base: 4, md: 0 }}
+                  >
+                    <Box
+                      h={`calc(${headerHeight}px - ((100% - ${
                         headerHeight + scrollBarHeight
-                      }px) / 24)`}
-                      color="secondaryGray"
-                    >
-                      {i}:00
-                    </Center>
-                  ))}
-                </VStack>
-                <Flex flex="1">
-                  <Flex position="relative" flex="1">
-                    <Box>
-                      <Box h={`${headerHeight}px`} />
-                      {[...Array(24)].map((_, i) => (
-                        <Box
-                          key={i}
-                          h={`calc((100% - ${
-                            headerHeight + scrollBarHeight
-                          }px) / 24)`}
-                        >
+                      }px) / 24) / 2)`}
+                    />
+                    {[...Array(24)].map((_, i) => (
+                      <Center
+                        key={i}
+                        h={`calc((100% - ${
+                          headerHeight + scrollBarHeight
+                        }px) / 24)`}
+                        color="secondaryGray"
+                      >
+                        {i}:00
+                      </Center>
+                    ))}
+                  </VStack>
+                  <Flex flex="1">
+                    <Flex position="relative" flex="1">
+                      <Box>
+                        <Box h={`${headerHeight}px`} />
+                        {[...Array(24)].map((_, i) => (
                           <Box
+                            key={i}
+                            h={`calc((100% - ${
+                              headerHeight + scrollBarHeight
+                            }px) / 24)`}
+                          >
+                            <Box
+                              position="absolute"
+                              w="100%"
+                              borderBottom="1px solid"
+                              borderColor="chakra-border-color"
+                            />
+                          </Box>
+                        ))}
+                      </Box>
+                      <DragContainer
+                        targetDate={targetDate}
+                        displayMode={displayMode}
+                        currentChartRef={currentChartRef}
+                        onDateChange={(date) => {
+                          console.log(date, 'Uhu')
+                          setOptimisticTargetDate(date)
+                        }}
+                      >
+                        {[
+                          previousDailySleepsList,
+                          dailySleepsList,
+                          nextDailySleepsList,
+                        ].map((dailySleepsList, i) => (
+                          <Flex
+                            key={dailySleepsList[0].date.getTime()}
+                            ref={i === 1 ? currentChartRef : undefined}
+                            flex="1"
                             position="absolute"
-                            w="100%"
-                            borderBottom="1px solid"
-                            borderColor="chakra-border-color"
-                          />
-                        </Box>
-                      ))}
-                    </Box>
-                    <DragContainer
-                      targetDate={targetDate}
-                      currentChartRef={currentChartRef}
-                      onDateChange={(date) => setOptimisticTargetDate(date)}
-                    >
-                      {[
-                        previousDailySleepsList,
-                        dailySleepsList,
-                        nextDailySleepsList,
-                      ].map((dailySleepsList, i) => (
-                        <Flex
-                          key={dailySleepsList[0].date.getTime()}
-                          ref={i === 1 ? currentChartRef : undefined}
-                          flex="1"
-                          position="absolute"
-                          w="full"
-                          h="full"
-                          right={i === 0 ? '100%' : undefined}
-                          left={i === 2 ? '100%' : undefined}
-                          overflowX="scroll"
-                        >
-                          <ChartContent
-                            dailySleepsList={dailySleepsList}
-                            ref={i === 1 ? chartContentRef : undefined}
-                          />
-                        </Flex>
-                      ))}
-                    </DragContainer>
+                            w="full"
+                            h="full"
+                            right={i === 0 ? '100%' : undefined}
+                            left={i === 2 ? '100%' : undefined}
+                            overflowX="scroll"
+                          >
+                            <ChartContent
+                              dailySleepsList={dailySleepsList}
+                              ref={i === 1 ? chartContentRef : undefined}
+                            />
+                          </Flex>
+                        ))}
+                      </DragContainer>
+                    </Flex>
                   </Flex>
                 </Flex>
               </Flex>
-            </Flex>
-          </Stack>
-        </CardBodyMdOnly>
-      </CardMdOnly>
-      <GlobalModals />
-    </>
-  )
-})
+            </Stack>
+          </CardBodyMdOnly>
+        </CardMdOnly>
+        <GlobalModals />
+      </>
+    )
+  }
+)
 
 SleepChart.displayName = 'SleepChart'
 
 const DragContainer: FC<{
   targetDate: Date
+  displayMode: DisplayMode
   currentChartRef: RefObject<HTMLDivElement>
   onDateChange: (date: Date) => void
   children: ReactNode
-}> = ({ targetDate, currentChartRef, onDateChange, children }) => {
+}> = ({ targetDate, displayMode, currentChartRef, onDateChange, children }) => {
   const dragContainerRef = useRef<HTMLDivElement>(null)
   const dragContainerDimensions = useDimensions(dragContainerRef, true)
   const dragContainerWidth = dragContainerDimensions?.contentBox.width ?? 0
@@ -276,7 +306,7 @@ const DragContainer: FC<{
   const touchStartX = useRef<number>()
   const canStartDrag = useRef(false)
   const isDragging = useRef(false)
-  const currentEdgeType = useRef<'left' | 'right'>()
+  const currentEdgeType = useRef<'left' | 'right' | 'both'>()
 
   const handleTouchStart = (e: TouchEvent) => {
     touchStartX.current = e.touches[0].pageX
@@ -302,7 +332,8 @@ const DragContainer: FC<{
     if ((isOnLeftEdge && isSwipingRight) || (isOnRightEdge && isSwipingLeft)) {
       e.preventDefault()
 
-      currentEdgeType.current = isOnLeftEdge ? 'left' : 'right'
+      currentEdgeType.current =
+        isOnLeftEdge && isOnRightEdge ? 'both' : isOnLeftEdge ? 'left' : 'right'
       if (!isDragging.current) {
         canStartDrag.current = true
       }
@@ -321,8 +352,10 @@ const DragContainer: FC<{
   }
 
   const router = useRouter()
-  const { previousLink, nextLink, previousDate, nextDate } =
-    useCalendarControl(targetDate)
+  const { previousLink, nextLink, previousDate, nextDate } = useCalendarControl(
+    targetDate,
+    displayMode
+  )
   useEffect(() => {
     router.prefetch(previousLink)
     router.prefetch(nextLink)
@@ -330,10 +363,12 @@ const DragContainer: FC<{
 
   const handleDragEnd = async (info: PanInfo) => {
     const shouldSnapToPrevious =
-      currentEdgeType.current !== 'right' &&
+      (currentEdgeType.current === 'both' ||
+        currentEdgeType.current === 'left') &&
       (info.offset.x > dragContainerWidth / 2 || info.velocity.x > 20)
     const shouldSnapToNext =
-      currentEdgeType.current !== 'left' &&
+      (currentEdgeType.current === 'both' ||
+        currentEdgeType.current === 'right') &&
       (info.offset.x < -dragContainerWidth / 2 || info.velocity.x < -20)
 
     currentEdgeType.current = undefined
@@ -439,19 +474,20 @@ const ChartContent = forwardRef<
           key={date.getTime()}
           date={date}
           w={`${100 / dailySleepsList.length}%`}
-          h="100%"
-          px="1"
+          h="full"
         >
-          <Box position="relative" height="100%" flex="1">
-            {sleeps &&
-              sleeps.map((sleep) => (
-                <SleepBarWithDetail
-                  key={sleep.start.getTime()}
-                  sleep={sleep}
-                  isHovered={hoveredSleepId === sleep.id}
-                  setHoveredSleepId={setHoveredSleepId}
-                />
-              ))}
+          <Box position="relative" h="full" flex="1" px="15%">
+            <Box position="relative" h="full">
+              {sleeps &&
+                sleeps.map((sleep) => (
+                  <SleepBarWithDetail
+                    key={sleep.start.getTime()}
+                    sleep={sleep}
+                    isHovered={hoveredSleepId === sleep.id}
+                    setHoveredSleepId={setHoveredSleepId}
+                  />
+                ))}
+            </Box>
           </Box>
         </ChartColumn>
       ))}

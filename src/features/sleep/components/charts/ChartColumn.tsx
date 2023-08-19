@@ -13,7 +13,7 @@ type Props = {
 }
 
 const ChartColumn: FC<Props & BoxProps> = memo(
-  ({ date, headerHeight = 48, colMinWidth = 16, children, ...rest }) => {
+  ({ date, headerHeight = 48, colMinWidth = 24, children, ...rest }) => {
     const dayRed = useColorModeValue('red.600', 'red.300')
     const dayBlue = useColorModeValue('blue.600', 'blue.300')
 

@@ -12,6 +12,7 @@ import UserPublicPage from './components/UserPublicPage'
 import { getUser } from '@/features/user/repositories/users'
 import { getPredictions } from '@/features/sleep/repositories/predictions'
 import { SearchParams } from '@/types/global'
+import { DisplayMode } from '@/features/sleep/types/chart'
 
 type Props = {
   params: { userId: string }
@@ -54,11 +55,17 @@ const UserPage = async ({ params, searchParams }: Props) => {
     notFound()
   }
 
+  const displayMode =
+    (typeof searchParams.view === 'string' &&
+      (searchParams.view as DisplayMode)) ||
+    'month'
+
   return (
     <UserPublicPage
       user={user}
       predictions={predictions}
       targetDate={targetDate}
+      displayMode={displayMode}
     />
   )
 }

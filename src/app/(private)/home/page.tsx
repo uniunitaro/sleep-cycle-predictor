@@ -12,6 +12,7 @@ import { getSleeps } from '@/features/sleep/repositories/sleeps'
 import { getMyPredictions } from '@/features/sleep/repositories/predictions'
 import { SearchParams } from '@/types/global'
 import { redirectBasedOnAuthState } from '@/features/auth/utils/redirectBasedOnAuthState'
+import { DisplayMode } from '@/features/sleep/types/chart'
 
 export const metadata: Metadata = {
   title: 'ホーム - Sleep Cycle Predictor',
@@ -38,10 +39,20 @@ const HomePage = async ({ searchParams }: { searchParams: SearchParams }) => {
     end: addDays(endOfMonth(addMonths(targetDate, 1)), 1),
   })
 
+  const displayMode =
+    (typeof searchParams.view === 'string' &&
+      (searchParams.view as DisplayMode)) ||
+    'month'
+
   return (
     sleeps &&
     predictions && (
-      <Home sleeps={sleeps} predictions={predictions} targetDate={targetDate} />
+      <Home
+        sleeps={sleeps}
+        predictions={predictions}
+        targetDate={targetDate}
+        displayMode={displayMode}
+      />
     )
   )
 }

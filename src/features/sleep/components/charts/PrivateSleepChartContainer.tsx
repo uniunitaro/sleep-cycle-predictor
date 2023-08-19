@@ -5,6 +5,7 @@ import { AddIcon } from '@chakra-ui/icons'
 import SleepInputModal from '../inputs/SleepInputModal/SleepInputModal'
 import { Prediction, Sleep } from '../../types/sleep'
 import RightColumn from '../RightColumn'
+import { DisplayMode } from '../../types/chart'
 import SleepChart from './SleepChart/SleepChart'
 import { Box, Container, Grid, Show } from '@/components/chakra'
 import FAB from '@/components/FAB/FAB'
@@ -14,7 +15,8 @@ const PrivateSleepChartContainer: FC<{
   sleeps: Sleep[]
   predictions: Prediction[]
   targetDate: Date
-}> = ({ sleeps, predictions, targetDate }) => {
+  displayMode: DisplayMode
+}> = ({ sleeps, predictions, targetDate, displayMode }) => {
   const { isOpen, onOpen, onClose } = useHistoriedModal()
 
   return (
@@ -35,6 +37,7 @@ const PrivateSleepChartContainer: FC<{
             sleeps={sleeps}
             predictions={predictions}
             targetDate={targetDate}
+            displayMode={displayMode}
           />
           <Show above="md">
             <RightColumn

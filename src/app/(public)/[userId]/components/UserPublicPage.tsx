@@ -3,6 +3,7 @@ import dynamic from 'next/dynamic'
 import { Box, Container, Flex, Heading } from '@/components/chakra'
 import { User } from '@/features/user/types/user'
 import { Prediction } from '@/features/sleep/types/sleep'
+import { DisplayMode } from '@/features/sleep/types/chart'
 
 // TODO テスタビリティ的にasyncなRSCはContainerコンポーネント的に扱うべきかも
 
@@ -10,7 +11,8 @@ const UserPublicPage: FC<{
   user: User
   predictions: Prediction[]
   targetDate: Date
-}> = ({ user, predictions, targetDate }) => {
+  displayMode: DisplayMode
+}> = ({ user, predictions, targetDate, displayMode }) => {
   const PublicSleepChartContainer = dynamic(
     () =>
       import('@/features/sleep/components/charts/PublicSleepChartContainer'),
@@ -34,6 +36,7 @@ const UserPublicPage: FC<{
               userId={user.id}
               predictions={predictions}
               targetDate={targetDate}
+              displayMode={displayMode}
             />
           </Box>
         </Flex>
