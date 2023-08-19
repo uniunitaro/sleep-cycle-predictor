@@ -31,7 +31,6 @@ import {
   BottomSheetFooter,
   BottomSheetHeader,
 } from '@/components/BottomSheet/BottomSheet'
-import { useNextTick } from '@/hooks/useNextTick'
 
 type SleepInputType = ComponentProps<typeof SleepInputForm>['sleeps']
 type Props = Omit<ModalProps, 'children'> & { originalSleep?: Sleep }
@@ -48,13 +47,12 @@ const SleepInputModal = forwardRef<HTMLDivElement, Props>(
     const [sleeps, setSleeps] = useState<SleepInputType>(initSleeps())
 
     useEffect(() => {
-      if (!modalProps.isOpen) {
+      if (modalProps.isOpen) {
         setSleeps(initSleeps())
       }
     }, [initSleeps, modalProps.isOpen])
 
     const [isLoading, startTransition] = useTransition()
-    const nextTick = useNextTick()
     const handleSubmit = () => {
       // TODO アラート追加
       // if (!isBefore(start, end)) return
@@ -65,9 +63,7 @@ const SleepInputModal = forwardRef<HTMLDivElement, Props>(
               sleeps.map((sleep) => ({ ...sleep, id: undefined }))
             )
           : await addSleep(sleeps.map((sleep) => ({ ...sleep, id: undefined })))
-        nextTick(() => {
-          modalProps.onClose()
-        })
+        modalProps.onClose()
       })
     }
 

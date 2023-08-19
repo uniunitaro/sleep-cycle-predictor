@@ -23,20 +23,15 @@ import {
   BottomSheetBody,
   BottomSheetFooter,
 } from '@/components/BottomSheet/BottomSheet'
-import { useNextTick } from '@/hooks/useNextTick'
 
 type Props = Omit<ModalProps, 'children'> & { sleep: Sleep }
 const SleepDeleteModal = forwardRef<HTMLDivElement, Props>(
   ({ sleep, ...modalProps }, ref) => {
     const [isLoading, startTransition] = useTransition()
-    const nextTick = useNextTick()
     const handleSubmit = () => {
       startTransition(async () => {
         await deleteSleep(sleep.id)
-
-        nextTick(() => {
-          modalProps.onClose()
-        })
+        modalProps.onClose()
       })
     }
     const cancelRef = useRef<HTMLButtonElement>(null)
