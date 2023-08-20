@@ -4,10 +4,13 @@ import {
   addDays,
   addMonths,
   endOfMonth,
+  endOfWeek,
   startOfMonth,
+  startOfWeek,
   subDays,
   subMonths,
 } from 'date-fns'
+import { cookies } from 'next/headers'
 import UserPublicPage from './components/UserPublicPage'
 import { getUser } from '@/features/user/repositories/users'
 import { getPredictions } from '@/features/sleep/repositories/predictions'
@@ -46,19 +49,29 @@ const UserPage = async ({ params, searchParams }: Props) => {
     return new Date(date)
   })()
 
+  const storedDisplayMode = cookies().get('displayMode')?.value as
+    | DisplayMode
+    | undefined
+  const displayMode =
+    (typeof searchParams.view === 'string' &&
+      (searchParams.view as DisplayMode)) ||
+    storedDisplayMode ||
+    'month'
+
   const { predictions, error: predictionsError } = await getPredictions({
     userId,
-    start: subDays(startOfMonth(subMonths(targetDate, 1)), 1),
-    end: addDays(endOfMonth(addMonths(targetDate, 1)), 1),
+    start:
+      displayMode === 'month'
+        ? subDays(startOfMonth(subMonths(targetDate, 1)), 1)
+        : subDays(startOfWeek(startOfMonth(targetDate)), 1),
+    end:
+      displayMode === 'month'
+        ? addDays(endOfMonth(addMonths(targetDate, 1)), 1)
+        : addDays(endOfWeek(endOfMonth(targetDate)), 1),
   })
   if (predictionsError) {
     notFound()
   }
-
-  const displayMode =
-    (typeof searchParams.view === 'string' &&
-      (searchParams.view as DisplayMode)) ||
-    'month'
 
   return (
     <UserPublicPage

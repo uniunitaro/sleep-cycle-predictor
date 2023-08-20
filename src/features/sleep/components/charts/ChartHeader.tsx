@@ -1,12 +1,13 @@
 'use client'
 
-import { format } from 'date-fns'
+import { addMonths, format } from 'date-fns'
 import Link from 'next/link'
-import { FC, memo, useEffect, useState } from 'react'
+import { FC, memo, useEffect, useState, useTransition } from 'react'
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'
 import { useRouter } from 'next/navigation'
 import { useCalendarControl } from '../../hooks/useCalendarControl'
 import { DisplayMode } from '../../types/chart'
+import { setCookie } from '../../server/setCookie'
 import {
   Flex,
   HStack,
@@ -31,9 +32,13 @@ const ChartHeader: FC<{ targetDate: Date; displayMode: DisplayMode }> = memo(
       setCurrentView(displayMode)
     }, [displayMode])
 
+    const [, startTransition] = useTransition()
     const { addSearchParamsWithCurrentPathname } = useHandleSearchParams()
     const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
       setCurrentView(e.target.value as DisplayMode)
+      startTransition(() => {
+        setCookie('displayMode', e.target.value, addMonths(new Date(), 1))
+      })
       router.push(addSearchParamsWithCurrentPathname('view', e.target.value))
     }
 

@@ -2,11 +2,16 @@ import { Metadata } from 'next'
 import {
   addDays,
   addMonths,
+  addWeeks,
   endOfMonth,
+  endOfWeek,
   startOfMonth,
+  startOfWeek,
   subDays,
   subMonths,
+  subWeeks,
 } from 'date-fns'
+import { cookies } from 'next/headers'
 import Home from './components/Home'
 import { getSleeps } from '@/features/sleep/repositories/sleeps'
 import { getMyPredictions } from '@/features/sleep/repositories/predictions'
@@ -28,21 +33,37 @@ const HomePage = async ({ searchParams }: { searchParams: SearchParams }) => {
     return new Date(date)
   })()
 
-  // TODO エラー処理
-  const { sleeps, error } = await getSleeps({
-    start: subDays(startOfMonth(subMonths(targetDate, 1)), 1),
-    end: addDays(endOfMonth(addMonths(targetDate, 1)), 1),
-  })
-
-  const { predictions, error: predictionsError } = await getMyPredictions({
-    start: subDays(startOfMonth(subMonths(targetDate, 1)), 1),
-    end: addDays(endOfMonth(addMonths(targetDate, 1)), 1),
-  })
-
+  const storedDisplayMode = cookies().get('displayMode')?.value as
+    | DisplayMode
+    | undefined
   const displayMode =
     (typeof searchParams.view === 'string' &&
       (searchParams.view as DisplayMode)) ||
+    storedDisplayMode ||
     'month'
+
+  // TODO エラー処理
+  const { sleeps, error } = await getSleeps({
+    start:
+      displayMode === 'month'
+        ? subDays(startOfMonth(subMonths(targetDate, 1)), 1)
+        : subDays(startOfWeek(subWeeks(startOfMonth(targetDate), 1)), 1),
+    end:
+      displayMode === 'month'
+        ? addDays(endOfMonth(addMonths(targetDate, 1)), 1)
+        : addDays(endOfWeek(addWeeks(endOfMonth(targetDate), 1)), 1),
+  })
+
+  const { predictions, error: predictionsError } = await getMyPredictions({
+    start:
+      displayMode === 'month'
+        ? subDays(startOfMonth(subMonths(targetDate, 1)), 1)
+        : subDays(startOfWeek(subWeeks(startOfMonth(targetDate), 1)), 1),
+    end:
+      displayMode === 'month'
+        ? addDays(endOfMonth(addMonths(targetDate, 1)), 1)
+        : addDays(endOfWeek(addWeeks(endOfMonth(targetDate), 1)), 1),
+  })
 
   return (
     sleeps &&
