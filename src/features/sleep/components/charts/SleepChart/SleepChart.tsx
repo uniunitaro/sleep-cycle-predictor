@@ -185,7 +185,7 @@ const SleepChart: FC<Props> = memo(
 
     return (
       <>
-        <CardMdOnly h="100%">
+        <CardMdOnly h="100%" minH="0">
           <CardBodyMdOnly h="100%" py={{ base: 2, md: 5 }}>
             <Stack h="100%">
               <ChartHeader
