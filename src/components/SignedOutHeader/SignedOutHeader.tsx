@@ -1,22 +1,27 @@
 import Link from 'next/link'
+import { FC, ReactNode } from 'react'
 import {
   Button,
   ButtonGroup,
   Container,
   Flex,
+  HStack,
   Show,
   Spacer,
 } from '@/components/chakra'
 import Logo from '@/components/Logo/Logo'
 
-const SignedOutHeader = () => {
+const SignedOutHeader: FC<{ drawer?: ReactNode }> = ({ drawer }) => {
   return (
     <header>
       <Container maxW="8xl" height="16">
         <Flex align="center" h="100%">
-          <Link href="/">
-            <Logo />
-          </Link>
+          <HStack spacing="4">
+            {drawer}
+            <Link href="/">
+              <Logo />
+            </Link>
+          </HStack>
           <Spacer />
           <ButtonGroup spacing="4">
             <Link href="/signin" passHref legacyBehavior>

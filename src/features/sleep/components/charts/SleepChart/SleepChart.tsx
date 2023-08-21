@@ -247,7 +247,6 @@ const SleepChart: FC<Props> = memo(
                         displayMode={displayMode}
                         currentChartRef={currentChartRef}
                         onDateChange={(date) => {
-                          console.log(date, 'Uhu')
                           setOptimisticTargetDate(date)
                         }}
                       >

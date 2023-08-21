@@ -4,6 +4,7 @@ import { Box, Container, Flex, Heading } from '@/components/chakra'
 import { User } from '@/features/user/types/user'
 import { Prediction } from '@/features/sleep/types/sleep'
 import { DisplayMode } from '@/features/sleep/types/chart'
+import ChartPageHeader from '@/components/ChartPageHeader'
 
 // TODO テスタビリティ的にasyncなRSCはContainerコンポーネント的に扱うべきかも
 
@@ -19,7 +20,8 @@ const UserPublicPage: FC<{
     { ssr: false }
   )
   return (
-    <Box as="main" h="100%">
+    <Flex as="main" direction="column" h="100%">
+      <ChartPageHeader displayMode={displayMode} />
       <Container
         maxW="1000px"
         h="100%"
@@ -41,7 +43,7 @@ const UserPublicPage: FC<{
           </Box>
         </Flex>
       </Container>
-    </Box>
+    </Flex>
   )
 }
 

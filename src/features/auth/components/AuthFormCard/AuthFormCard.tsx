@@ -8,7 +8,7 @@ const AuthFormCard: FC<{ children: React.ReactNode }> = ({ children }) => {
       px={{ base: '4', md: '10' }}
       bg={{ base: 'transparent', md: 'contentBg' }}
       boxShadow="none"
-      borderRadius={{ base: 'none', md: 'xl' }}
+      borderRadius={{ base: 'none', md: '2xl' }}
     >
       {children}
     </Card>

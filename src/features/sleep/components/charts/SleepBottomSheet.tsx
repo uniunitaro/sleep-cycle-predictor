@@ -4,7 +4,7 @@ import { DeleteIcon, EditIcon } from '@chakra-ui/icons'
 import SleepOverview from '../Lists/SleepOverview'
 import {} from '../atoms/globalModals'
 import { Prediction, Sleep } from '../../types/sleep'
-import { Box, Button, Divider } from '@/components/chakra'
+import { Box, Button, ButtonProps, Divider } from '@/components/chakra'
 import {
   BottomSheet,
   BottomSheetBody,
@@ -35,38 +35,38 @@ const SleepBottomSheet: FC<
         {sleep && (
           <Box>
             <Divider opacity="1" />
-            <Button
-              w="full"
-              h="14"
-              px="6"
-              variant="ghost"
-              rounded="none"
+            <BottomSheetButton
               leftIcon={<EditIcon color="secondaryGray" />}
-              iconSpacing="6"
-              fontWeight="medium"
-              justifyContent="left"
               onClick={onClickEdit}
             >
               睡眠記録を編集
-            </Button>
-            <Button
-              w="full"
-              h="14"
-              px="6"
-              variant="ghost"
-              rounded="none"
-              justifyContent="left"
-              iconSpacing="6"
-              fontWeight="medium"
+            </BottomSheetButton>
+            <BottomSheetButton
               leftIcon={<DeleteIcon color="secondaryGray" />}
               onClick={onClickDelete}
             >
               睡眠記録を削除
-            </Button>
+            </BottomSheetButton>
           </Box>
         )}
       </BottomSheetBody>
     </BottomSheet>
+  )
+}
+
+const BottomSheetButton: FC<ButtonProps> = (props) => {
+  return (
+    <Button
+      w="full"
+      h="14"
+      px="6"
+      variant="ghost"
+      rounded="none"
+      justifyContent="left"
+      iconSpacing="6"
+      fontWeight="medium"
+      {...props}
+    />
   )
 }
 

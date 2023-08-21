@@ -52,7 +52,7 @@ export const theme = extendTheme({
             _focusVisible: {
               borderColor: mode('brand.500', 'brand.300')(props),
             },
-            borderRadius: 'lg',
+            borderRadius: 'xl',
             bg: mode('white', 'whiteAlpha.50')(props),
           },
         }),
@@ -144,7 +144,7 @@ export const theme = extendTheme({
       parts: ['container'],
       baseStyle: {
         container: {
-          borderRadius: 'lg',
+          borderRadius: 'xl',
           fontSize: 'sm',
         },
       },
@@ -153,7 +153,7 @@ export const theme = extendTheme({
       parts: ['container'],
       baseStyle: {
         container: {
-          borderRadius: 'xl',
+          borderRadius: '2xl',
           boxShadow: 'none',
         },
       },
@@ -175,7 +175,7 @@ export const theme = extendTheme({
         //   backdropFilter: 'blur(20px) saturate(180%)',
         // },
         dialog: {
-          borderRadius: 'xl',
+          borderRadius: '2xl',
         },
       },
     },
