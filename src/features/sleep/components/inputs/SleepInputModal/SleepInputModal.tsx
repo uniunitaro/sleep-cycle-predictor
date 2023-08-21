@@ -20,6 +20,7 @@ import {
   ModalHeader,
   ModalOverlay,
   ModalProps,
+  useBreakpointValue,
 } from '@/components/chakra'
 import { addSleep, updateSleep } from '@/features/sleep/repositories/sleeps'
 import { Sleep } from '@/features/sleep/types/sleep'
@@ -59,8 +60,14 @@ const SleepInputModal = forwardRef<HTMLDivElement, Props>(
       })
     }
 
+    const isMobile = useBreakpointValue({ base: true, md: false })
+
     return (
-      <Modal isCentered scrollBehavior="inside" {...modalProps}>
+      <Modal
+        isCentered
+        scrollBehavior={isMobile ? 'inside' : 'outside'}
+        {...modalProps}
+      >
         <ModalOverlay />
         <ModalContent mx="4" ref={ref}>
           <ModalHeader>
