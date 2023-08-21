@@ -5,29 +5,19 @@ import SleepOverview from '../Lists/SleepOverview'
 import {} from '../atoms/globalModals'
 import { Prediction, Sleep } from '../../types/sleep'
 import { Box, Button, ButtonProps, Divider } from '@/components/chakra'
-import {
-  BottomSheet,
-  BottomSheetBody,
-  BottomSheetProps,
-} from '@/components/BottomSheet/BottomSheet'
+import { Drawer, DrawerBody, DrawerProps } from '@/components/Drawer/Drawer'
 
 const SleepBottomSheet: FC<
-  Omit<BottomSheetProps, 'children'> & {
+  Omit<DrawerProps, 'children' | 'placement'> & {
     sleep?: Sleep
     prediction?: Prediction
     onClickEdit?: () => void
     onClickDelete?: () => void
   }
-> = ({
-  sleep,
-  prediction,
-  onClickEdit,
-  onClickDelete,
-  ...bottomSheetProps
-}) => {
+> = ({ sleep, prediction, onClickEdit, onClickDelete, ...DrawerProps }) => {
   return (
-    <BottomSheet {...bottomSheetProps}>
-      <BottomSheetBody px="0">
+    <Drawer {...DrawerProps} placement="bottom">
+      <DrawerBody px="0">
         <Box px="6" pb="4">
           {sleep && <SleepOverview sleep={sleep} />}
           {prediction && <SleepOverview prediction={prediction} />}
@@ -49,8 +39,8 @@ const SleepBottomSheet: FC<
             </BottomSheetButton>
           </Box>
         )}
-      </BottomSheetBody>
-    </BottomSheet>
+      </DrawerBody>
+    </Drawer>
   )
 }
 

@@ -7,16 +7,13 @@ import {
   Box,
   Button,
   ButtonProps,
-  Drawer,
-  DrawerBody,
-  DrawerContent,
-  DrawerHeader,
-  DrawerOverlay,
   Icon,
   IconButton,
+  useColorModeValue,
   useDisclosure,
 } from './chakra'
 import Logo from './Logo/Logo'
+import { Drawer, DrawerBody, DrawerHeader } from './Drawer/Drawer'
 import { DisplayMode } from '@/features/sleep/types/chart'
 import { useDisplayMode } from '@/features/sleep/hooks/useDisplayMode'
 
@@ -34,36 +31,33 @@ const DrawerMenu: FC<{ displayMode: DisplayMode }> = ({ displayMode }) => {
         onClick={onOpen}
       />
       <Drawer isOpen={isOpen} onClose={onClose} placement="left">
-        <DrawerOverlay />
-        <DrawerContent borderRightRadius="2xl">
-          <DrawerHeader>
-            <Logo />
-          </DrawerHeader>
-          <DrawerBody px="0">
-            <Box pr="3">
-              <DrawerItem
-                leftIcon={<Icon as={BsCalendar3Week} />}
-                isSelected={currentDisplayMode === 'week'}
-                onClick={() => {
-                  handleChange('week')
-                  onClose()
-                }}
-              >
-                週
-              </DrawerItem>
-              <DrawerItem
-                leftIcon={<Icon as={BsCalendar3} />}
-                isSelected={currentDisplayMode === 'month'}
-                onClick={() => {
-                  handleChange('month')
-                  onClose()
-                }}
-              >
-                月
-              </DrawerItem>
-            </Box>
-          </DrawerBody>
-        </DrawerContent>
+        <DrawerHeader bgColor="globalBg">
+          <Logo />
+        </DrawerHeader>
+        <DrawerBody px="0" bgColor="globalBg">
+          <Box pr="3">
+            <DrawerItem
+              leftIcon={<Icon as={BsCalendar3Week} />}
+              isSelected={currentDisplayMode === 'week'}
+              onClick={() => {
+                handleChange('week')
+                onClose()
+              }}
+            >
+              週
+            </DrawerItem>
+            <DrawerItem
+              leftIcon={<Icon as={BsCalendar3} />}
+              isSelected={currentDisplayMode === 'month'}
+              onClick={() => {
+                handleChange('month')
+                onClose()
+              }}
+            >
+              月
+            </DrawerItem>
+          </Box>
+        </DrawerBody>
       </Drawer>
     </>
   )
@@ -73,6 +67,8 @@ const DrawerItem: FC<ButtonProps & { isSelected?: boolean }> = ({
   isSelected,
   ...props
 }) => {
+  const bgColor = useColorModeValue('brand.100', 'brand.800')
+  const bgActiveColor = useColorModeValue('brand.200', 'brand.700')
   return (
     <Button
       w="full"
@@ -83,9 +79,9 @@ const DrawerItem: FC<ButtonProps & { isSelected?: boolean }> = ({
       fontWeight="medium"
       justifyContent="left"
       iconSpacing="6"
-      bgColor={isSelected ? 'brand.100' : undefined}
-      _hover={{ bgColor: 'brand.100' }}
-      _active={{ bgColor: 'brand.200' }}
+      bgColor={isSelected ? bgColor : undefined}
+      _hover={{ bgColor: bgColor }}
+      _active={{ bgColor: bgActiveColor }}
       {...props}
     />
   )

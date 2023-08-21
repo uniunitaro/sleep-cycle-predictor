@@ -39,6 +39,10 @@ export const theme = extendTheme({
         default: 'blue.300',
         _dark: 'blue.500',
       },
+      globalBg: {
+        default: '#f7f9f7',
+        _dark: 'gray.800',
+      },
     },
   },
   colors: {
@@ -181,10 +185,10 @@ export const theme = extendTheme({
     },
   },
   styles: {
-    global: (props: StyleFunctionProps) => ({
+    global: {
       body: {
-        bg: mode('#f7f9f7', 'gray.800')(props),
+        bg: 'globalBg',
       },
-    }),
+    },
   },
 })

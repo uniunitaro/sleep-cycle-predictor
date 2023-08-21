@@ -27,9 +27,9 @@ import {
 } from '../chakra'
 
 export {
-  ModalBody as BottomSheetBody,
-  ModalFooter as BottomSheetFooter,
-  ModalHeader as BottomSheetHeader,
+  ModalBody as DrawerBody,
+  ModalFooter as DrawerFooter,
+  ModalHeader as DrawerHeader,
 } from '../chakra'
 
 const MotionSection = chakra(motion.section, {
@@ -37,11 +37,12 @@ const MotionSection = chakra(motion.section, {
     isValidMotionProp(prop) || shouldForwardProp(prop),
 })
 
-export type BottomSheetProps = Omit<
+export type DrawerProps = Omit<
   ModalProps,
   'motionPreset' | 'scrollBehavior'
->
-export const BottomSheet: FC<BottomSheetProps> = ({
+> & { placement: 'bottom' | 'left' }
+export const Drawer: FC<DrawerProps> = ({
+  placement,
   onCloseComplete,
   ...modalProps
 }) => {
@@ -56,10 +57,17 @@ export const BottomSheet: FC<BottomSheetProps> = ({
     if (modalProps.isOpen) {
       const startOpenAnimation = () => {
         overlayControls.start({ opacity: 1 })
-        contentControls.start({
-          y: 0,
-          transition: { duration: 0.2, ease: 'easeInOut' },
-        })
+        if (placement === 'bottom') {
+          contentControls.start({
+            y: 0,
+            transition: { duration: 0.2, ease: 'easeInOut' },
+          })
+        } else {
+          contentControls.start({
+            x: 0,
+            transition: { duration: 0.2, ease: 'easeInOut' },
+          })
+        }
       }
 
       setIsOpen(true)
@@ -71,10 +79,17 @@ export const BottomSheet: FC<BottomSheetProps> = ({
       }, 0)
     } else {
       const startCloseAnimation = async () => {
-        contentControls.start({
-          y: '100%',
-          transition: { duration: 0.15, ease: 'easeInOut' },
-        })
+        if (placement === 'bottom') {
+          contentControls.start({
+            y: '100%',
+            transition: { duration: 0.15, ease: 'easeInOut' },
+          })
+        } else {
+          contentControls.start({
+            x: '-100%',
+            transition: { duration: 0.15, ease: 'easeInOut' },
+          })
+        }
         await overlayControls.start({
           opacity: 0,
           transition: { duration: 0.15, ease: 'easeInOut' },
@@ -87,18 +102,38 @@ export const BottomSheet: FC<BottomSheetProps> = ({
         onCloseComplete?.()
       })()
     }
-  }, [contentControls, modalProps.isOpen, onCloseComplete, overlayControls])
+  }, [
+    contentControls,
+    modalProps.isOpen,
+    onCloseComplete,
+    overlayControls,
+    placement,
+  ])
 
   const handleDragEnd = async (info: PanInfo) => {
+    const contentHeight = modalContentRef.current?.clientHeight ?? 0
+    const contentWidth = modalContentRef.current?.clientWidth ?? 0
+
     const shouldClose =
-      (info.velocity.y >= 0 && info.offset.y > 50) || info.velocity.y > 20
+      placement === 'bottom'
+        ? (info.velocity.y >= 0 && info.offset.y > contentHeight / 3) ||
+          info.velocity.y > 20
+        : (info.velocity.x <= 0 && info.offset.x < -contentWidth / 3) ||
+          info.velocity.x < -20
     if (shouldClose) {
       modalProps.onClose()
     } else {
-      contentControls.start({
-        y: 0,
-        transition: { duration: 0.2, ease: 'easeInOut' },
-      })
+      if (placement === 'bottom') {
+        contentControls.start({
+          y: 0,
+          transition: { duration: 0.2, ease: 'easeInOut' },
+        })
+      } else {
+        contentControls.start({
+          x: 0,
+          transition: { duration: 0.2, ease: 'easeInOut' },
+        })
+      }
     }
   }
 
@@ -145,6 +180,8 @@ export const BottomSheet: FC<BottomSheetProps> = ({
 
     if (!modalContentRef.current.contains(e.target as Node)) {
       canDrag.current = false
+    } else if (placement === 'left') {
+      canDrag.current = true
     } else if (offsetY < TOP_BAR_HEIGHT) {
       canDrag.current = true
     } else if (
@@ -171,11 +208,20 @@ export const BottomSheet: FC<BottomSheetProps> = ({
 
   const shouldClose = useRef(false)
   const handleContainerTouchStart = (e: TouchEvent) => {
-    const offsetY =
-      e.touches[0].clientY -
-      (modalContentRef.current?.getBoundingClientRect().top ?? 0)
-    if (offsetY < 0) {
-      shouldClose.current = true
+    if (placement === 'bottom') {
+      const offsetY =
+        e.touches[0].clientY -
+        (modalContentRef.current?.getBoundingClientRect().top ?? 0)
+      if (offsetY < 0) {
+        shouldClose.current = true
+      }
+    } else {
+      const offsetX =
+        e.touches[0].clientX -
+        (modalContentRef.current?.getBoundingClientRect().right ?? 0)
+      if (offsetX > 0) {
+        shouldClose.current = true
+      }
     }
   }
   const handleContainerTouchEnd = () => {
@@ -195,6 +241,7 @@ export const BottomSheet: FC<BottomSheetProps> = ({
       containerRef?.removeEventListener('touchend', handleContainerTouchEnd)
     }
   })
+
   return (
     <Modal
       {...modalProps}
@@ -216,22 +263,27 @@ export const BottomSheet: FC<BottomSheetProps> = ({
         ref={modalContentRef}
         as={ModalContent}
         pos="absolute"
-        bottom="0px"
+        left={placement === 'left' ? 0 : undefined}
+        bottom={placement === 'bottom' ? 0 : undefined}
+        h={placement === 'left' ? 'full' : undefined}
         maxH="full"
+        w={placement === 'left' ? 'xs' : undefined}
         my="0"
         borderRadius="none"
-        borderTopRadius="2xl"
+        borderTopRadius={placement === 'bottom' ? '2xl' : undefined}
+        borderRightRadius={placement === 'left' ? '2xl' : undefined}
+        overflow="hidden"
         dragControls={dragControls}
         dragListener={false}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
         onPointerMove={handlePointerMove}
-        drag="y"
-        dragConstraints={{ top: 0 }}
+        drag={placement === 'bottom' ? 'y' : 'x'}
+        dragConstraints={placement === 'bottom' ? { top: 0 } : { right: 0 }}
         dragElastic={false}
         onDragEnd={(_, info) => handleDragEnd(info)}
         animate={contentControls}
-        initial={{ y: '100%' }}
+        initial={placement === 'bottom' ? { y: '100%' } : { x: '-100%' }}
         sx={{
           touchAction: 'none',
           '& > *': {
@@ -239,9 +291,11 @@ export const BottomSheet: FC<BottomSheetProps> = ({
           },
         }}
       >
-        <Box display="grid" placeItems="center" pt="2" pb="4">
-          <Box w="16" h="1" rounded="full" bgColor={topBarColor}></Box>
-        </Box>
+        {placement === 'bottom' && (
+          <Box display="grid" placeItems="center" pt="2" pb="4">
+            <Box w="16" h="1" rounded="full" bgColor={topBarColor}></Box>
+          </Box>
+        )}
         {modalProps.children}
       </MotionSection>
     </Modal>
