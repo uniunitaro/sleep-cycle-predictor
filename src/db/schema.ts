@@ -79,8 +79,8 @@ export const sleep = mysqlTable(
       userIdIdx: index('userIdIdx').on(table.userId),
       parentSleepIdIdx: index('parentSleepIdIdx').on(table.parentSleepId),
       searchIdx: index('searchIdx').on(
-        table.userId,
         table.parentSleepId,
+        table.userId,
         table.start,
         table.end
       ),
