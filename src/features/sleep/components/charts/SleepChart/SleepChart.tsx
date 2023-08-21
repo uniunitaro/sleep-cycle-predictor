@@ -67,6 +67,7 @@ import CardBodyMdOnly from '@/components/MdOnlyCards/CardBodyMdOnly'
 import { Prediction, Sleep } from '@/features/sleep/types/sleep'
 import { useCalendarControl } from '@/features/sleep/hooks/useCalendarControl'
 import { DisplayMode } from '@/features/sleep/types/chart'
+import { useOptimistic } from '@/features/sleep/hooks/useOptimistic'
 
 type Props = {
   sleeps: Sleep[]
@@ -76,10 +77,8 @@ type Props = {
 }
 const SleepChart: FC<Props> = memo(
   ({ sleeps, predictions, targetDate, displayMode }) => {
-    const [optimisticTargetDate, setOptimisticTargetDate] = useState(targetDate)
-    useEffect(() => {
-      setOptimisticTargetDate(targetDate)
-    }, [targetDate])
+    const [optimisticTargetDate, setOptimisticTargetDate] =
+      useOptimistic(targetDate)
 
     const startDate =
       displayMode === 'month'
