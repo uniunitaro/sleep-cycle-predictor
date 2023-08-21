@@ -1,1 +1,1 @@
-export type DisplayMode = 'week' | 'month'
+export type DisplayMode = 'week' | 'month' | 'list'

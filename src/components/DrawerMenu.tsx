@@ -2,7 +2,7 @@
 
 import { FC } from 'react'
 import { HamburgerIcon } from '@chakra-ui/icons'
-import { BsCalendar3, BsCalendar3Week } from 'react-icons/bs'
+import { BsCalendar3, BsCalendar3Week, BsListUl } from 'react-icons/bs'
 import {
   Box,
   Button,
@@ -55,6 +55,16 @@ const DrawerMenu: FC<{ displayMode: DisplayMode }> = ({ displayMode }) => {
               }}
             >
               月
+            </DrawerItem>
+            <DrawerItem
+              leftIcon={<Icon as={BsListUl} />}
+              isSelected={currentDisplayMode === 'list'}
+              onClick={() => {
+                handleChange('list')
+                onClose()
+              }}
+            >
+              リスト
             </DrawerItem>
           </Box>
         </DrawerBody>

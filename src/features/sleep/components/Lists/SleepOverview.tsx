@@ -7,6 +7,7 @@ import {
   getDate,
   differenceInHours,
   differenceInMinutes,
+  getDay,
 } from 'date-fns'
 import { ja } from 'date-fns/locale'
 import { BsThreeDotsVertical } from 'react-icons/bs'
@@ -58,11 +59,14 @@ const SleepOverview = forwardRef<
       } satisfies SleepOverviewRef)
   )
 
+  const day = getDay(firstSleep.start)
+  const dayColor = day === 0 ? 'dayRed' : day === 6 ? 'dayBlue' : undefined
+
   return (
     <HStack minH="0" align="normal" gap="2">
       <Box bgColor={sleep ? 'chartBrand' : 'chartBlue'} w="1" rounded="full" />
       <Box flex="1" sx={{ fontVariantNumeric: 'tabular-nums' }}>
-        <Flex align="center">
+        <Flex align="center" color={dayColor}>
           <Box fontSize="sm">
             {format(
               firstSleep.start,
@@ -84,9 +88,12 @@ const SleepOverview = forwardRef<
               {format(s.end, 'HH:mm', { locale: ja })}
             </Box>
             {sleep && (
-              <Box ml="auto" pl="3">
+              <Box ml="auto" pl="3" fontSize="sm">
                 {differenceInHours(s.end, s.start)}時間
-                {differenceInMinutes(s.end, s.start) % 60}分
+                {(differenceInMinutes(s.end, s.start) % 60)
+                  .toString()
+                  .padStart(2, '0')}
+                分
               </Box>
             )}
           </Flex>

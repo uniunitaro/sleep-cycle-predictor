@@ -183,104 +183,98 @@ const SleepChart: FC<Props> = memo(
       (chartContentDimensions?.contentBox.height ?? 0)
 
     return (
-      <>
-        <CardMdOnly h="100%" minH="0">
-          <CardBodyMdOnly h="100%" py={{ base: 2, md: 5 }}>
-            <Stack h="100%">
+      <CardMdOnly h="100%" minH="0">
+        <CardBodyMdOnly h="100%" py={{ base: 2, md: 5 }}>
+          <Stack h="100%">
+            <Box px={{ base: 4, md: 0 }}>
               <ChartHeader
                 targetDate={optimisticTargetDate}
                 displayMode={displayMode}
               />
-              <Flex flex="1" overflowY="auto">
-                <Flex
-                  position="relative"
-                  flex="1"
-                  minH="400px"
-                  overflowX="auto"
+            </Box>
+            <Flex flex="1" overflowY="auto">
+              <Flex position="relative" flex="1" minH="400px" overflowX="auto">
+                <VStack
+                  mr="3"
+                  fontSize="xs"
+                  spacing="0"
+                  pl={{ base: 4, md: 0 }}
                 >
-                  <VStack
-                    mr="3"
-                    fontSize="xs"
-                    spacing="0"
-                    pl={{ base: 4, md: 0 }}
-                  >
-                    <Box
-                      h={`calc(${headerHeight}px - ((100% - ${
+                  <Box
+                    h={`calc(${headerHeight}px - ((100% - ${
+                      headerHeight + scrollBarHeight
+                    }px) / 24) / 2)`}
+                  />
+                  {[...Array(24)].map((_, i) => (
+                    <Center
+                      key={i}
+                      h={`calc((100% - ${
                         headerHeight + scrollBarHeight
-                      }px) / 24) / 2)`}
-                    />
-                    {[...Array(24)].map((_, i) => (
-                      <Center
-                        key={i}
-                        h={`calc((100% - ${
-                          headerHeight + scrollBarHeight
-                        }px) / 24)`}
-                        color="secondaryGray"
-                      >
-                        {i}:00
-                      </Center>
-                    ))}
-                  </VStack>
-                  <Flex flex="1">
-                    <Flex position="relative" flex="1">
-                      <Box>
-                        <Box h={`${headerHeight}px`} />
-                        {[...Array(24)].map((_, i) => (
+                      }px) / 24)`}
+                      color="secondaryGray"
+                    >
+                      {i}:00
+                    </Center>
+                  ))}
+                </VStack>
+                <Flex flex="1">
+                  <Flex position="relative" flex="1">
+                    <Box>
+                      <Box h={`${headerHeight}px`} />
+                      {[...Array(24)].map((_, i) => (
+                        <Box
+                          key={i}
+                          h={`calc((100% - ${
+                            headerHeight + scrollBarHeight
+                          }px) / 24)`}
+                        >
                           <Box
-                            key={i}
-                            h={`calc((100% - ${
-                              headerHeight + scrollBarHeight
-                            }px) / 24)`}
-                          >
-                            <Box
-                              position="absolute"
-                              w="100%"
-                              borderBottom="1px solid"
-                              borderColor="chakra-border-color"
-                            />
-                          </Box>
-                        ))}
-                      </Box>
-                      <DragContainer
-                        targetDate={targetDate}
-                        displayMode={displayMode}
-                        currentChartRef={currentChartRef}
-                        onDateChange={(date) => {
-                          setOptimisticTargetDate(date)
-                        }}
-                      >
-                        {[
-                          previousDailySleepsList,
-                          dailySleepsList,
-                          nextDailySleepsList,
-                        ].map((dailySleepsList, i) => (
-                          <Flex
-                            key={dailySleepsList[0].date.getTime()}
-                            ref={i === 1 ? currentChartRef : undefined}
-                            flex="1"
                             position="absolute"
-                            w="full"
-                            h="full"
-                            right={i === 0 ? '100%' : undefined}
-                            left={i === 2 ? '100%' : undefined}
-                            overflowX="scroll"
-                          >
-                            <ChartContent
-                              dailySleepsList={dailySleepsList}
-                              ref={i === 1 ? chartContentRef : undefined}
-                            />
-                          </Flex>
-                        ))}
-                      </DragContainer>
-                    </Flex>
+                            w="100%"
+                            borderBottom="1px solid"
+                            borderColor="chakra-border-color"
+                          />
+                        </Box>
+                      ))}
+                    </Box>
+                    <DragContainer
+                      targetDate={targetDate}
+                      displayMode={displayMode}
+                      currentChartRef={currentChartRef}
+                      onDateChange={(date) => {
+                        setOptimisticTargetDate(date)
+                      }}
+                    >
+                      {[
+                        previousDailySleepsList,
+                        dailySleepsList,
+                        nextDailySleepsList,
+                      ].map((dailySleepsList, i) => (
+                        <Flex
+                          key={dailySleepsList[0].date.getTime()}
+                          ref={i === 1 ? currentChartRef : undefined}
+                          flex="1"
+                          position="absolute"
+                          w="full"
+                          h="full"
+                          right={i === 0 ? '100%' : undefined}
+                          left={i === 2 ? '100%' : undefined}
+                          overflowX="scroll"
+                        >
+                          <ChartContent
+                            dailySleepsList={dailySleepsList}
+                            ref={i === 1 ? chartContentRef : undefined}
+                          />
+                        </Flex>
+                      ))}
+                    </DragContainer>
                   </Flex>
                 </Flex>
               </Flex>
-            </Stack>
-          </CardBodyMdOnly>
-        </CardMdOnly>
-        <GlobalModals />
-      </>
+            </Flex>
+          </Stack>
+        </CardBodyMdOnly>
+      </CardMdOnly>
     )
   }
 )

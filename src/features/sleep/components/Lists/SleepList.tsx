@@ -1,35 +1,73 @@
-import { FC } from 'react'
+'use client'
+
+import { FC, memo } from 'react'
 import { getMonth } from 'date-fns'
+import { useSetAtom } from 'jotai'
+import {
+  isSleepBottomSheetOpenAtom,
+  selectedPredictionAtom,
+  selectedSleepAtom,
+} from '../atoms/globalModals'
 import SleepOverview from './SleepOverview'
 import { Prediction, Sleep } from '@/features/sleep/types/sleep'
-import { Stack } from '@/components/chakra'
+import { Box, Stack } from '@/components/chakra'
 
 type Props = {
   sleeps: Sleep[]
   predictions: Prediction[]
   targetDate: Date
+  variant: 'mobile' | 'desktop'
 }
-const SleepList: FC<Props> = ({ sleeps, predictions, targetDate }) => {
-  const currentMonthSleeps = sleeps.filter(
-    (sleep) => getMonth(sleep.sleeps[0].start) === getMonth(targetDate)
-  )
-  const currentMonthPredictions = predictions.filter(
-    (prediction) => getMonth(prediction.start) === getMonth(targetDate)
-  )
+const SleepList: FC<Props> = memo(
+  ({ sleeps, predictions, targetDate, variant }) => {
+    const currentMonthSleeps = sleeps.filter(
+      (sleep) => getMonth(sleep.sleeps[0].start) === getMonth(targetDate)
+    )
+    const currentMonthPredictions = predictions.filter(
+      (prediction) => getMonth(prediction.start) === getMonth(targetDate)
+    )
 
-  return (
-    <Stack gap="3">
-      {currentMonthSleeps.map((sleep) => (
-        <SleepOverview sleep={sleep} key={sleep.id} variant="withMenu" />
-      ))}
-      {currentMonthPredictions.map((prediction) => (
-        <SleepOverview
-          prediction={prediction}
-          key={prediction.start.getTime()}
-        />
-      ))}
-    </Stack>
-  )
-}
+    const setIsSleepBottomSheetOpen = useSetAtom(isSleepBottomSheetOpenAtom)
+    const setSelectedSleep = useSetAtom(selectedSleepAtom)
+    const setPrediction = useSetAtom(selectedPredictionAtom)
+
+    const handleClickSleep = (sleep: Sleep) => {
+      setSelectedSleep(sleep)
+      setPrediction(undefined)
+      setIsSleepBottomSheetOpen(true)
+    }
+    const handleClickPrediction = (prediction: Prediction) => {
+      setPrediction(prediction)
+      setSelectedSleep(undefined)
+      setIsSleepBottomSheetOpen(true)
+    }
+
+    return (
+      <Stack gap="3">
+        {currentMonthSleeps.map((sleep) => (
+          <Box key={sleep.id} onClick={() => handleClickSleep(sleep)}>
+            <SleepOverview
+              sleep={sleep}
+              variant={variant === 'desktop' ? 'withMenu' : 'default'}
+            />
+          </Box>
+        ))}
+        {currentMonthPredictions.map((prediction) => (
+          <Box
+            key={prediction.start.getTime()}
+            onClick={() => handleClickPrediction(prediction)}
+          >
+            <SleepOverview
+              prediction={prediction}
+              key={prediction.start.getTime()}
+            />
+          </Box>
+        ))}
+      </Stack>
+    )
+  }
+)
+
+SleepList.displayName = 'SleepList'
 
 export default SleepList

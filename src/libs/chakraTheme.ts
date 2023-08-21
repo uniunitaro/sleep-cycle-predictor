@@ -43,6 +43,14 @@ export const theme = extendTheme({
         default: '#f7f9f7',
         _dark: 'gray.800',
       },
+      dayRed: {
+        default: 'red.600',
+        _dark: 'red.300',
+      },
+      dayBlue: {
+        default: 'blue.600',
+        _dark: 'blue.300',
+      },
     },
   },
   colors: {

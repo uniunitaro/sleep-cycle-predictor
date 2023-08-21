@@ -31,7 +31,7 @@ const ChartHeader: FC<{ targetDate: Date; displayMode: DisplayMode }> = memo(
     }
 
     return (
-      <HStack px={{ base: 4, md: 0 }}>
+      <HStack>
         <IconButton
           as={Link}
           href={previousLink}

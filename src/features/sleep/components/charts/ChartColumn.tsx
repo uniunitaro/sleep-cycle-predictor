@@ -3,7 +3,7 @@
 import { format, getDay } from 'date-fns'
 import { ja } from 'date-fns/locale'
 import { FC, memo } from 'react'
-import { Box, BoxProps, Center, useColorModeValue } from '@/components/chakra'
+import { Box, BoxProps, Center } from '@/components/chakra'
 
 type Props = {
   date: Date
@@ -14,11 +14,9 @@ type Props = {
 
 const ChartColumn: FC<Props & BoxProps> = memo(
   ({ date, headerHeight = 48, colMinWidth = 24, children, ...rest }) => {
-    const dayRed = useColorModeValue('red.600', 'red.300')
-    const dayBlue = useColorModeValue('blue.600', 'blue.300')
-
     const day = getDay(date)
-    const dayColor = day === 0 ? dayRed : day === 6 ? dayBlue : 'secondaryGray'
+    const dayColor =
+      day === 0 ? 'dayRed' : day === 6 ? 'dayBlue' : 'secondaryGray'
 
     return (
       <Box

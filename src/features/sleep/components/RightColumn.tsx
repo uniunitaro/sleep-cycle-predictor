@@ -34,6 +34,7 @@ const RightColumn: FC<Props> = ({ sleeps, predictions, targetDate }) => {
           sleeps={sleeps}
           predictions={predictions}
           targetDate={targetDate}
+          variant="desktop"
         />
       </CardBody>
     </Card>
