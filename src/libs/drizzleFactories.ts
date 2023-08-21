@@ -1,7 +1,16 @@
 import { MySqlTable } from 'drizzle-orm/mysql-core'
 import { faker } from '@faker-js/faker'
+import { SQL } from 'drizzle-orm'
 import { db } from '@/db'
 import { NewConfig, NewSleep, NewUser, sleep, user } from '@/db/schema'
+
+type AddUnionToType<T, U> = T extends object
+  ? {
+      [K in keyof T]: T[K] | U
+    }
+  : T | U
+
+type InsertType<T> = AddUnionToType<T, SQL<unknown>>
 
 const createFactory = <InsertType>(
   model: MySqlTable,
@@ -17,21 +26,27 @@ const createFactory = <InsertType>(
   },
 })
 
-const defaultUser: NewUser = {
+const defaultUser: InsertType<NewUser> = {
   id: faker.string.uuid(),
   nickname: faker.person.firstName(),
   email: faker.internet.email(),
 }
-export const userFactory = createFactory<NewUser>(user, defaultUser)
+export const userFactory = createFactory<InsertType<NewUser>>(user, defaultUser)
 
-const defaultConfig: NewConfig = {
+const defaultConfig: InsertType<NewConfig> = {
   userId: faker.string.uuid(),
 }
-export const configFactory = createFactory<NewConfig>(user, defaultConfig)
+export const configFactory = createFactory<InsertType<NewConfig>>(
+  user,
+  defaultConfig
+)
 
-const defaultSleep: NewSleep = {
+const defaultSleep: InsertType<NewSleep> = {
   start: faker.date.past(),
   end: faker.date.past(),
   userId: faker.string.uuid(),
 }
-export const sleepFactory = createFactory<NewSleep>(sleep, defaultSleep)
+export const sleepFactory = createFactory<InsertType<NewSleep>>(
+  sleep,
+  defaultSleep
+)

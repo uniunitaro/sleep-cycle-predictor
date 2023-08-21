@@ -12,6 +12,7 @@ import {
 } from '@/utils/getAuthUserId'
 import { Result } from '@/types/global'
 import { getLastInsertId } from '@/utils/getLastInsertId'
+import { uuidToBin } from '@/utils/uuidToBin'
 
 const getSleepAndSegmentedSleeps = (sleeps: { start: Date; end: Date }[]) => {
   const sortedSleeps = [...sleeps].sort(
@@ -32,7 +33,7 @@ const checkOverlap = async (
   // 既存のSleepと重複していないかチェック
   const overlappingSleeps = await db.query.sleep.findMany({
     where: and(
-      eq(sleep.userId, userId),
+      eq(sleep.userId, uuidToBin(userId)),
       originalSleepId ? ne(sleep.id, originalSleepId) : undefined,
       originalSleepId
         ? or(
@@ -81,7 +82,7 @@ export const addSleep = async (
 
     await db.transaction(async (tx) => {
       await tx.insert(sleep).values({
-        userId,
+        userId: uuidToBin(userId),
         start: firstSleep.start,
         end: firstSleep.end,
       })
@@ -92,7 +93,7 @@ export const addSleep = async (
           segmentedSleeps.map(
             (s) =>
               ({
-                userId,
+                userId: uuidToBin(userId) as unknown as string,
                 start: s.start,
                 end: s.end,
                 parentSleepId: insertId,
@@ -119,7 +120,7 @@ export const updateSleep = async (
     if (error) throw error
 
     const originalSleep = await db.query.sleep.findFirst({
-      where: and(eq(sleep.userId, userId), eq(sleep.id, id)),
+      where: and(eq(sleep.userId, uuidToBin(userId)), eq(sleep.id, id)),
     })
     if (!originalSleep) throw new Error('sleep not found')
 
@@ -132,7 +133,7 @@ export const updateSleep = async (
       await tx
         .update(sleep)
         .set({
-          userId,
+          userId: uuidToBin(userId),
           start: firstSleep.start,
           end: firstSleep.end,
         })
@@ -145,7 +146,7 @@ export const updateSleep = async (
           segmentedSleeps.map(
             (s) =>
               ({
-                userId,
+                userId: uuidToBin(userId) as unknown as string,
                 start: s.start,
                 end: s.end,
                 parentSleepId: id,
@@ -172,7 +173,7 @@ export const deleteSleep = async (id: number): Promise<{ error?: true }> => {
       .delete(sleep)
       .where(
         and(
-          eq(sleep.userId, userId),
+          eq(sleep.userId, uuidToBin(userId)),
           or(eq(sleep.id, id), eq(sleep.parentSleepId, id))
         )
       )
@@ -198,7 +199,7 @@ export const getSleeps = async ({
 
     const sleeps = await db.query.sleep.findMany({
       where: and(
-        eq(sleep.userId, userId),
+        eq(sleep.userId, uuidToBin(userId)),
         gte(sleep.start, start),
         lte(sleep.end, end),
         isNull(sleep.parentSleepId)

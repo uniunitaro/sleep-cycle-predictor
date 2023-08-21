@@ -5,15 +5,22 @@ import {
   varchar,
   mysqlEnum,
   timestamp,
+  index,
+  binary,
 } from 'drizzle-orm/mysql-core'
-import { InferModel, relations } from 'drizzle-orm'
+import { InferModel, relations, sql } from 'drizzle-orm'
 
 export const user = mysqlTable('User', {
-  id: varchar('id', { length: 255 }).primaryKey().notNull(),
+  id: binary('id', { length: 16 }).primaryKey().notNull(),
   email: varchar('email', { length: 255 }).unique(),
   nickname: varchar('nickname', { length: 255 }).notNull(),
-  createdAt: timestamp('createdAt').defaultNow().notNull(),
-  updatedAt: timestamp('updatedAt').defaultNow().onUpdateNow().notNull(),
+  createdAt: timestamp('createdAt')
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp('updatedAt')
+    .default(sql`CURRENT_TIMESTAMP`)
+    .onUpdateNow()
+    .notNull(),
 })
 
 export type User = InferModel<typeof user>
@@ -26,9 +33,14 @@ export const userRelations = relations(user, ({ one, many }) => ({
 
 export const config = mysqlTable('Config', {
   id: int('id').autoincrement().primaryKey().notNull(),
-  createdAt: timestamp('createdAt').defaultNow().notNull(),
-  updatedAt: timestamp('updatedAt').defaultNow().onUpdateNow().notNull(),
-  userId: varchar('userId', { length: 255 }).notNull().unique(),
+  createdAt: timestamp('createdAt')
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp('updatedAt')
+    .default(sql`CURRENT_TIMESTAMP`)
+    .onUpdateNow()
+    .notNull(),
+  userId: binary('userId', { length: 16 }).unique(),
   predictionSrcDuration: mysqlEnum('predictionSrcDuration', [
     'week1',
     'week2',
@@ -46,15 +58,35 @@ export const config = mysqlTable('Config', {
 export type Config = InferModel<typeof config>
 export type NewConfig = InferModel<typeof config, 'insert'>
 
-export const sleep = mysqlTable('Sleep', {
-  id: int('id').autoincrement().primaryKey().notNull(),
-  createdAt: timestamp('createdAt').defaultNow().notNull(),
-  updatedAt: timestamp('updatedAt').defaultNow().onUpdateNow().notNull(),
-  userId: varchar('userId', { length: 255 }).notNull(),
-  start: datetime('start').notNull(),
-  end: datetime('end').notNull(),
-  parentSleepId: int('parentSleepId'),
-})
+export const sleep = mysqlTable(
+  'Sleep',
+  {
+    id: int('id').autoincrement().primaryKey().notNull(),
+    createdAt: timestamp('createdAt')
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp('updatedAt')
+      .default(sql`CURRENT_TIMESTAMP`)
+      .onUpdateNow()
+      .notNull(),
+    userId: binary('userId', { length: 16 }).notNull(),
+    start: datetime('start').notNull(),
+    end: datetime('end').notNull(),
+    parentSleepId: int('parentSleepId'),
+  },
+  (table) => {
+    return {
+      userIdIdx: index('userIdIdx').on(table.userId),
+      parentSleepIdIdx: index('parentSleepIdIdx').on(table.parentSleepId),
+      searchIdx: index('searchIdx').on(
+        table.userId,
+        table.parentSleepId,
+        table.start,
+        table.end
+      ),
+    }
+  }
+)
 
 export type Sleep = InferModel<typeof sleep>
 export type NewSleep = InferModel<typeof sleep, 'insert'>

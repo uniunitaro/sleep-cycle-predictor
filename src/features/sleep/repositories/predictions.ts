@@ -8,6 +8,7 @@ import { getAuthUserIdWithServerComponent } from '@/utils/getAuthUserId'
 import { db } from '@/db'
 import { config, sleep } from '@/db/schema'
 import { Result } from '@/types/global'
+import { uuidToBin } from '@/utils/uuidToBin'
 
 export const getPredictions = async ({
   userId,
@@ -20,14 +21,14 @@ export const getPredictions = async ({
 }): Promise<Result<{ predictions: Prediction[] }, true>> => {
   try {
     const userConfig = await db.query.config.findFirst({
-      where: eq(config.userId, userId),
+      where: eq(config.userId, uuidToBin(userId)),
     })
     if (!userConfig) throw new Error('config not found')
 
     const srcStart = getSrcStart(userConfig.predictionSrcDuration)
     const sleeps = await db.query.sleep.findMany({
       where: and(
-        eq(sleep.userId, userId),
+        eq(sleep.userId, uuidToBin(userId)),
         gte(sleep.start, srcStart),
         isNull(sleep.parentSleepId)
       ),

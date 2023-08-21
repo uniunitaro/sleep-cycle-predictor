@@ -8,6 +8,27 @@
       "when": 1691787237085,
       "tag": "0000_closed_oracle",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1692642690152,
+      "tag": "0001_wooden_saracen",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1692646767890,
+      "tag": "0002_demonic_roulette",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1692650186462,
+      "tag": "0003_absurd_black_crow",
+      "breakpoints": true
     }
   ]
 }

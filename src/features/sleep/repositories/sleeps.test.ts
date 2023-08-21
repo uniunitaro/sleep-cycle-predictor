@@ -1,16 +1,17 @@
 import { addSleep, deleteSleep, getSleeps, updateSleep } from './sleeps'
 import { db } from '@/db'
 import { sleepFactory } from '@/libs/drizzleFactories'
+import { uuidToBin } from '@/utils/uuidToBin'
 
 jest.mock('@/utils/getAuthUserId', () => ({
   getAuthUserIdWithServerAction: jest
     .fn()
-    .mockResolvedValue({ userId: 'testUser' }),
+    .mockResolvedValue({ userId: '2db90a08-7418-53c0-69dc-6bd37e968357' }),
   getAuthUserIdWithServerComponent: jest
     .fn()
-    .mockResolvedValue({ userId: 'testUser' }),
+    .mockResolvedValue({ userId: '2db90a08-7418-53c0-69dc-6bd37e968357' }),
 }))
-const userId = 'testUser'
+const userId = '2db90a08-7418-53c0-69dc-6bd37e968357'
 
 const testCases = [
   [new Date('2022-01-01T02:00:00.000Z'), new Date('2022-01-01T06:00:00.000Z')],
@@ -31,17 +32,17 @@ describe('getSleeps', () => {
 
     const sleeps = [
       {
-        userId,
+        userId: uuidToBin(userId),
         start: new Date('2022-01-01T00:00:00.000Z'),
         end: new Date('2022-01-01T08:00:00.000Z'),
       },
       {
-        userId,
+        userId: uuidToBin(userId),
         start: new Date('2022-01-02T00:00:00.000Z'),
         end: new Date('2022-01-02T08:00:00.000Z'),
       },
       {
-        userId,
+        userId: uuidToBin(userId),
         start: new Date('2022-01-03T00:00:00.000Z'),
         end: new Date('2022-01-03T08:00:00.000Z'),
       },
@@ -63,12 +64,12 @@ describe('getSleeps', () => {
     const sleeps = [
       {
         id: 100,
-        userId,
+        userId: uuidToBin(userId),
         start: new Date('2022-01-02T00:00:00.000Z'),
         end: new Date('2022-01-02T08:00:00.000Z'),
       },
       {
-        userId,
+        userId: uuidToBin(userId),
         start: new Date('2022-01-02T10:00:00.000Z'),
         end: new Date('2022-01-02T11:00:00.000Z'),
         parentSleepId: 100,
@@ -95,17 +96,17 @@ describe('getSleeps', () => {
     // 降順に並べている
     const sleeps = [
       {
-        userId,
+        userId: uuidToBin(userId),
         start: new Date('2022-01-03T00:00:00.000Z'),
         end: new Date('2022-01-03T08:00:00.000Z'),
       },
       {
-        userId,
+        userId: uuidToBin(userId),
         start: new Date('2022-01-02T00:00:00.000Z'),
         end: new Date('2022-01-02T08:00:00.000Z'),
       },
       {
-        userId,
+        userId: uuidToBin(userId),
         start: new Date('2022-01-01T00:00:00.000Z'),
         end: new Date('2022-01-01T08:00:00.000Z'),
       },
@@ -183,7 +184,7 @@ describe('addSleep', () => {
   describe('Sleepが既存のSleepと重複する場合はoverlapWithRecordedエラーが返される', () => {
     test.each(testCases)('start: %p, end: %p', async (start, end) => {
       await sleepFactory.create({
-        userId,
+        userId: uuidToBin(userId),
         start: new Date('2022-01-01T02:00:00.000Z'),
         end: new Date('2022-01-01T06:00:00.000Z'),
       })
@@ -199,12 +200,12 @@ describe('addSleep', () => {
       await sleepFactory.create([
         {
           id: 1,
-          userId,
+          userId: uuidToBin(userId),
           start: new Date('2021-12-01T00:00:00.000Z'),
           end: new Date('2021-12-01T08:00:00.000Z'),
         },
         {
-          userId,
+          userId: uuidToBin(userId),
           start: new Date('2022-01-01T02:00:00.000Z'),
           end: new Date('2022-01-01T06:00:00.000Z'),
           parentSleepId: 1,
@@ -220,7 +221,7 @@ describe('addSleep', () => {
   describe('SegmentedSleepが既存のSleepと重複する場合はoverlapWithRecordedエラーが返される', () => {
     test.each(testCases)('start: %p, end: %p', async (start, end) => {
       await sleepFactory.create({
-        userId,
+        userId: uuidToBin(userId),
         start: new Date('2022-01-01T02:00:00.000Z'),
         end: new Date('2022-01-01T06:00:00.000Z'),
       })
@@ -242,12 +243,12 @@ describe('addSleep', () => {
       await sleepFactory.create([
         {
           id: 1,
-          userId,
+          userId: uuidToBin(userId),
           start: new Date('2021-12-01T00:00:00.000Z'),
           end: new Date('2021-12-01T08:00:00.000Z'),
         },
         {
-          userId,
+          userId: uuidToBin(userId),
           start: new Date('2022-01-01T02:00:00.000Z'),
           end: new Date('2022-01-01T06:00:00.000Z'),
           parentSleepId: 1,
@@ -284,7 +285,10 @@ describe('addSleep', () => {
 describe('updateSleep', () => {
   test('Sleepレコードが更新される', async () => {
     const originalSleepId = 1
-    await sleepFactory.create({ userId, id: originalSleepId })
+    await sleepFactory.create({
+      userId: uuidToBin(userId),
+      id: originalSleepId,
+    })
 
     const sleeps = [
       {
@@ -313,8 +317,8 @@ describe('updateSleep', () => {
   test('SegmentedSleepを含むSleepレコードが更新される', async () => {
     const originalSleepId = 1
     await sleepFactory.create([
-      { userId, id: originalSleepId },
-      { userId, parentSleepId: originalSleepId },
+      { userId: uuidToBin(userId), id: originalSleepId },
+      { userId: uuidToBin(userId), parentSleepId: originalSleepId },
     ])
 
     const sleeps = [
@@ -343,7 +347,10 @@ describe('updateSleep', () => {
 
   test('リクエストのSleepsが昇順に並び替えられて、最早のものがSleepに、それ以外がSegmentedSleepsとして作成される', async () => {
     const originalSleepId = 1
-    await sleepFactory.create({ userId, id: originalSleepId })
+    await sleepFactory.create({
+      userId: uuidToBin(userId),
+      id: originalSleepId,
+    })
 
     const sleeps = [
       {
@@ -378,10 +385,13 @@ describe('updateSleep', () => {
   describe('Sleepが既存のSleepと重複する場合はoverlapWithRecordedエラーが返される', () => {
     test.each(testCases)('start: %p, end: %p', async (start, end) => {
       const originalSleepId = 1
-      await sleepFactory.create({ userId, id: originalSleepId })
+      await sleepFactory.create({
+        userId: uuidToBin(userId),
+        id: originalSleepId,
+      })
 
       await sleepFactory.create({
-        userId,
+        userId: uuidToBin(userId),
         start: new Date('2022-01-01T02:00:00.000Z'),
         end: new Date('2022-01-01T06:00:00.000Z'),
       })
@@ -395,17 +405,20 @@ describe('updateSleep', () => {
   describe('Sleepが既存のSegmentedSleepと重複する場合はoverlapWithRecordedエラーが返される', () => {
     test.each(testCases)('start: %p, end: %p', async (start, end) => {
       const originalSleepId = 1
-      await sleepFactory.create({ userId, id: originalSleepId })
+      await sleepFactory.create({
+        userId: uuidToBin(userId),
+        id: originalSleepId,
+      })
 
       await sleepFactory.create([
         {
           id: 100,
-          userId,
+          userId: uuidToBin(userId),
           start: new Date('2021-12-01T00:00:00.000Z'),
           end: new Date('2021-12-01T08:00:00.000Z'),
         },
         {
-          userId,
+          userId: uuidToBin(userId),
           start: new Date('2022-01-01T02:00:00.000Z'),
           end: new Date('2022-01-01T06:00:00.000Z'),
           parentSleepId: 100,
@@ -421,10 +434,13 @@ describe('updateSleep', () => {
   describe('SegmentedSleepが既存のSleepと重複する場合はoverlapWithRecordedエラーが返される', () => {
     test.each(testCases)('start: %p, end: %p', async (start, end) => {
       const originalSleepId = 1
-      await sleepFactory.create({ userId, id: originalSleepId })
+      await sleepFactory.create({
+        userId: uuidToBin(userId),
+        id: originalSleepId,
+      })
 
       await sleepFactory.create({
-        userId,
+        userId: uuidToBin(userId),
         start: new Date('2022-01-01T02:00:00.000Z'),
         end: new Date('2022-01-01T06:00:00.000Z'),
       })
@@ -444,17 +460,20 @@ describe('updateSleep', () => {
   describe('SegmentedSleepが既存のSegmentedSleepと重複する場合はoverlapWithRecordedエラーが返される', () => {
     test.each(testCases)('start: %p, end: %p', async (start, end) => {
       const originalSleepId = 1
-      await sleepFactory.create({ userId, id: originalSleepId })
+      await sleepFactory.create({
+        userId: uuidToBin(userId),
+        id: originalSleepId,
+      })
 
       await sleepFactory.create([
         {
           id: 100,
-          userId,
+          userId: uuidToBin(userId),
           start: new Date('2021-12-01T00:00:00.000Z'),
           end: new Date('2021-12-01T08:00:00.000Z'),
         },
         {
-          userId,
+          userId: uuidToBin(userId),
           start: new Date('2022-01-01T02:00:00.000Z'),
           end: new Date('2022-01-01T06:00:00.000Z'),
           parentSleepId: 100,
@@ -476,7 +495,10 @@ describe('updateSleep', () => {
   describe('リクエスト内で重複する場合はoverlapInRequestエラーが返される', () => {
     test.each(testCases)('start: %p, end: %p', async (start, end) => {
       const originalSleepId = 1
-      await sleepFactory.create({ userId, id: originalSleepId })
+      await sleepFactory.create({
+        userId: uuidToBin(userId),
+        id: originalSleepId,
+      })
 
       const sleeps = [
         {
@@ -494,7 +516,7 @@ describe('updateSleep', () => {
     test.each(testCases)('start: %p, end: %p', async (start, end) => {
       const originalSleepId = 1
       await sleepFactory.create({
-        userId,
+        userId: uuidToBin(userId),
         id: originalSleepId,
         start: new Date('2022-01-01T02:00:00.000Z'),
         end: new Date('2022-01-01T06:00:00.000Z'),
@@ -510,7 +532,7 @@ describe('updateSleep', () => {
 describe('deleteSleep', () => {
   test('Sleepレコードが削除される', async () => {
     const sleepId = 1
-    await sleepFactory.create({ userId, id: sleepId })
+    await sleepFactory.create({ userId: uuidToBin(userId), id: sleepId })
 
     await deleteSleep(sleepId)
     const sleeps = await db.query.sleep.findMany()
@@ -520,8 +542,8 @@ describe('deleteSleep', () => {
   test('SegmentedSleepを含むSleepレコードがすべて削除される', async () => {
     const sleepId = 1
     await sleepFactory.create([
-      { userId, id: sleepId },
-      { userId, parentSleepId: sleepId },
+      { userId: uuidToBin(userId), id: sleepId },
+      { userId: uuidToBin(userId), parentSleepId: sleepId },
     ])
 
     await deleteSleep(sleepId)

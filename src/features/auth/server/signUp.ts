@@ -4,6 +4,7 @@ import { cookies } from 'next/headers'
 import { createServerActionClient } from '@supabase/auth-helpers-nextjs'
 import { db } from '@/db'
 import { config, user } from '@/db/schema'
+import { uuidToBin } from '@/utils/uuidToBin'
 
 export const signUp = async ({
   nickname,
@@ -28,12 +29,12 @@ export const signUp = async ({
 
     await Promise.all([
       db.insert(user).values({
-        id: data.user.id,
+        id: uuidToBin(data.user.id),
         email,
         nickname,
       }),
       db.insert(config).values({
-        userId: data.user.id,
+        userId: uuidToBin(data.user.id),
       }),
     ])
     return {}
