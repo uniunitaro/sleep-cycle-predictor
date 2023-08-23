@@ -191,6 +191,15 @@ export const theme = extendTheme({
         },
       },
     },
+    Menu: {
+      parts: ['list'],
+      baseStyle: {
+        list: {
+          borderRadius: 'xl',
+          boxShadow: 'lg',
+        },
+      },
+    },
   },
   styles: {
     global: {

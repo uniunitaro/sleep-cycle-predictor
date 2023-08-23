@@ -9,12 +9,19 @@ import { Drawer, DrawerBody, DrawerProps } from '@/components/Drawer/Drawer'
 
 const SleepBottomSheet: FC<
   Omit<DrawerProps, 'children' | 'placement'> & {
-    sleep?: Sleep
-    prediction?: Prediction
+    sleepOrPrediction: Sleep | Prediction | undefined
     onClickEdit?: () => void
     onClickDelete?: () => void
   }
-> = ({ sleep, prediction, onClickEdit, onClickDelete, ...DrawerProps }) => {
+> = ({ sleepOrPrediction, onClickEdit, onClickDelete, ...DrawerProps }) => {
+  const sleep =
+    sleepOrPrediction && 'sleeps' in sleepOrPrediction
+      ? sleepOrPrediction
+      : undefined
+  const prediction = !(sleepOrPrediction && 'sleeps' in sleepOrPrediction)
+    ? sleepOrPrediction
+    : undefined
+
   return (
     <Drawer {...DrawerProps} placement="bottom">
       <DrawerBody px="0">

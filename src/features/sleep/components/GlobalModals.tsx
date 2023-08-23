@@ -8,15 +8,17 @@ import {
   isDeleteModalOpenAtom,
   isInputModalOpenAtom,
   isSleepBottomSheetOpenAtom,
-  selectedPredictionAtom,
-  selectedSleepAtom,
+  selectedSleepOrPredictionAtom,
 } from './atoms/globalModals'
 import SleepBottomSheet from './charts/SleepBottomSheet'
 import { Hide } from '@/components/chakra'
 
 const GlobalModals: FC = () => {
-  const selectedSleep = useAtomValue(selectedSleepAtom)
-  const selectedPrediction = useAtomValue(selectedPredictionAtom)
+  const selectedSleepOrPrediction = useAtomValue(selectedSleepOrPredictionAtom)
+  const selectedSleep =
+    selectedSleepOrPrediction && 'sleeps' in selectedSleepOrPrediction
+      ? selectedSleepOrPrediction
+      : undefined
 
   const [isInputModalOpen, setIsInputModalOpen] = useAtom(isInputModalOpenAtom)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useAtom(
@@ -60,8 +62,7 @@ const GlobalModals: FC = () => {
       )}
       <Hide above="md">
         <SleepBottomSheet
-          sleep={selectedSleep}
-          prediction={selectedPrediction}
+          sleepOrPrediction={selectedSleepOrPrediction}
           isOpen={isSleepBottomSheetOpen}
           onClose={onBottomSheetClose}
           onClickEdit={() => {

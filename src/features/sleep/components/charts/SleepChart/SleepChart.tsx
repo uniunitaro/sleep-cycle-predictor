@@ -36,11 +36,9 @@ import ChartColumn from '../ChartColumn'
 import SleepBar from '../SleepBar'
 import ChartHeader from '../ChartHeader'
 import SleepOverview, { SleepOverviewRef } from '../../Lists/SleepOverview'
-import GlobalModals from '../../GlobalModals'
 import {
   isSleepBottomSheetOpenAtom,
-  selectedPredictionAtom,
-  selectedSleepAtom,
+  selectedSleepOrPredictionAtom,
 } from '../../atoms/globalModals'
 import {
   Box,
@@ -512,13 +510,13 @@ const SleepBarWithDetail: FC<{
     },
   })
 
-  const setSelectedSleep = useSetAtom(selectedSleepAtom)
-  const setPrediction = useSetAtom(selectedPredictionAtom)
+  const setSelectedSleepOrPrediction = useSetAtom(selectedSleepOrPredictionAtom)
   const setIsSleepBottomSheetOpen = useSetAtom(isSleepBottomSheetOpenAtom)
 
   const handleClick = () => {
-    setSelectedSleep(sleep.originalSleep)
-    setPrediction(sleep.originalPrediction)
+    setSelectedSleepOrPrediction(
+      sleep.originalSleep ?? sleep.originalPrediction
+    )
     setIsSleepBottomSheetOpen(true)
     onToggle()
   }

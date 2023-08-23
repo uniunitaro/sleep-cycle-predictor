@@ -5,8 +5,7 @@ import { getMonth } from 'date-fns'
 import { useSetAtom } from 'jotai'
 import {
   isSleepBottomSheetOpenAtom,
-  selectedPredictionAtom,
-  selectedSleepAtom,
+  selectedSleepOrPredictionAtom,
 } from '../atoms/globalModals'
 import SleepOverview from './SleepOverview'
 import { Prediction, Sleep } from '@/features/sleep/types/sleep'
@@ -28,17 +27,16 @@ const SleepList: FC<Props> = memo(
     )
 
     const setIsSleepBottomSheetOpen = useSetAtom(isSleepBottomSheetOpenAtom)
-    const setSelectedSleep = useSetAtom(selectedSleepAtom)
-    const setPrediction = useSetAtom(selectedPredictionAtom)
+    const setSelectedSleepOrPrediction = useSetAtom(
+      selectedSleepOrPredictionAtom
+    )
 
     const handleClickSleep = (sleep: Sleep) => {
-      setSelectedSleep(sleep)
-      setPrediction(undefined)
+      setSelectedSleepOrPrediction(sleep)
       setIsSleepBottomSheetOpen(true)
     }
     const handleClickPrediction = (prediction: Prediction) => {
-      setPrediction(prediction)
-      setSelectedSleep(undefined)
+      setSelectedSleepOrPrediction(prediction)
       setIsSleepBottomSheetOpen(true)
     }
 
