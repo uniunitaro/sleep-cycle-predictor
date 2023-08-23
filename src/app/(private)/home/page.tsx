@@ -11,7 +11,8 @@ import {
   subMonths,
   subWeeks,
 } from 'date-fns'
-import { cookies } from 'next/headers'
+import { cookies, headers } from 'next/headers'
+import { getSelectorsByUserAgent } from 'react-device-detect'
 import Home from './components/Home'
 import { getSleeps } from '@/features/sleep/repositories/sleeps'
 import { getMyPredictions } from '@/features/sleep/repositories/predictions'
@@ -33,14 +34,22 @@ const HomePage = async ({ searchParams }: { searchParams: SearchParams }) => {
     return new Date(date)
   })()
 
+  const headersList = headers()
+  const userAgent = headersList.get('user-agent')
+  const { isMobile }: { isMobile: boolean } = userAgent
+    ? getSelectorsByUserAgent(userAgent)
+    : { isMobile: false }
+
   const storedDisplayMode = cookies().get('displayMode')?.value as
     | DisplayMode
     | undefined
-  const displayMode =
+  const displayMode: DisplayMode =
     (typeof searchParams.view === 'string' &&
       (searchParams.view as DisplayMode)) ||
     storedDisplayMode ||
-    'month'
+    isMobile
+      ? 'week'
+      : 'month'
 
   // TODO エラー処理
   const { sleeps, error } = await getSleeps({

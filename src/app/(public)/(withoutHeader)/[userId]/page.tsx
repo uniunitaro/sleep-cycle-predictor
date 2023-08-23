@@ -10,7 +10,8 @@ import {
   subDays,
   subMonths,
 } from 'date-fns'
-import { cookies } from 'next/headers'
+import { cookies, headers } from 'next/headers'
+import { getSelectorsByUserAgent } from 'react-device-detect'
 import UserPublicPage from './components/UserPublicPage'
 import { getUser } from '@/features/user/repositories/users'
 import { getPredictions } from '@/features/sleep/repositories/predictions'
@@ -49,14 +50,22 @@ const UserPage = async ({ params, searchParams }: Props) => {
     return new Date(date)
   })()
 
+  const headersList = headers()
+  const userAgent = headersList.get('user-agent')
+  const { isMobile }: { isMobile: boolean } = userAgent
+    ? getSelectorsByUserAgent(userAgent)
+    : { isMobile: false }
+
   const storedDisplayMode = cookies().get('displayMode')?.value as
     | DisplayMode
     | undefined
-  const displayMode =
+  const displayMode: DisplayMode =
     (typeof searchParams.view === 'string' &&
       (searchParams.view as DisplayMode)) ||
     storedDisplayMode ||
-    'month'
+    isMobile
+      ? 'week'
+      : 'month'
 
   const { predictions, error: predictionsError } = await getPredictions({
     userId,
