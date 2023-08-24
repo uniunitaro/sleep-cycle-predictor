@@ -15,12 +15,9 @@ import {
 const SettingsHeader: FC = () => {
   const router = useRouter()
   const handleClickBack = () => {
-    if (document.referrer.indexOf(window.location.host) !== -1) {
-      router.back()
-    } else {
-      router.push('/home')
-    }
+    router.push('/home')
   }
+
   return (
     <header>
       <Container maxW="8xl" height="16">

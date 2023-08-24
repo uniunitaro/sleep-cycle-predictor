@@ -16,7 +16,7 @@ const RightColumn: FC<Props> = ({ sleeps, predictions, targetDate }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   return (
-    <Card overflow="auto">
+    <Card overflowY="hidden">
       <CardBody flexGrow="0">
         <Button
           leftIcon={<AddIcon />}

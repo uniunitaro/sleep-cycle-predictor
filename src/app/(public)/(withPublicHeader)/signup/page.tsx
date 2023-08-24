@@ -3,7 +3,7 @@ import SignUp from './components/SignUp'
 import { redirectBasedOnAuthState } from '@/features/auth/utils/redirectBasedOnAuthState'
 
 export const metadata: Metadata = {
-  title: '新規登録 - Sleep Cycle Predictor',
+  title: '新規登録',
 }
 
 const SignUpPage = async () => {

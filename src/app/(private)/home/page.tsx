@@ -21,7 +21,7 @@ import { redirectBasedOnAuthState } from '@/features/auth/utils/redirectBasedOnA
 import { DisplayMode } from '@/features/sleep/types/chart'
 
 export const metadata: Metadata = {
-  title: 'ホーム - Sleep Cycle Predictor',
+  title: 'ホーム',
 }
 
 const HomePage = async ({ searchParams }: { searchParams: SearchParams }) => {

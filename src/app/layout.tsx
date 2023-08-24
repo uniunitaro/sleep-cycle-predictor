@@ -2,7 +2,10 @@ import { Metadata } from 'next'
 import Providers from '@/components/Providers'
 
 export const metadata: Metadata = {
-  title: 'Sleep Cycle Predictor',
+  title: {
+    template: '%s - Sleep Predictor',
+    absolute: 'Sleep Predictor',
+  },
   description: '毎日ずれてゆくあなたの睡眠サイクルを華麗に予測！',
   robots: { index: false },
 }

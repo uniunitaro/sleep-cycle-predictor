@@ -197,6 +197,7 @@ const SleepChart: FC<Props> = memo(
                   fontSize="xs"
                   spacing="0"
                   pl={{ base: 4, md: 0 }}
+                  align="end"
                 >
                   <Box
                     h={`calc(${headerHeight}px - ((100% - ${

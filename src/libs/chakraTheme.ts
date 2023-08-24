@@ -202,10 +202,25 @@ export const theme = extendTheme({
     },
   },
   styles: {
-    global: {
+    global: (props: StyleFunctionProps) => ({
       body: {
         bg: 'globalBg',
+        scrollbarWidth: 'thin',
       },
-    },
+      '::-webkit-scrollbar': {
+        width: '8px',
+        height: '8px',
+      },
+      '::-webkit-scrollbar-thumb': {
+        bg: mode('blackAlpha.400', 'whiteAlpha.400')(props),
+        borderRadius: 'full',
+        '&:hover': {
+          bg: mode('blackAlpha.600', 'whiteAlpha.600')(props),
+        },
+      },
+      '*': {
+        scrollbarWidth: 'thin',
+      },
+    }),
   },
 })

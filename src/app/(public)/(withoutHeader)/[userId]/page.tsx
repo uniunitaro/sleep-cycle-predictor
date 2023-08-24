@@ -32,7 +32,8 @@ export const generateMetadata = async ({
   }
 
   return {
-    title: `${user.nickname}さんの睡眠予測 - Sleep Cycle Predictor`,
+    title: `${user.nickname}さんの睡眠予測`,
+    description: `${user.nickname}さんの睡眠予測`,
   }
 }
 
