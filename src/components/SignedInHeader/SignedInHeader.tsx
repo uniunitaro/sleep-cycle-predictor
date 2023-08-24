@@ -9,8 +9,8 @@ const SignedInHeader: FC = () => {
   return (
     <header>
       <Container maxW="8xl" height="16">
-        <Flex align="center" h="100%">
-          <Link href="/">
+        <Flex align="center" h="full">
+          <Link href="/home">
             <Logo />
           </Link>
           <Spacer />

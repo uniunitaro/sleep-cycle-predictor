@@ -1,11 +1,15 @@
 'use server'
 
-import { eq } from 'drizzle-orm'
-import { AuthUser, User } from '../types/user'
+import { eq, sql } from 'drizzle-orm'
+import { revalidatePath } from 'next/cache'
+import { AuthUser, AuthUserWithConfig, User } from '../types/user'
 import { db } from '@/db'
 import { user } from '@/db/schema'
 import { Result } from '@/types/global'
-import { getAuthUserIdWithServerComponent } from '@/utils/getAuthUserId'
+import {
+  getAuthUserIdWithServerAction,
+  getAuthUserIdWithServerComponent,
+} from '@/utils/getAuthUserId'
 import { uuidToBin } from '@/utils/uuidToBin'
 
 export const getAuthUser = async (): Promise<
@@ -37,6 +41,83 @@ export const getUser = async (
     if (!userResult) throw new Error('user not found')
 
     return { user: userResult }
+  } catch (e) {
+    console.error(e)
+    return { error: true }
+  }
+}
+
+export const getAuthUserWithConfig = async (): Promise<
+  Result<{ authUserWithConfig: AuthUserWithConfig }, true>
+> => {
+  try {
+    const { userId, error } = await getAuthUserIdWithServerComponent()
+    if (error) throw error
+
+    const authUserWithConfig = await db.query.user.findFirst({
+      where: eq(user.id, uuidToBin(userId)),
+      with: { config: true },
+    })
+    if (!authUserWithConfig) throw new Error('user not found')
+
+    return { authUserWithConfig }
+  } catch (e) {
+    console.error(e)
+    return { error: true }
+  }
+}
+
+export const updateAuthUser = async ({
+  nickname,
+  newEmail,
+}: {
+  nickname?: string
+  newEmail?: string
+}): Promise<{ error?: true }> => {
+  try {
+    const { userId, error } = await getAuthUserIdWithServerAction()
+    if (error) throw error
+
+    await db
+      .update(user)
+      .set({
+        nickname: nickname,
+        newEmail: newEmail,
+      })
+      .where(eq(user.id, uuidToBin(userId)))
+
+    revalidatePath('/settings')
+    revalidatePath('/home')
+    revalidatePath('/[userId]')
+    return {}
+  } catch (e) {
+    console.error(e)
+    return { error: true }
+  }
+}
+
+export const updateEmail = async (
+  userId: string
+): Promise<{ error?: true }> => {
+  try {
+    const result = await db.query.user.findFirst({
+      where: eq(user.id, uuidToBin(userId)),
+      columns: {
+        newEmail: true,
+      },
+    })
+    if (!result?.newEmail) throw new Error('newEmail not found')
+
+    await db
+      .update(user)
+      .set({
+        email: result.newEmail,
+        newEmail: null,
+      })
+      .where(eq(user.id, uuidToBin(userId)))
+
+    revalidatePath('/settings')
+    return {}
   } catch (e) {
     console.error(e)
     return { error: true }

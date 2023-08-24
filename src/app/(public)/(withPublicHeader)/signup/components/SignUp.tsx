@@ -21,8 +21,6 @@ import {
 import AuthFormCard from '@/features/auth/components/AuthFormCard/AuthFormCard'
 import { signUp } from '@/features/auth/server/signUp'
 
-export const runtime = 'nodejs'
-
 const schema = z.object({
   nickname: z.string().nonempty({ message: 'ニックネームを入力してください' }),
   email: z

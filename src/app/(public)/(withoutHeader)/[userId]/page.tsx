@@ -63,9 +63,7 @@ const UserPage = async ({ params, searchParams }: Props) => {
     (typeof searchParams.view === 'string' &&
       (searchParams.view as DisplayMode)) ||
     storedDisplayMode ||
-    isMobile
-      ? 'week'
-      : 'month'
+    (isMobile ? 'week' : 'month')
 
   const { predictions, error: predictionsError } = await getPredictions({
     userId,

@@ -25,7 +25,7 @@ const DrawerMenu: FC<{ displayMode: DisplayMode }> = ({ displayMode }) => {
   return (
     <>
       <IconButton
-        icon={<HamburgerIcon />}
+        icon={<HamburgerIcon boxSize="5" />}
         aria-label="メニューを開く"
         variant="ghost"
         onClick={onOpen}

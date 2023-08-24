@@ -13,6 +13,7 @@ import { InferModel, relations, sql } from 'drizzle-orm'
 export const user = mysqlTable('User', {
   id: binary('id', { length: 16 }).primaryKey().notNull(),
   email: varchar('email', { length: 255 }).unique(),
+  newEmail: varchar('newEmail', { length: 255 }),
   nickname: varchar('nickname', { length: 255 }).notNull(),
   createdAt: timestamp('createdAt')
     .default(sql`CURRENT_TIMESTAMP`)

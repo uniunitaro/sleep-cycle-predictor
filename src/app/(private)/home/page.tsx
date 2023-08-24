@@ -47,9 +47,7 @@ const HomePage = async ({ searchParams }: { searchParams: SearchParams }) => {
     (typeof searchParams.view === 'string' &&
       (searchParams.view as DisplayMode)) ||
     storedDisplayMode ||
-    isMobile
-      ? 'week'
-      : 'month'
+    (isMobile ? 'week' : 'month')
 
   // TODO エラー処理
   const { sleeps, error } = await getSleeps({
