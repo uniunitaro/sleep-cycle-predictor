@@ -70,6 +70,19 @@ export const theme = extendTheme({
         }),
       },
     },
+    Select: {
+      variants: {
+        outline: (props: StyleFunctionProps) => ({
+          field: {
+            _focusVisible: {
+              borderColor: mode('brand.500', 'brand.300')(props),
+            },
+            borderRadius: 'xl',
+            bg: mode('white', 'whiteAlpha.50')(props),
+          },
+        }),
+      },
+    },
     Form: {
       parts: ['container'],
       baseStyle: {

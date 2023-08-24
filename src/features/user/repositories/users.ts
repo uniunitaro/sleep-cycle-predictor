@@ -1,10 +1,10 @@
 'use server'
 
-import { eq, sql } from 'drizzle-orm'
+import { eq } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
-import { AuthUser, AuthUserWithConfig, User } from '../types/user'
+import { AuthUser, AuthUserWithConfig, SrcDuration, User } from '../types/user'
 import { db } from '@/db'
-import { user } from '@/db/schema'
+import { config, user } from '@/db/schema'
 import { Result } from '@/types/global'
 import {
   getAuthUserIdWithServerAction,
@@ -117,6 +117,32 @@ export const updateEmail = async (
       .where(eq(user.id, uuidToBin(userId)))
 
     revalidatePath('/settings')
+    return {}
+  } catch (e) {
+    console.error(e)
+    return { error: true }
+  }
+}
+
+export const updateConfig = async ({
+  predictionSrcDuration,
+}: {
+  predictionSrcDuration: SrcDuration
+}): Promise<{ error?: true }> => {
+  try {
+    const { userId, error } = await getAuthUserIdWithServerAction()
+    if (error) throw error
+
+    await db
+      .update(config)
+      .set({
+        predictionSrcDuration,
+      })
+      .where(eq(config.userId, uuidToBin(userId)))
+
+    revalidatePath('/settings')
+    revalidatePath('/home')
+    revalidatePath('/[userId]')
     return {}
   } catch (e) {
     console.error(e)

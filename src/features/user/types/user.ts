@@ -5,3 +5,5 @@ export type AuthUser = DBUser
 export type AuthUserWithConfig = DBUser & { config: Config }
 
 export type User = Omit<DBUser, 'email'>
+
+export type SrcDuration = Config['predictionSrcDuration']
