@@ -59,24 +59,64 @@ const SleepOverview = forwardRef<
       } satisfies SleepOverviewRef)
   )
 
-  const day = getDay(firstSleep.start)
-  const dayColor = day === 0 ? 'dayRed' : day === 6 ? 'dayBlue' : undefined
+  const formatDate = (date: Date) => {
+    return format(date, getDate(date) === 1 ? 'M月d日' : 'd日', {
+      locale: ja,
+    })
+  }
+  const formatDay = (date: Date) => {
+    return format(date, '（E）', { locale: ja })
+  }
+
+  const lastSleep = sleeps[sleeps.length - 1]
+  const displayDateStart = {
+    date: formatDate(firstSleep.start),
+    day: formatDay(firstSleep.start),
+    color:
+      getDay(firstSleep.start) === 0
+        ? 'dayRed'
+        : getDay(firstSleep.start) === 6
+        ? 'dayBlue'
+        : undefined,
+  }
+  const displayDateEnd =
+    formatDate(firstSleep.start) !== formatDate(lastSleep.end)
+      ? {
+          date: formatDate(lastSleep.end),
+          day: formatDay(lastSleep.end),
+          color:
+            getDay(lastSleep.end) === 0
+              ? 'dayRed'
+              : getDay(lastSleep.end) === 6
+              ? 'dayBlue'
+              : undefined,
+        }
+      : undefined
 
   return (
     <HStack minH="0" align="normal" gap="2">
       <Box bgColor={sleep ? 'chartBrand' : 'chartBlue'} w="1" rounded="full" />
       <Box flex="1" sx={{ fontVariantNumeric: 'tabular-nums' }}>
-        <Flex align="center" color={dayColor}>
-          <Box fontSize="sm">
-            {format(
-              firstSleep.start,
-              getDate(firstSleep.start) === 1 ? 'M月d日' : 'd日',
-              { locale: ja }
-            )}
+        <Flex align="center">
+          <Box fontSize="sm" color={displayDateStart.color}>
+            {displayDateStart.date}
           </Box>
-          <Box fontSize="xs">
-            {format(firstSleep.start, '（E）', { locale: ja })}
+          <Box fontSize="xs" color={displayDateStart.color}>
+            {displayDateStart.day}
           </Box>
+          {displayDateEnd && (
+            <>
+              <Box mr="1" fontSize="sm">
+                ～
+              </Box>
+              <Box fontSize="sm" color={displayDateEnd.color}>
+                {displayDateEnd.date}
+              </Box>
+              <Box fontSize="xs" color={displayDateEnd.color}>
+                {displayDateEnd.day}
+              </Box>
+            </>
+          )}
         </Flex>
         {sleeps.map((s) => (
           <Flex align="center" key={s.start.getTime()}>

@@ -40,13 +40,13 @@ const SignUp: FC = () => {
   const {
     handleSubmit,
     register,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<Schema>({ mode: 'onBlur', resolver: zodResolver(schema) })
 
   const [error, setError] = useState<boolean>(false)
 
   const router = useRouter()
-  const [, startTransition] = useTransition()
+  const [isPending, startTransition] = useTransition()
   const onSubmit: SubmitHandler<Schema> = async (data) => {
     startTransition(async () => {
       const { error } = await signUp({
@@ -104,11 +104,7 @@ const SignUp: FC = () => {
                   登録時にエラーが発生しました。
                 </Alert>
               )}
-              <Button
-                colorScheme="green"
-                type="submit"
-                isLoading={isSubmitting}
-              >
+              <Button colorScheme="green" type="submit" isLoading={isPending}>
                 登録する
               </Button>
             </Stack>

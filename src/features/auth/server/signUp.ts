@@ -1,6 +1,6 @@
 'use server'
 
-import { cookies } from 'next/headers'
+import { cookies, headers } from 'next/headers'
 import { createServerActionClient } from '@supabase/auth-helpers-nextjs'
 import { db } from '@/db'
 import { config, user } from '@/db/schema'
@@ -18,10 +18,16 @@ export const signUp = async ({
   try {
     const supabase = createServerActionClient({ cookies })
 
+    const headersList = headers()
+    const origin = headersList.get('origin')
+    if (!origin) throw new Error('origin not found')
+
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      // TODO ジャンプ先URLを指定
+      options: {
+        emailRedirectTo: `${origin}/api/auth/callback?next=/home`,
+      },
     })
     if (error || !data.user) {
       throw error
