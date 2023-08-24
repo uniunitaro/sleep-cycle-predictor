@@ -8,6 +8,7 @@ import NicknameForm from '@/features/user/components/settings/NicknameForm'
 import EmailForm from '@/features/user/components/settings/EmailForm'
 import PasswordForm from '@/features/user/components/settings/PasswordForm'
 import SrcDurationSelect from '@/features/user/components/settings/SrcDurationSelect'
+import DeleteAccount from '@/features/user/components/settings/DeleteAccount'
 
 const Settings: FC<{ userWithConfig: AuthUserWithConfig }> = ({
   userWithConfig,
@@ -21,7 +22,7 @@ const Settings: FC<{ userWithConfig: AuthUserWithConfig }> = ({
         px={{ base: 0, md: 4 }}
         pb={{ base: 0, md: 4 }}
       >
-        <Container maxW="2xl" h="full">
+        <Container maxW="xl" h="full">
           <CardMdOnly h="full">
             <CardBodyMdOnly px={{ base: 0, md: 8 }}>
               <Stack spacing="16">
@@ -45,6 +46,14 @@ const Settings: FC<{ userWithConfig: AuthUserWithConfig }> = ({
                     <SrcDurationSelect
                       srcDuration={userWithConfig.config.predictionSrcDuration}
                     />
+                  </Stack>
+                </Stack>
+                <Stack spacing="5">
+                  <Heading as="h2" size="md">
+                    アカウントの削除
+                  </Heading>
+                  <Stack spacing="4">
+                    <DeleteAccount />
                   </Stack>
                 </Stack>
               </Stack>

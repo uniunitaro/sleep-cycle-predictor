@@ -28,7 +28,7 @@ const UserMenu: FC<{ authUser: AuthUser }> = ({ authUser }) => {
 
     startTransition(() => {
       router.refresh()
-      router.push('/')
+      router.replace('/')
     })
   }
 
