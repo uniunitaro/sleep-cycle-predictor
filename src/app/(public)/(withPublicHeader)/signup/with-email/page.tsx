@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import SignUp from './components/SignUp'
+import SignUpWithEmail from './components/SignUpWithEmail'
 import { redirectBasedOnAuthState } from '@/features/auth/utils/redirectBasedOnAuthState'
 
 export const metadata: Metadata = {
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 const SignUpPage = async () => {
   await redirectBasedOnAuthState('authed', '/home')
-  return <SignUp />
+  return <SignUpWithEmail />
 }
 
 export default SignUpPage

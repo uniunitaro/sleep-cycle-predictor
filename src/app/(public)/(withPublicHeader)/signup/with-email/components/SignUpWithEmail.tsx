@@ -36,7 +36,7 @@ const schema = z.object({
 })
 type Schema = z.infer<typeof schema>
 
-const SignUp: FC = () => {
+const SignUpWithEmail: FC = () => {
   const {
     handleSubmit,
     register,
@@ -115,4 +115,4 @@ const SignUp: FC = () => {
   )
 }
 
-export default SignUp
+export default SignUpWithEmail
