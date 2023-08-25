@@ -1,14 +1,13 @@
 import { FC } from 'react'
 import SettingsHeader from '@/features/user/components/settings/SettingsHeader'
 import { Container, Flex, Heading, Stack } from '@/components/chakra'
-import CardMdOnly from '@/components/MdOnlyCards/CardMdOnly/CardMdOnly'
-import CardBodyMdOnly from '@/components/MdOnlyCards/CardBodyMdOnly'
 import { AuthUserWithConfig } from '@/features/user/types/user'
 import NicknameForm from '@/features/user/components/settings/NicknameForm'
 import EmailForm from '@/features/user/components/settings/EmailForm'
 import PasswordForm from '@/features/user/components/settings/PasswordForm'
 import SrcDurationSelect from '@/features/user/components/settings/SrcDurationSelect'
 import DeleteAccount from '@/features/user/components/settings/DeleteAccount'
+import { CardBodyMdOnly, CardMdOnly } from '@/components/MdOnlyCards'
 
 const Settings: FC<{ userWithConfig: AuthUserWithConfig }> = ({
   userWithConfig,

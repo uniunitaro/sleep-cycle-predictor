@@ -10,7 +10,6 @@ import {
   Alert,
   AlertIcon,
   Button,
-  Container,
   FormControl,
   FormErrorMessage,
   FormLabel,
@@ -18,8 +17,13 @@ import {
   Input,
   Stack,
 } from '@/components/chakra'
-import AuthFormCard from '@/features/auth/components/AuthFormCard/AuthFormCard'
 import { signUp } from '@/features/auth/server/signUp'
+import {
+  BasicCard,
+  BasicCardBody,
+  BasicCardHeader,
+  BasicCardLayout,
+} from '@/components/BasicCards'
 
 const schema = z.object({
   nickname: z.string().nonempty({ message: 'ニックネームを入力してください' }),
@@ -63,16 +67,14 @@ const SignUpWithEmail: FC = () => {
   }
 
   return (
-    <Container
-      maxW="lg"
-      py={{ base: '4', md: '8' }}
-      px={{ base: '0', md: '8' }}
-    >
-      <AuthFormCard>
-        <Stack spacing="7">
+    <BasicCardLayout>
+      <BasicCard>
+        <BasicCardHeader>
           <Heading as="h1" size="md" textAlign="center">
             新規登録
           </Heading>
+        </BasicCardHeader>
+        <BasicCardBody>
           <form onSubmit={handleSubmit(onSubmit)} noValidate>
             <Stack spacing="10">
               <Stack spacing="5">
@@ -109,9 +111,9 @@ const SignUpWithEmail: FC = () => {
               </Button>
             </Stack>
           </form>
-        </Stack>
-      </AuthFormCard>
-    </Container>
+        </BasicCardBody>
+      </BasicCard>
+    </BasicCardLayout>
   )
 }
 

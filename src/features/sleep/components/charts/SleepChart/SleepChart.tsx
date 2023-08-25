@@ -60,12 +60,11 @@ import {
   useDisclosure,
   useOutsideClick,
 } from '@/components/chakra'
-import CardMdOnly from '@/components/MdOnlyCards/CardMdOnly/CardMdOnly'
-import CardBodyMdOnly from '@/components/MdOnlyCards/CardBodyMdOnly'
 import { Prediction, Sleep } from '@/features/sleep/types/sleep'
 import { useCalendarControl } from '@/features/sleep/hooks/useCalendarControl'
 import { DisplayMode } from '@/features/sleep/types/chart'
 import { useOptimistic } from '@/features/sleep/hooks/useOptimistic'
+import { CardBodyMdOnly, CardMdOnly } from '@/components/MdOnlyCards'
 
 type Props = {
   sleeps: Sleep[]
