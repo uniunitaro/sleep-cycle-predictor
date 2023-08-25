@@ -1,26 +1,9 @@
 'use client'
 
 import { format, isValid, parse } from 'date-fns'
-import { FC, memo, useRef, useState } from 'react'
-import TimePicker from '../TimePicker/TimePicker'
-import {
-  Button,
-  ButtonGroup,
-  Hide,
-  Input,
-  InputProps,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalOverlay,
-  Popover,
-  PopoverAnchor,
-  PopoverContent,
-  Show,
-  useDisclosure,
-  useOutsideClick,
-} from '@/components/chakra'
+import { FC, memo, useState } from 'react'
+import MobileTimeInput from '../MobileTimeInput'
+import { Box, HStack, Hide, Input, InputProps, Show } from '@/components/chakra'
 
 type Props = {
   value: Date
@@ -28,111 +11,56 @@ type Props = {
 } & Omit<InputProps, 'value' | 'onChange'>
 
 const TimeInput: FC<Props> = memo(({ value, onChange, ...rest }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  const popoverContentRef = useRef<HTMLElement>(null)
-  useOutsideClick({
-    ref: popoverContentRef,
-    handler: () => {
-      if (
-        popoverContentRef.current &&
-        inputRef.current !== document.activeElement
-      ) {
-        onClose()
-      }
-    },
-  })
-
-  const inputRef = useRef<HTMLInputElement>(null)
-
   const formatted = format(value, 'HH:mm')
-  const [inputValue, setInputValue] = useState(formatted)
+  const [hour, setHour] = useState(formatted.split(':')[0])
+  const [minute, setMinute] = useState(formatted.split(':')[1])
+
   const [oldValue, setOldValue] = useState(value)
 
-  const handleChangeDate = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value)
+  const handleChangeHour = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setHour(e.target.value)
+  }
+  const handleChangeMinute = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setMinute(e.target.value)
   }
 
-  const handleBlurDate = (e: React.FocusEvent<HTMLInputElement>) => {
-    const parsedDate = parse(e.target.value, 'HH:mm', new Date())
+  const handleBlurDate = () => {
+    const parsedDate = parse(`${hour}:${minute}`, 'HH:mm', new Date())
     if (!isValid(parsedDate)) {
-      setInputValue(format(oldValue, 'HH:mm'))
+      setHour(format(oldValue, 'HH'))
+      setMinute(format(oldValue, 'mm'))
       return
     }
 
+    setHour(format(parsedDate, 'HH'))
+    setMinute(format(parsedDate, 'mm'))
     onChange(parsedDate)
-
     setOldValue(parsedDate)
-    setTimePickerValue(parsedDate)
   }
 
-  const [timePickerValue, setTimePickerValue] = useState(value)
-  const handleChangeTimePicker = (date: Date) => {
-    setTimePickerValue(date)
-  }
-
-  const handleConfirmTimePicker = () => {
-    onChange(timePickerValue)
-    setInputValue(format(timePickerValue, 'HH:mm'))
-    setOldValue(timePickerValue)
-    onClose()
-  }
-
-  const timeInput = (
-    <Input
-      ref={inputRef}
-      value={inputValue}
-      onChange={handleChangeDate}
-      onBlur={handleBlurDate}
-      onFocus={onOpen}
-      {...rest}
-    />
-  )
   return (
     <>
       <Show above="md">
-        <Popover
-          isOpen={isOpen}
-          placement="bottom-start"
-          initialFocusRef={inputRef}
-        >
-          <PopoverAnchor>{timeInput}</PopoverAnchor>
-          <Show above="md">
-            <PopoverContent ref={popoverContentRef} w="auto"></PopoverContent>
-          </Show>
-        </Popover>
+        <HStack align="baseline" spacing="1">
+          <Input
+            value={hour}
+            onChange={handleChangeHour}
+            onBlur={handleBlurDate}
+            onFocus={(e) => e.target.select()}
+            {...rest}
+          />
+          <Box fontSize="xl">:</Box>
+          <Input
+            value={minute}
+            onChange={handleChangeMinute}
+            onBlur={handleBlurDate}
+            onFocus={(e) => e.target.select()}
+            {...rest}
+          />
+        </HStack>
       </Show>
       <Hide above="md">
-        {timeInput}
-        <Modal
-          isOpen={isOpen}
-          onClose={onClose}
-          returnFocusOnClose={false}
-          isCentered
-        >
-          <ModalOverlay />
-          <ModalContent w={300}>
-            <ModalBody pt="8">
-              <TimePicker
-                value={timePickerValue}
-                onChange={handleChangeTimePicker}
-              />
-            </ModalBody>
-            <ModalFooter>
-              <ButtonGroup>
-                <Button variant="ghost" color="secondaryGray" onClick={onClose}>
-                  キャンセル
-                </Button>
-                <Button
-                  variant="ghost"
-                  colorScheme="green"
-                  onClick={handleConfirmTimePicker}
-                >
-                  OK
-                </Button>
-              </ButtonGroup>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
+        <MobileTimeInput value={value} onChange={onChange} />
       </Hide>
     </>
   )

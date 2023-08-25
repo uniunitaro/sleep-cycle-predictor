@@ -8,8 +8,11 @@ import {
   useState,
   useTransition,
 } from 'react'
+import { setMilliseconds, setMinutes, setSeconds, subHours } from 'date-fns'
 import SleepInputForm from '../SleepInputForm/SleepInputForm'
 import {
+  Alert,
+  AlertIcon,
   Button,
   ButtonGroup,
   Modal,
@@ -20,6 +23,7 @@ import {
   ModalHeader,
   ModalOverlay,
   ModalProps,
+  Stack,
   useBreakpointValue,
 } from '@/components/chakra'
 import { addSleep, updateSleep } from '@/features/sleep/repositories/sleeps'
@@ -30,33 +34,48 @@ type Props = Omit<ModalProps, 'children'> & { originalSleep?: Sleep }
 const SleepInputModal = forwardRef<HTMLDivElement, Props>(
   ({ originalSleep, ...modalProps }, ref) => {
     const isUpdate = !!originalSleep
-    const initSleeps = useCallback(
-      (): SleepInputType =>
-        isUpdate
-          ? originalSleep.sleeps.map((sleep, i) => ({ ...sleep, id: i + 1 }))
-          : [{ start: new Date(), end: new Date(), id: 1 }],
-      [isUpdate, originalSleep]
-    )
+    const initSleeps = useCallback((): SleepInputType => {
+      const initialDate = () =>
+        setMilliseconds(setSeconds(setMinutes(new Date(), 0), 0), 0)
+
+      return isUpdate
+        ? originalSleep.sleeps.map((sleep, i) => ({ ...sleep, id: i + 1 }))
+        : [{ start: subHours(initialDate(), 8), end: initialDate(), id: 1 }]
+    }, [isUpdate, originalSleep])
+
     const [sleeps, setSleeps] = useState<SleepInputType>(initSleeps())
 
     useEffect(() => {
       if (modalProps.isOpen) {
         setSleeps(initSleeps())
+        setError(undefined)
       }
     }, [initSleeps, modalProps.isOpen])
 
+    const [error, setError] = useState<string>()
     const [isLoading, startTransition] = useTransition()
     const handleSubmit = () => {
-      // TODO アラート追加
-      // if (!isBefore(start, end)) return
+      setError(undefined)
+
       startTransition(async () => {
-        isUpdate
+        const { error: serverError } = isUpdate
           ? await updateSleep(
               originalSleep.id,
               sleeps.map((sleep) => ({ ...sleep, id: undefined }))
             )
           : await addSleep(sleeps.map((sleep) => ({ ...sleep, id: undefined })))
-        modalProps.onClose()
+
+        if (serverError) {
+          if (serverError === true) {
+            setError('エラーが発生しました。')
+          } else if (serverError.type === 'overlapInRequest') {
+            setError('睡眠記録が重複しています。')
+          } else if (serverError.type === 'overlapWithRecorded') {
+            setError('すでに記録されている睡眠記録と重複しています。')
+          }
+        } else {
+          modalProps.onClose()
+        }
       })
     }
 
@@ -66,6 +85,7 @@ const SleepInputModal = forwardRef<HTMLDivElement, Props>(
       <Modal
         isCentered
         scrollBehavior={isMobile ? 'inside' : 'outside'}
+        size="sm"
         {...modalProps}
       >
         <ModalOverlay />
@@ -75,9 +95,17 @@ const SleepInputModal = forwardRef<HTMLDivElement, Props>(
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <form>
-              <SleepInputForm sleeps={sleeps} onChange={setSleeps} />
-            </form>
+            <Stack spacing="5">
+              <form>
+                <SleepInputForm sleeps={sleeps} onChange={setSleeps} />
+              </form>
+              {error && (
+                <Alert status="error">
+                  <AlertIcon />
+                  {error}
+                </Alert>
+              )}
+            </Stack>
           </ModalBody>
           <ModalFooter pt="7">
             <ButtonGroup>

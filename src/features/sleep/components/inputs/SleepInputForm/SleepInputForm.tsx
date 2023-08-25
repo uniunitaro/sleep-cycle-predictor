@@ -2,6 +2,15 @@
 
 import { FC } from 'react'
 import { AddIcon } from '@chakra-ui/icons'
+import {
+  addDays,
+  getHours,
+  getMinutes,
+  isAfter,
+  setHours,
+  setMinutes,
+  subDays,
+} from 'date-fns'
 import DateAndTimeInput from '../DateAndTimeInput/DateAndTimeInput'
 import {
   Box,
@@ -23,13 +32,66 @@ const SleepInputForm: FC<{
     onChange(newSleeps)
   }
 
+  const handleChangeStart = (index: number, start: Date) => {
+    const end = sleeps[index].end
+    const newEnd = (() => {
+      const startTimeOnly = setMinutes(
+        setHours(new Date(), getHours(start)),
+        getMinutes(start)
+      )
+      const endTimeOnly = setMinutes(
+        setHours(new Date(), getHours(end)),
+        getMinutes(end)
+      )
+      if (isAfter(startTimeOnly, endTimeOnly)) {
+        // endがstartの翌日になる場合
+        return setMinutes(
+          setHours(addDays(start, 1), getHours(end)),
+          getMinutes(end)
+        )
+      } else {
+        // endがstartと同じ日になる場合
+        return setMinutes(setHours(start, getHours(end)), getMinutes(end))
+      }
+    })()
+
+    handleChange(index, { start, end: newEnd })
+  }
+
+  const handleChangeEnd = (index: number, end: Date) => {
+    const start = sleeps[index].start
+    const newStart = (() => {
+      const startTimeOnly = setMinutes(
+        setHours(new Date(), getHours(start)),
+        getMinutes(start)
+      )
+      const endTimeOnly = setMinutes(
+        setHours(new Date(), getHours(end)),
+        getMinutes(end)
+      )
+      if (isAfter(startTimeOnly, endTimeOnly)) {
+        // endがstartの翌日になる場合
+        return setMinutes(
+          setHours(subDays(end, 1), getHours(start)),
+          getMinutes(start)
+        )
+      } else {
+        // endがstartと同じ日になる場合
+        return setMinutes(setHours(end, getHours(start)), getMinutes(start))
+      }
+    })()
+
+    handleChange(index, { start: newStart, end })
+  }
+
   const addSleep = () => {
+    const lastSleep = sleeps[sleeps.length - 1]
     onChange([
       ...sleeps,
       {
-        start: new Date(),
-        end: new Date(),
-        id: sleeps[sleeps.length - 1].id + 1,
+        start: lastSleep.end,
+        end: lastSleep.end,
+        id: lastSleep.id + 1,
       },
     ])
   }
@@ -42,7 +104,6 @@ const SleepInputForm: FC<{
     <Stack spacing="5">
       <Stack spacing="5">
         {sleeps.map((sleep, index) => (
-          // <Stack key={index} spacing="2">
           <Box key={sleep.id}>
             {sleeps.length > 1 && (
               <Flex align="center" fontSize="sm" color="secondaryGray">
@@ -55,23 +116,18 @@ const SleepInputForm: FC<{
                 <FormLabel htmlFor="sleep-start">就寝日時</FormLabel>
                 <DateAndTimeInput
                   value={sleep.start}
-                  onChange={(value) =>
-                    handleChange(index, { ...sleep, start: value })
-                  }
+                  onChange={(value) => handleChangeStart(index, value)}
                 />
               </FormControl>
               <FormControl>
                 <FormLabel htmlFor="sleep-end">起床日時</FormLabel>
                 <DateAndTimeInput
                   value={sleep.end}
-                  onChange={(value) =>
-                    handleChange(index, { ...sleep, end: value })
-                  }
+                  onChange={(value) => handleChangeEnd(index, value)}
                 />
               </FormControl>
             </Stack>
           </Box>
-          // </Stack>
         ))}
       </Stack>
       <Button

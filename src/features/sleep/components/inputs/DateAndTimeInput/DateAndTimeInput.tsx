@@ -11,47 +11,40 @@ const DateAndTimeInput: FC<{
   labelledBy?: string
   onChange: (value: Date) => void
 }> = memo(({ value, labelledBy, onChange }) => {
-  const [dateValue, setDateValue] = useState(value)
-  const [timeValue, setTimeValue] = useState(value)
-
   const handleChangeDate = useCallback(
     (date: Date) => {
-      setDateValue(date)
-
       const dateTimeValue = setHours(
-        setMinutes(date, getMinutes(timeValue)),
-        getHours(timeValue)
+        setMinutes(date, getMinutes(value)),
+        getHours(value)
       )
       onChange(dateTimeValue)
     },
-    [onChange, timeValue]
+    [onChange, value]
   )
 
   const handleChangeTime = useCallback(
     (time: Date) => {
-      setTimeValue(time)
-
       const dateTimeValue = setHours(
-        setMinutes(dateValue, getMinutes(time)),
+        setMinutes(value, getMinutes(time)),
         getHours(time)
       )
       onChange(dateTimeValue)
     },
-    [onChange, dateValue]
+    [onChange, value]
   )
 
   return (
     <HStack w="100%">
       <Box flex="1">
         <DateInput
-          value={dateValue}
+          value={value}
           onChange={handleChangeDate}
           aria-labelledby={labelledBy}
         />
       </Box>
       <Box flex="1">
         <TimeInput
-          value={timeValue}
+          value={value}
           onChange={handleChangeTime}
           aria-labelledby={labelledBy}
         />

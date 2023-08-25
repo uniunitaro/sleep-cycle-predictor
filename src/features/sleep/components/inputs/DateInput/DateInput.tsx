@@ -58,6 +58,10 @@ const DateInput: FC<Props> = memo(({ value, onChange, ...rest }) => {
   const formatted = format(value, 'yyyy/MM/dd')
   const [inputValue, setInputValue] = useState(formatted)
   const [oldInputValue, setOldInputValue] = useState(inputValue)
+  useEffect(() => {
+    setInputValue(formatted)
+    setOldInputValue(formatted)
+  }, [formatted])
 
   const handleChangeDate = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value)
