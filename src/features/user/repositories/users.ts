@@ -22,7 +22,7 @@ export const addUser = async ({
   email: string
 }): Promise<{ error?: true }> => {
   try {
-    db.transaction(async (tx) => {
+    await db.transaction(async (tx) => {
       const existingUser = await tx.query.user.findFirst({
         where: eq(user.id, uuidToBin(id)),
       })
