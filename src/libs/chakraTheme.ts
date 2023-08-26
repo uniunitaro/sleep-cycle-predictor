@@ -224,20 +224,26 @@ export const theme = extendTheme({
         bg: 'globalBg',
         scrollbarWidth: 'thin',
       },
-      '::-webkit-scrollbar': {
-        width: '8px',
-        height: '8px',
-      },
-      '::-webkit-scrollbar-thumb': {
-        bg: mode('blackAlpha.400', 'whiteAlpha.400')(props),
-        borderRadius: 'full',
-        '&:hover': {
-          bg: mode('blackAlpha.600', 'whiteAlpha.600')(props),
+      '@media(hover: hover) and (pointer: fine)': {
+        '::-webkit-scrollbar': {
+          width: '8px',
+          height: '8px',
+        },
+        '::-webkit-scrollbar-thumb': {
+          bg: mode('blackAlpha.400', 'whiteAlpha.400')(props),
+          borderRadius: 'full',
+          '&:hover': {
+            bg: mode('blackAlpha.600', 'whiteAlpha.600')(props),
+          },
         },
       },
       '*': {
         scrollbarWidth: 'thin',
       },
     }),
+  },
+  fonts: {
+    heading: 'var(--font-noto-sans-jp), sans-serif',
+    body: 'var(--font-noto-sans-jp), sans-serif',
   },
 })

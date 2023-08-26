@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import { Noto_Sans_JP } from 'next/font/google'
 import Providers from '@/components/Providers'
 
 export const metadata: Metadata = {
@@ -13,13 +14,20 @@ export const metadata: Metadata = {
 
 export const runtime = 'edge'
 
+const notoSans = Noto_Sans_JP({
+  weight: ['400', '700'],
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-noto-sans-jp',
+})
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
   return (
-    <html lang="ja-JP">
+    <html lang="ja-JP" className={notoSans.variable}>
       <body>
         <Providers>{children}</Providers>
       </body>

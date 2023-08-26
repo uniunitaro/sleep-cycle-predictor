@@ -10,10 +10,10 @@ import {
   Flex,
   FormControl,
   FormLabel,
-  Input,
   FormErrorMessage,
 } from '@/components/chakra'
 import { useErrorToast } from '@/hooks/useErrorToast'
+import PasswordField from '@/components/PasswordField/PasswordField'
 
 const schema = z.object({
   password: z
@@ -58,7 +58,7 @@ const PasswordForm: FC = () => {
       <Flex>
         <FormControl isInvalid={!!errors.password}>
           <FormLabel htmlFor="password">パスワード</FormLabel>
-          <Input id="password" type="password" {...register('password')} />
+          <PasswordField id="password" {...register('password')} />
           <FormErrorMessage>
             {errors.password && errors.password.message}
           </FormErrorMessage>

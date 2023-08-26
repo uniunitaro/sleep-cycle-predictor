@@ -17,6 +17,7 @@ const HeroHeading: FC = () => {
       textAlign="center"
       bgGradient={bgGradient}
       bgClip="text"
+      lineHeight="1.2"
     >
       日々ずれてゆく
       <wbr />

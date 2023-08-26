@@ -65,7 +65,7 @@ const SleepOverview = forwardRef<
     })
   }
   const formatDay = (date: Date) => {
-    return format(date, '（E）', { locale: ja })
+    return format(date, '(E)', { locale: ja })
   }
 
   const lastSleep = sleeps[sleeps.length - 1]
@@ -101,18 +101,18 @@ const SleepOverview = forwardRef<
           <Box fontSize="sm" color={displayDateStart.color}>
             {displayDateStart.date}
           </Box>
-          <Box fontSize="xs" color={displayDateStart.color}>
+          <Box fontSize="xs" ml="1" color={displayDateStart.color}>
             {displayDateStart.day}
           </Box>
           {displayDateEnd && (
             <>
-              <Box mr="1" fontSize="sm">
+              <Box mx="1" fontSize="xs">
                 ～
               </Box>
               <Box fontSize="sm" color={displayDateEnd.color}>
                 {displayDateEnd.date}
               </Box>
-              <Box fontSize="xs" color={displayDateEnd.color}>
+              <Box fontSize="xs" ml="1" color={displayDateEnd.color}>
                 {displayDateEnd.day}
               </Box>
             </>
