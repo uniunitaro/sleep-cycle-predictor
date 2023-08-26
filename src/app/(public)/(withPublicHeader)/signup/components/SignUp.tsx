@@ -29,7 +29,7 @@ const SignUp: FC = () => {
   const handleGoogleSignUp = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: `${location.origin}/api/auth/google?next=/home ` },
+      options: { redirectTo: `${location.origin}/api/auth/google?next=/home` },
     })
     if (error) {
       errorToast()

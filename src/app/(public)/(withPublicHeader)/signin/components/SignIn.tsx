@@ -7,9 +7,12 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import {
   Alert,
   AlertIcon,
+  Box,
   Button,
+  Divider,
   FormControl,
   FormLabel,
+  HStack,
   Heading,
   Input,
   Stack,
@@ -21,6 +24,9 @@ import {
   BasicCardHeader,
   BasicCardLayout,
 } from '@/components/BasicCards'
+import ProviderButton from '@/features/auth/components/ProviderButton'
+import GoogleLogo from '@/features/auth/components/GoogleLogo'
+import { useErrorToast } from '@/hooks/useErrorToast'
 
 type Schema = { email: string; password: string }
 
@@ -42,9 +48,22 @@ const SignIn: FC = () => {
     })
     if (error) {
       setError(true)
-      return
+    } else {
+      router.push('/home')
     }
-    router.push('/home')
+  }
+
+  const errorToast = useErrorToast()
+  const handleGoogleSignIn = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: `${location.origin}/api/auth/google?next=/home` },
+    })
+    if (error) {
+      errorToast()
+    } else {
+      router.push('/home')
+    }
   }
 
   return (
@@ -56,33 +75,48 @@ const SignIn: FC = () => {
           </Heading>
         </BasicCardHeader>
         <BasicCardBody>
-          <form onSubmit={handleSubmit(onSubmit)} noValidate>
-            <Stack spacing="10">
-              <Stack spacing="5">
-                <FormControl>
-                  <FormLabel htmlFor="email">メールアドレス</FormLabel>
-                  <Input id="email" type="email" {...register('email')} />
-                </FormControl>
-                <FormControl>
-                  <FormLabel htmlFor="password">パスワード</FormLabel>
-                  <PasswordField id="password" {...register('password')} />
-                </FormControl>
+          <Stack spacing="6">
+            <ProviderButton
+              leftIcon={<GoogleLogo />}
+              onClick={handleGoogleSignIn}
+            >
+              Googleでログイン
+            </ProviderButton>
+            <HStack>
+              <Divider />
+              <Box flexShrink="0" fontSize="sm">
+                または
+              </Box>
+              <Divider />
+            </HStack>
+            <form onSubmit={handleSubmit(onSubmit)} noValidate>
+              <Stack spacing="10">
+                <Stack spacing="5">
+                  <FormControl>
+                    <FormLabel htmlFor="email">メールアドレス</FormLabel>
+                    <Input id="email" type="email" {...register('email')} />
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel htmlFor="password">パスワード</FormLabel>
+                    <PasswordField id="password" {...register('password')} />
+                  </FormControl>
+                </Stack>
+                {error && (
+                  <Alert status="error">
+                    <AlertIcon />
+                    メールアドレスまたはパスワードが間違っています。
+                  </Alert>
+                )}
+                <Button
+                  colorScheme="green"
+                  type="submit"
+                  isLoading={isSubmitting}
+                >
+                  メールアドレスでログイン
+                </Button>
               </Stack>
-              {error && (
-                <Alert status="error">
-                  <AlertIcon />
-                  メールアドレスまたはパスワードが間違っています。
-                </Alert>
-              )}
-              <Button
-                colorScheme="green"
-                type="submit"
-                isLoading={isSubmitting}
-              >
-                ログイン
-              </Button>
-            </Stack>
-          </form>
+            </form>
+          </Stack>
         </BasicCardBody>
       </BasicCard>
     </BasicCardLayout>

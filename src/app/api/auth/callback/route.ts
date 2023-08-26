@@ -11,7 +11,10 @@ export const GET = async (request: NextRequest) => {
 
   if (code) {
     const supabase = createRouteHandlerClient({ cookies })
-    await supabase.auth.exchangeCodeForSession(code)
+    await supabase.auth.exchangeCodeForSession(code).catch(() => {
+      // 違うブラウザでメールアドレスの確認をするとエラーになる
+      // 確認自体は正常に完了しているのでそのままリダイレクトする
+    })
   }
 
   const next = requestUrl.searchParams.get('next')
