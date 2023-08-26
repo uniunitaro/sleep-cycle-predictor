@@ -10,13 +10,13 @@ import {
   subDays,
   subMonths,
 } from 'date-fns'
-import { cookies, headers } from 'next/headers'
-import { getSelectorsByUserAgent } from 'react-device-detect'
+import { cookies } from 'next/headers'
 import UserPublicPage from './components/UserPublicPage'
 import { getUser } from '@/features/user/repositories/users'
 import { getPredictions } from '@/features/sleep/repositories/predictions'
 import { SearchParams } from '@/types/global'
 import { DisplayMode } from '@/features/sleep/types/chart'
+import { detectMobileByUserAgent } from '@/utils/detectMobileByUserAgent'
 
 type Props = {
   params: { userId: string }
@@ -51,11 +51,7 @@ const UserPage = async ({ params, searchParams }: Props) => {
     return new Date(date)
   })()
 
-  const headersList = headers()
-  const userAgent = headersList.get('user-agent')
-  const { isMobile }: { isMobile: boolean } = userAgent
-    ? getSelectorsByUserAgent(userAgent)
-    : { isMobile: false }
+  const { isMobile } = detectMobileByUserAgent()
 
   const storedDisplayMode = cookies().get('displayMode')?.value as
     | DisplayMode

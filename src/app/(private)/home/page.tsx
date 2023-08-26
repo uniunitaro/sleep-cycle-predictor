@@ -11,14 +11,14 @@ import {
   subMonths,
   subWeeks,
 } from 'date-fns'
-import { cookies, headers } from 'next/headers'
-import { getSelectorsByUserAgent } from 'react-device-detect'
+import { cookies } from 'next/headers'
 import Home from './components/Home'
 import { getSleeps } from '@/features/sleep/repositories/sleeps'
 import { getMyPredictions } from '@/features/sleep/repositories/predictions'
 import { SearchParams } from '@/types/global'
 import { redirectBasedOnAuthState } from '@/features/auth/utils/redirectBasedOnAuthState'
 import { DisplayMode } from '@/features/sleep/types/chart'
+import { detectMobileByUserAgent } from '@/utils/detectMobileByUserAgent'
 
 export const metadata: Metadata = {
   title: 'ホーム',
@@ -34,11 +34,7 @@ const HomePage = async ({ searchParams }: { searchParams: SearchParams }) => {
     return new Date(date)
   })()
 
-  const headersList = headers()
-  const userAgent = headersList.get('user-agent')
-  const { isMobile }: { isMobile: boolean } = userAgent
-    ? getSelectorsByUserAgent(userAgent)
-    : { isMobile: false }
+  const { isMobile } = detectMobileByUserAgent()
 
   const storedDisplayMode = cookies().get('displayMode')?.value as
     | DisplayMode

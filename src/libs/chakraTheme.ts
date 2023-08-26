@@ -51,6 +51,10 @@ export const theme = extendTheme({
         default: 'blue.600',
         _dark: 'blue.300',
       },
+      buttonBrand: {
+        default: 'brand.500',
+        _dark: 'brand.200',
+      },
     },
   },
   colors: {

@@ -2,7 +2,7 @@ import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import SignedInHeader from '@/components/SignedInHeader/SignedInHeader'
 import SignedOutHeader from '@/components/SignedOutHeader/SignedOutHeader'
-import { Flex } from '@/components/chakra'
+import { Grid } from '@/components/chakra'
 
 export default async function PublicLayout({
   children,
@@ -16,9 +16,9 @@ export default async function PublicLayout({
 
   const isAuthed = !!session
   return (
-    <Flex
-      w="full"
-      direction="column"
+    <Grid
+      templateRows="auto 1fr"
+      templateColumns="100%"
       overflow="hidden"
       sx={{
         height: '100vh',
@@ -29,6 +29,6 @@ export default async function PublicLayout({
     >
       {isAuthed ? <SignedInHeader /> : <SignedOutHeader />}
       {children}
-    </Flex>
+    </Grid>
   )
 }
