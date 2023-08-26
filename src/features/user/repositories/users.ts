@@ -12,6 +12,40 @@ import {
 } from '@/utils/getAuthUserId'
 import { uuidToBin } from '@/utils/uuidToBin'
 
+export const addUser = async ({
+  id,
+  nickname,
+  email,
+}: {
+  id: string
+  nickname: string
+  email: string
+}): Promise<{ error?: true }> => {
+  try {
+    db.transaction(async (tx) => {
+      const existingUser = await tx.query.user.findFirst({
+        where: eq(user.id, uuidToBin(id)),
+      })
+      if (existingUser) return
+
+      await tx.insert(user).values({
+        id: uuidToBin(id),
+        nickname,
+        email,
+      })
+
+      await tx.insert(config).values({
+        userId: uuidToBin(id),
+      })
+    })
+
+    return {}
+  } catch (e) {
+    console.error(e)
+    return { error: true }
+  }
+}
+
 export const getAuthUser = async (): Promise<
   Result<{ authUser: AuthUser }, true>
 > => {
