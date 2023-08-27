@@ -17,7 +17,7 @@ const Footer: FC = () => {
           <HStack spacing="6">
             <Button
               as={Link}
-              href="/"
+              href="/privacy"
               variant="link"
               fontWeight="normal"
               fontSize="sm"

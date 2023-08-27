@@ -3,6 +3,7 @@ import { cookies } from 'next/headers'
 import SignedInHeader from '@/components/SignedInHeader/SignedInHeader'
 import SignedOutHeader from '@/components/SignedOutHeader/SignedOutHeader'
 import { Grid } from '@/components/chakra'
+import Footer from '@/components/Footer'
 
 export default async function PublicLayout({
   children,
@@ -17,18 +18,18 @@ export default async function PublicLayout({
   const isAuthed = !!session
   return (
     <Grid
-      templateRows="auto 1fr"
+      templateRows="auto 1fr auto"
       templateColumns="100%"
-      overflow="hidden"
       sx={{
-        height: '100vh',
+        minHeight: '100vh',
         '&': {
-          height: '100svh',
+          minHeight: '100svh',
         },
       }}
     >
       {isAuthed ? <SignedInHeader /> : <SignedOutHeader />}
       {children}
+      <Footer />
     </Grid>
   )
 }
