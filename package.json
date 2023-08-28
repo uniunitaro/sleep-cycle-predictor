@@ -24,6 +24,7 @@
     "@chakra-ui/next-js": "^2.1.5",
     "@chakra-ui/react": "~2.7",
     "@chakra-ui/theme-tools": "^2.1.0",
+    "@ducanh2912/next-pwa": "^9.5.0",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@hookform/resolvers": "^3.0.1",
@@ -98,7 +99,8 @@
     "msw-storybook-addon": "^1.8.0",
     "storybook": "^7.1.0",
     "ts-jest": "^29.1.1",
-    "tsx": "^3.12.7"
+    "tsx": "^3.12.7",
+    "webpack": "^5.88.2"
   },
   "msw": {
     "workerDirectory": "public"
