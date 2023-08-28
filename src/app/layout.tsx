@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import { Noto_Sans_JP, Roboto } from 'next/font/google'
 import Providers from '@/components/Providers'
+import ThemeColorManager from '@/components/ThemeColorManager'
 
 export const metadata: Metadata = {
   title: {
@@ -16,6 +17,7 @@ export const metadata: Metadata = {
     statusBarStyle: 'default',
     title: 'Sleep Predictor',
   },
+  themeColor: '#f7f9f7',
 }
 
 export const runtime = 'edge'
@@ -41,7 +43,10 @@ export default function RootLayout({
   return (
     <html lang="ja-JP" className={`${notoSans.variable} ${roboto.variable}`}>
       <body>
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+          <ThemeColorManager />
+        </Providers>
       </body>
     </html>
   )

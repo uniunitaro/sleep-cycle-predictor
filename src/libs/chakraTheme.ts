@@ -1,5 +1,6 @@
 import {
   StyleFunctionProps,
+  ThemeConfig,
   extendTheme,
   theme as originalTheme,
 } from '@chakra-ui/react'
@@ -18,6 +19,11 @@ const brand = {
   700: '#276749',
   800: '#22543D',
   900: '#1C4532',
+}
+
+const config: ThemeConfig = {
+  initialColorMode: 'system',
+  useSystemColorMode: true,
 }
 
 export const theme = extendTheme({
@@ -246,4 +252,5 @@ export const theme = extendTheme({
     heading: 'var(--font-roboto), var(--font-noto-sans-jp), sans-serif',
     body: 'var(--font-roboto), var(--font-noto-sans-jp), sans-serif',
   },
+  config,
 })
