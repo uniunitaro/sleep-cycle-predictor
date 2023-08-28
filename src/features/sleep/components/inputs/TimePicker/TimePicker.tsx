@@ -71,6 +71,9 @@ const TimePicker: FC<{ value: Date; onChange: (value: Date) => void }> = ({
         main: muiThemeColor,
       },
     },
+    typography: {
+      fontFamily: 'var(--font-roboto), sans-serif',
+    },
   })
 
   return (

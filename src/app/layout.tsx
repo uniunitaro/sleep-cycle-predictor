@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import { Noto_Sans_JP } from 'next/font/google'
+import { Noto_Sans_JP, Roboto } from 'next/font/google'
 import Providers from '@/components/Providers'
 
 export const metadata: Metadata = {
@@ -27,13 +27,19 @@ const notoSans = Noto_Sans_JP({
   variable: '--font-noto-sans-jp',
 })
 
+const roboto = Roboto({
+  weight: ['400', '700'],
+  subsets: ['latin'],
+  variable: '--font-roboto',
+})
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
   return (
-    <html lang="ja-JP" className={notoSans.variable}>
+    <html lang="ja-JP" className={`${notoSans.variable} ${roboto.variable}`}>
       <body>
         <Providers>{children}</Providers>
       </body>

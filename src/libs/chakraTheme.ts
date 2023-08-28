@@ -243,7 +243,7 @@ export const theme = extendTheme({
     }),
   },
   fonts: {
-    heading: 'var(--font-noto-sans-jp), sans-serif',
-    body: 'var(--font-noto-sans-jp), sans-serif',
+    heading: 'var(--font-roboto), var(--font-noto-sans-jp), sans-serif',
+    body: 'var(--font-roboto), var(--font-noto-sans-jp), sans-serif',
   },
 })

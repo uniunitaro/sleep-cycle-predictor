@@ -39,3 +39,6 @@ next-env.d.ts
 .env
 
 /v8-compile-cache*
+
+public/sw.js*
+public/workbox-*.js*
