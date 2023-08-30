@@ -3,7 +3,6 @@
 import { FC } from 'react'
 import Link from 'next/link'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { useRouter } from 'next/navigation'
 import {
   Box,
   Button,
@@ -25,7 +24,6 @@ import ProviderButton from '@/features/auth/components/ProviderButton'
 const SignUp: FC = () => {
   const supabase = createClientComponentClient()
   const errorToast = useErrorToast()
-  const router = useRouter()
   const handleGoogleSignUp = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
@@ -33,8 +31,6 @@ const SignUp: FC = () => {
     })
     if (error) {
       errorToast()
-    } else {
-      router.push('/home')
     }
   }
 

@@ -26,7 +26,7 @@ const Footer: FC = () => {
             </Button>
             <Button
               as={Link}
-              href="/"
+              href="/terms"
               variant="link"
               fontWeight="normal"
               fontSize="sm"
