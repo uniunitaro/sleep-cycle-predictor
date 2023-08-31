@@ -27,6 +27,7 @@ import {
 import ProviderButton from '@/features/auth/components/ProviderButton'
 import GoogleLogo from '@/features/auth/components/GoogleLogo'
 import { useErrorToast } from '@/hooks/useErrorToast'
+import XLogo from '@/features/auth/components/XLogo'
 
 type Schema = { email: string; password: string }
 
@@ -54,15 +55,13 @@ const SignIn: FC = () => {
   }
 
   const errorToast = useErrorToast()
-  const handleGoogleSignIn = async () => {
+  const handleProviderSignIn = async (provider: 'google' | 'twitter') => {
     const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
+      provider,
       options: { redirectTo: `${location.origin}/api/auth/google?next=/home` },
     })
     if (error) {
       errorToast()
-    } else {
-      router.push('/home')
     }
   }
 
@@ -78,9 +77,15 @@ const SignIn: FC = () => {
           <Stack spacing="6">
             <ProviderButton
               leftIcon={<GoogleLogo />}
-              onClick={handleGoogleSignIn}
+              onClick={() => handleProviderSignIn('google')}
             >
               Googleでログイン
+            </ProviderButton>
+            <ProviderButton
+              leftIcon={<XLogo />}
+              onClick={() => handleProviderSignIn('twitter')}
+            >
+              Xでログイン
             </ProviderButton>
             <HStack>
               <Divider />

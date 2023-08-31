@@ -20,13 +20,14 @@ import {
 import GoogleLogo from '@/features/auth/components/GoogleLogo'
 import { useErrorToast } from '@/hooks/useErrorToast'
 import ProviderButton from '@/features/auth/components/ProviderButton'
+import XLogo from '@/features/auth/components/XLogo'
 
 const SignUp: FC = () => {
   const supabase = createClientComponentClient()
   const errorToast = useErrorToast()
-  const handleGoogleSignUp = async () => {
+  const handleProviderSignUp = async (provider: 'google' | 'twitter') => {
     const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
+      provider,
       options: { redirectTo: `${location.origin}/api/auth/google?next=/home` },
     })
     if (error) {
@@ -46,9 +47,15 @@ const SignUp: FC = () => {
           <Stack spacing="6">
             <ProviderButton
               leftIcon={<GoogleLogo />}
-              onClick={handleGoogleSignUp}
+              onClick={() => handleProviderSignUp('google')}
             >
               Googleで登録
+            </ProviderButton>
+            <ProviderButton
+              leftIcon={<XLogo />}
+              onClick={() => handleProviderSignUp('twitter')}
+            >
+              Xで登録
             </ProviderButton>
             <HStack>
               <Divider />
