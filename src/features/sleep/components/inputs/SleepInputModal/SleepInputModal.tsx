@@ -113,7 +113,6 @@ const SleepInputModal = forwardRef<HTMLDivElement, Props>(
                 variant="ghost"
                 color="secondaryGray"
                 onClick={modalProps.onClose}
-                flex="1"
               >
                 キャンセル
               </Button>
@@ -121,7 +120,6 @@ const SleepInputModal = forwardRef<HTMLDivElement, Props>(
                 colorScheme="green"
                 isLoading={isLoading}
                 onClick={handleSubmit}
-                flex="1"
               >
                 {isUpdate ? '更新する' : '追加する'}
               </Button>

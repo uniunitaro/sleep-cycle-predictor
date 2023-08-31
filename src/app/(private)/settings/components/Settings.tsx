@@ -8,6 +8,7 @@ import PasswordForm from '@/features/user/components/settings/PasswordForm'
 import SrcDurationSelect from '@/features/user/components/settings/SrcDurationSelect'
 import DeleteAccount from '@/features/user/components/settings/DeleteAccount'
 import { CardBodyMdOnly, CardMdOnly } from '@/components/MdOnlyCards'
+import AvatarSetting from '@/features/user/components/settings/AvatarSetting'
 
 const Settings: FC<{ userWithConfig: AuthUserWithConfig }> = ({
   userWithConfig,
@@ -30,6 +31,10 @@ const Settings: FC<{ userWithConfig: AuthUserWithConfig }> = ({
                     プロフィール
                   </Heading>
                   <Stack spacing="4">
+                    <AvatarSetting
+                      nickname={userWithConfig.nickname}
+                      srcUrl={userWithConfig.avatarUrl ?? undefined}
+                    />
                     <NicknameForm nickname={userWithConfig.nickname} />
                     {userWithConfig.email && (
                       <EmailForm email={userWithConfig.email} />

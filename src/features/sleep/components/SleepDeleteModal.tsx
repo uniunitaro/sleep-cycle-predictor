@@ -41,7 +41,6 @@ const SleepDeleteModal = forwardRef<HTMLDivElement, Props>(
                 color="secondaryGray"
                 variant="ghost"
                 onClick={modalProps.onClose}
-                flex="1"
               >
                 キャンセル
               </Button>
@@ -49,7 +48,6 @@ const SleepDeleteModal = forwardRef<HTMLDivElement, Props>(
                 colorScheme="red"
                 isLoading={isLoading}
                 onClick={handleSubmit}
-                flex="1"
               >
                 削除する
               </Button>
