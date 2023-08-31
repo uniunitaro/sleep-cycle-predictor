@@ -15,7 +15,9 @@ import {
   HStack,
   Heading,
   Input,
+  Link,
   Stack,
+  Text,
 } from '@/components/chakra'
 import PasswordField from '@/components/PasswordField/PasswordField'
 import {
@@ -58,7 +60,9 @@ const SignIn: FC = () => {
   const handleProviderSignIn = async (provider: 'google' | 'twitter') => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
-      options: { redirectTo: `${location.origin}/api/auth/google?next=/home` },
+      options: {
+        redirectTo: `${location.origin}/api/auth/callback/oauth?next=/home`,
+      },
     })
     if (error) {
       errorToast()
@@ -119,6 +123,11 @@ const SignIn: FC = () => {
                 >
                   メールアドレスでログイン
                 </Button>
+                <Text fontSize="sm" color="secondaryGray">
+                  <Link href="/terms">利用規約</Link>、
+                  <Link href="/privacy">プライバシーポリシー</Link>
+                  に同意したうえでログインしてください。
+                </Text>
               </Stack>
             </form>
           </Stack>

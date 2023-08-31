@@ -41,7 +41,7 @@ const SleepList: FC<Props> = memo(
     }
 
     return (
-      <Stack gap="3">
+      <Stack gap="4">
         {currentMonthSleeps.map((sleep) => (
           <Box key={sleep.id} onClick={() => handleClickSleep(sleep)}>
             <SleepOverview

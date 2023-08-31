@@ -170,7 +170,7 @@ const Privacy: FC = () => {
           </Text>
           <Text mt="4">
             Email:{' '}
-            <Link href="mailto:contact@sleep-predictor.com" color="blue.500">
+            <Link href="mailto:contact@sleep-predictor.com">
               contact@sleep-predictor.com
             </Link>
           </Text>

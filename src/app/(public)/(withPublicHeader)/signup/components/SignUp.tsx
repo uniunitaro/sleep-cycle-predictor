@@ -1,7 +1,7 @@
 'use client'
 
 import { FC } from 'react'
-import Link from 'next/link'
+import NextLink from 'next/link'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import {
   Box,
@@ -9,7 +9,9 @@ import {
   Divider,
   HStack,
   Heading,
+  Link,
   Stack,
+  Text,
 } from '@/components/chakra'
 import {
   BasicCard,
@@ -28,7 +30,9 @@ const SignUp: FC = () => {
   const handleProviderSignUp = async (provider: 'google' | 'twitter') => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
-      options: { redirectTo: `${location.origin}/api/auth/google?next=/home` },
+      options: {
+        redirectTo: `${location.origin}/api/auth/callback/oauth?next=/home`,
+      },
     })
     if (error) {
       errorToast()
@@ -65,13 +69,18 @@ const SignUp: FC = () => {
               <Divider />
             </HStack>
             <Button
-              as={Link}
+              as={NextLink}
               href="/signup/with-email"
               colorScheme="green"
               w="full"
             >
               メールアドレスで登録
             </Button>
+            <Text fontSize="sm" color="secondaryGray" mt="4">
+              <Link href="/terms">利用規約</Link>、
+              <Link href="/privacy">プライバシーポリシー</Link>
+              に同意したうえで登録してください。
+            </Text>
           </Stack>
         </BasicCardBody>
       </BasicCard>
