@@ -92,13 +92,42 @@ const AvatarSetting: FC<{ nickname: string; srcUrl?: string }> = ({
     })
   }
 
+  const [sliderValue, setSliderValue] = useState(0)
+  const maxZoomRatioMultiplier = 5
+  const exp = 1.5
+
   const handleSliderChange = (value: number) => {
     const cropper = cropperRef.current?.cropper
     if (!cropper) return
 
-    // valueがmax100のとき、zoomRatioはminZoomRatioの5倍になる
-    const zoomRatio = minZoomRatio.current * (1 + value / 25)
+    // valueがmax100のとき、zoomRatioはminZoomRatioの5倍になる 対数カーブになるようにしている
+    const zoomRatio =
+      minZoomRatio.current *
+      (1 + Math.pow(value / 100, exp) * (maxZoomRatioMultiplier - 1))
     cropper.zoomTo(zoomRatio)
+  }
+
+  const handleZoom = (e: Cropper.ZoomEvent) => {
+    const cropper = cropperRef.current?.cropper
+    if (!cropper) return
+
+    if (e.detail.ratio < minZoomRatio.current) {
+      e.preventDefault()
+      cropper.zoomTo(minZoomRatio.current)
+      return
+    } else if (e.detail.ratio > minZoomRatio.current * maxZoomRatioMultiplier) {
+      e.preventDefault()
+      cropper.zoomTo(minZoomRatio.current * maxZoomRatioMultiplier)
+      return
+    }
+
+    const newSliderValue =
+      Math.pow(
+        (e.detail.ratio - minZoomRatio.current) /
+          ((maxZoomRatioMultiplier - 1) * minZoomRatio.current),
+        1 / exp
+      ) * 100
+    setSliderValue(newSliderValue)
   }
 
   const errorToast = useErrorToast()
@@ -130,6 +159,7 @@ const AvatarSetting: FC<{ nickname: string; srcUrl?: string }> = ({
         as="button"
         name={nickname}
         src={srcUrl}
+        // 一瞬だけfallbackが表示されるのを防ぐ
         background={srcUrl ? 'unset' : undefined}
         ignoreFallback
         size="xl"
@@ -182,12 +212,12 @@ const AvatarSetting: FC<{ nickname: string; srcUrl?: string }> = ({
               ready={handleReady}
               cropBoxResizable={false}
               cropBoxMovable={false}
+              zoom={handleZoom}
             />
             <HStack mt="4" gap="6">
               <Icon as={BsZoomOut} color="secondaryGray" />
               <Slider
-                aria-label="slider-ex-1"
-                defaultValue={0}
+                value={sliderValue}
                 colorScheme="green"
                 onChange={handleSliderChange}
               >

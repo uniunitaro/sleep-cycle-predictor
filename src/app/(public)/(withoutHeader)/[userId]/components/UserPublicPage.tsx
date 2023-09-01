@@ -1,6 +1,13 @@
 import { FC } from 'react'
 import dynamic from 'next/dynamic'
-import { Box, Container, Flex, Heading } from '@/components/chakra'
+import {
+  Avatar,
+  Box,
+  Container,
+  Flex,
+  HStack,
+  Heading,
+} from '@/components/chakra'
 import { User } from '@/features/user/types/user'
 import { Prediction } from '@/features/sleep/types/sleep'
 import { DisplayMode } from '@/features/sleep/types/chart'
@@ -30,9 +37,22 @@ const UserPublicPage: FC<{
         bg={{ base: 'contentBg', md: 'transparent' }}
       >
         <Flex direction="column" h="100%">
-          <Heading size={{ base: 'sm', md: 'md' }} px="4" py="2">
-            {user && `${user.nickname}さんの睡眠予測`}
-          </Heading>
+          <HStack
+            px="4"
+            pt={{ base: '2', md: '0' }}
+            pb={{ base: '0', md: '3' }}
+          >
+            <Avatar
+              name={user.nickname}
+              src={user.avatarUrl ?? undefined}
+              size={{ base: 'sm', md: 'md' }}
+              background={user.avatarUrl ? 'unset' : undefined}
+              ignoreFallback
+            />
+            <Heading size={{ base: 'sm', md: 'md' }}>
+              {user && `${user.nickname}さんの睡眠予測`}
+            </Heading>
+          </HStack>
           <Box flex="1" minH="0">
             <PublicSleepChartContainer
               userId={user.id}

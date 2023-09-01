@@ -14,7 +14,7 @@ const Settings: FC<{ userWithConfig: AuthUserWithConfig }> = ({
   userWithConfig,
 }) => {
   return (
-    <Flex direction="column" h="full">
+    <Flex direction="column" h="full" overflowY="auto">
       <SettingsHeader />
       <Container
         maxW="8xl"
