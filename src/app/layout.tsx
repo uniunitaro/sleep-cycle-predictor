@@ -25,13 +25,15 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     siteName: 'Sleep Predictor',
+    title: {
+      default: DEFAULT_TITLE,
+      template: TITLE_TEMPLATE,
+    },
     description: DESCRIPTION,
     images: '/api/og',
   },
   twitter: {
     card: 'summary_large_image',
-    description: DESCRIPTION,
-    images: '/api/og',
   },
 }
 
