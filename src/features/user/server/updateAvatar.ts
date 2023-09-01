@@ -20,7 +20,16 @@ export const updateAvatar = async (
     const objectKey = `avatars/${uuid}.jpg`
     const imageUrl = `${r2Url}/${bucket}/${objectKey}`
 
-    const blob = await fetch(dataUrl).then((res) => res.blob())
+    const blob = (() => {
+      const base64 = dataUrl.split(',')[1]
+      const binary = atob(base64)
+      const array = []
+      for (let i = 0; i < binary.length; i++) {
+        array.push(binary.charCodeAt(i))
+      }
+      return new Blob([new Uint8Array(array)], { type: 'image/jpeg' })
+    })()
+
     const res = await client.fetch(imageUrl, {
       body: blob,
       method: 'PUT',
