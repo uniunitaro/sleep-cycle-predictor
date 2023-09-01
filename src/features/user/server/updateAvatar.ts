@@ -8,19 +8,19 @@ export const updateAvatar = async (
   dataUrl: string,
   existingAvatarUrl?: string
 ): Promise<{ error?: true }> => {
-  const client = new AwsClient({
-    accessKeyId: process.env.R2_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
-  })
-
-  const r2Url = process.env.R2_URL!
-  const bucket = 'sleep-predictor-images'
-  const uuid = uuidv4()
-  const objectKey = `avatars/${uuid}.jpg`
-  const imageUrl = `${r2Url}/${bucket}/${objectKey}`
-
-  const blob = await fetch(dataUrl).then((res) => res.blob())
   try {
+    const client = new AwsClient({
+      accessKeyId: process.env.R2_ACCESS_KEY_ID!,
+      secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
+    })
+
+    const r2Url = process.env.R2_URL!
+    const bucket = 'sleep-predictor-images'
+    const uuid = uuidv4()
+    const objectKey = `avatars/${uuid}.jpg`
+    const imageUrl = `${r2Url}/${bucket}/${objectKey}`
+
+    const blob = await fetch(dataUrl).then((res) => res.blob())
     const res = await client.fetch(imageUrl, {
       body: blob,
       method: 'PUT',
