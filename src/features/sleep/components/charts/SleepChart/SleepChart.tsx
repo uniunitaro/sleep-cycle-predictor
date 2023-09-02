@@ -368,11 +368,13 @@ const DragContainer: FC<{
     const shouldSnapToPrevious =
       (currentEdgeType.current === 'both' ||
         currentEdgeType.current === 'left') &&
-      (info.offset.x > dragContainerWidth / 2 || info.velocity.x > 20)
+      ((info.velocity.x >= 0 && info.offset.x > dragContainerWidth / 2) ||
+        (info.velocity.x > 20 && info.offset.x > 0))
     const shouldSnapToNext =
       (currentEdgeType.current === 'both' ||
         currentEdgeType.current === 'right') &&
-      (info.offset.x < -dragContainerWidth / 2 || info.velocity.x < -20)
+      ((info.velocity.x <= 0 && info.offset.x < -dragContainerWidth / 2) ||
+        (info.velocity.x < -20 && info.offset.x < 0))
 
     currentEdgeType.current = undefined
 
