@@ -31,9 +31,21 @@ export const generateMetadata = async ({
     return {}
   }
 
+  const TITLE = `${user.nickname}さんの睡眠予測`
+  const DESCRIPTION = TITLE
+
+  const ogSearchParams = new URLSearchParams({
+    title: TITLE,
+    ...(user.avatarUrl ? { avatarUrl: user.avatarUrl } : {}),
+  })
   return {
-    title: `${user.nickname}さんの睡眠予測`,
-    description: `${user.nickname}さんの睡眠予測`,
+    title: TITLE,
+    description: DESCRIPTION,
+    openGraph: {
+      title: TITLE,
+      description: DESCRIPTION,
+      images: `/api/og/users?${ogSearchParams.toString()}`,
+    },
   }
 }
 
