@@ -71,9 +71,10 @@ type Props = {
   predictions: Prediction[]
   targetDate: Date
   displayMode: DisplayMode
+  isPublic: boolean
 }
 const SleepChart: FC<Props> = memo(
-  ({ sleeps, predictions, targetDate, displayMode }) => {
+  ({ sleeps, predictions, targetDate, displayMode, isPublic }) => {
     const [optimisticTargetDate, setOptimisticTargetDate] =
       useOptimistic(targetDate)
 
@@ -187,6 +188,7 @@ const SleepChart: FC<Props> = memo(
               <ChartHeader
                 targetDate={optimisticTargetDate}
                 displayMode={displayMode}
+                isPublic={isPublic}
               />
             </Box>
             <Flex flex="1" overflowY="auto">
@@ -287,8 +289,19 @@ const DragContainer: FC<{
   children: ReactNode
 }> = ({ targetDate, displayMode, currentChartRef, onDateChange, children }) => {
   const dragContainerRef = useRef<HTMLDivElement>(null)
-  const dragContainerDimensions = useDimensions(dragContainerRef, true)
-  const dragContainerWidth = dragContainerDimensions?.contentBox.width ?? 0
+  const [dragContainerWidth, setDragContainerWidth] = useState(0)
+  useEffect(() => {
+    if (!dragContainerRef.current) return
+
+    const observer = new ResizeObserver(() => {
+      setDragContainerWidth(dragContainerRef.current?.clientWidth ?? 0)
+    })
+    observer.observe(dragContainerRef.current)
+
+    return () => {
+      observer.disconnect()
+    }
+  }, [])
 
   const dragControls = useDragControls()
   const controls = useAnimationControls()

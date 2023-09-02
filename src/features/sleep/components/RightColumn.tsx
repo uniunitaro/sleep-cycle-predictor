@@ -1,34 +1,34 @@
 'use client'
 
 import { FC } from 'react'
-import { AddIcon } from '@chakra-ui/icons'
 import SleepList from './Lists/SleepList'
 import SleepInputModal from './inputs/SleepInputModal/SleepInputModal'
-import { Button, Card, CardBody, useDisclosure } from '@/components/chakra'
+import AddSleepButton from './AddSleepButton'
+import { Card, CardBody, useDisclosure } from '@/components/chakra'
 import { Prediction, Sleep } from '@/features/sleep/types/sleep'
 
 type Props = {
   sleeps: Sleep[]
   predictions: Prediction[]
   targetDate: Date
+  isPublic: boolean
 }
-const RightColumn: FC<Props> = ({ sleeps, predictions, targetDate }) => {
+const RightColumn: FC<Props> = ({
+  sleeps,
+  predictions,
+  targetDate,
+  isPublic,
+}) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   return (
     <Card overflowY="hidden">
-      <CardBody flexGrow="0">
-        <Button
-          leftIcon={<AddIcon />}
-          colorScheme="green"
-          w="full"
-          variant="shadow"
-          onClick={onOpen}
-        >
-          睡眠記録を追加
-        </Button>
-        <SleepInputModal isOpen={isOpen} onClose={onClose} />
-      </CardBody>
+      {!isPublic && (
+        <CardBody flexGrow="0">
+          <AddSleepButton w="full" onClick={onOpen} />
+          <SleepInputModal isOpen={isOpen} onClose={onClose} />
+        </CardBody>
+      )}
       <CardBody overflowY="auto">
         <SleepList
           sleeps={sleeps}

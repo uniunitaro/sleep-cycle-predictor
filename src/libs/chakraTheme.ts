@@ -232,6 +232,11 @@ export const theme = extendTheme({
         color: 'linkBlue',
       },
     },
+    Tooltip: {
+      baseStyle: {
+        borderRadius: 'md',
+      },
+    },
   },
   styles: {
     global: (props: StyleFunctionProps) => ({

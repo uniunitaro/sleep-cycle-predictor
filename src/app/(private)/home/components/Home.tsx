@@ -10,9 +10,8 @@ const Home: FC<{
   targetDate: Date
   displayMode: DisplayMode
 }> = ({ sleeps, predictions, targetDate, displayMode }) => {
-  const PrivateSleepChartContainer = dynamic(
-    () =>
-      import('@/features/sleep/components/charts/PrivateSleepChartContainer'),
+  const SleepChartContainer = dynamic(
+    () => import('@/features/sleep/components/charts/SleepChartContainer'),
     { ssr: false }
   )
 
@@ -22,11 +21,12 @@ const Home: FC<{
       <Flex direction="column" h="100%">
         <ChartPageHeader displayMode={displayMode} />
         <Box flex="1" minH="0">
-          <PrivateSleepChartContainer
+          <SleepChartContainer
             sleeps={sleeps}
             predictions={predictions}
             targetDate={targetDate}
             displayMode={displayMode}
+            isPublic={false}
           />
         </Box>
       </Flex>
