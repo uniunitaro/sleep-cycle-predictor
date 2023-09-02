@@ -1,22 +1,9 @@
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import {
-  addDays,
-  addMonths,
-  endOfMonth,
-  endOfWeek,
-  startOfMonth,
-  startOfWeek,
-  subDays,
-  subMonths,
-} from 'date-fns'
-import { cookies } from 'next/headers'
 import UserPublicPage from './components/UserPublicPage'
 import { getUser } from '@/features/user/repositories/users'
-import { getPredictions } from '@/features/sleep/repositories/predictions'
 import { SearchParams } from '@/types/global'
-import { DisplayMode } from '@/features/sleep/types/chart'
-import { detectMobileByUserAgent } from '@/utils/detectMobileByUserAgent'
+import { initChartPage } from '@/features/sleep/utils/initChartPage'
 
 type Props = {
   params: { userId: string }
@@ -56,36 +43,14 @@ const UserPage = async ({ params, searchParams }: Props) => {
     notFound()
   }
 
-  // searchParamで日付が指定されていればその日付、されていなければ今日
-  const targetDate = (() => {
-    const { date } = searchParams
-    if (typeof date !== 'string') return new Date()
-    return new Date(date)
-  })()
+  const {
+    targetDate,
+    displayMode,
+    predictions,
+    error: predictionsError,
+  } = await initChartPage({ isPublic: true, userId, searchParams })
 
-  const { isMobile } = detectMobileByUserAgent()
-
-  const storedDisplayMode = cookies().get('displayMode')?.value as
-    | DisplayMode
-    | undefined
-  const displayMode: DisplayMode =
-    (typeof searchParams.view === 'string' &&
-      (searchParams.view as DisplayMode)) ||
-    storedDisplayMode ||
-    (isMobile ? 'week' : 'month')
-
-  const { predictions, error: predictionsError } = await getPredictions({
-    userId,
-    start:
-      displayMode === 'month'
-        ? subDays(startOfMonth(subMonths(targetDate, 1)), 1)
-        : subDays(startOfWeek(startOfMonth(targetDate)), 1),
-    end:
-      displayMode === 'month'
-        ? addDays(endOfMonth(addMonths(targetDate, 1)), 1)
-        : addDays(endOfWeek(endOfMonth(targetDate)), 1),
-  })
-  if (predictionsError) {
+  if (predictionsError || !predictions) {
     notFound()
   }
 
