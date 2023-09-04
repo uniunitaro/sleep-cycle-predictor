@@ -55,28 +55,7 @@ export const Drawer: FC<DrawerProps> = ({
 
   useEffect(() => {
     if (modalProps.isOpen) {
-      const startOpenAnimation = () => {
-        overlayControls.start({ opacity: 1 })
-        if (placement === 'bottom') {
-          contentControls.start({
-            y: 0,
-            transition: { duration: 0.2, ease: 'easeInOut' },
-          })
-        } else {
-          contentControls.start({
-            x: 0,
-            transition: { duration: 0.2, ease: 'easeInOut' },
-          })
-        }
-      }
-
       setIsOpen(true)
-      // HACK setTimeoutを使わないとアニメーションが開始しない
-      setTimeout(() => {
-        startOpenAnimation()
-        // HACK 再レンダリングさせないとmodalContentRefが取得できない
-        forceUpdate()
-      }, 0)
     } else {
       const startCloseAnimation = async () => {
         if (placement === 'bottom') {
@@ -109,6 +88,32 @@ export const Drawer: FC<DrawerProps> = ({
     overlayControls,
     placement,
   ])
+
+  useEffect(() => {
+    if (isOpen) {
+      const startOpenAnimation = () => {
+        overlayControls.start({ opacity: 1 })
+        if (placement === 'bottom') {
+          contentControls.start({
+            y: 0,
+            transition: { duration: 0.2, ease: 'easeInOut' },
+          })
+        } else {
+          contentControls.start({
+            x: 0,
+            transition: { duration: 0.2, ease: 'easeInOut' },
+          })
+        }
+      }
+
+      // HACK setTimeoutを使わないとアニメーションが開始しない
+      setTimeout(() => {
+        startOpenAnimation()
+        // HACK 再レンダリングさせないとmodalContentRefが取得できない
+        forceUpdate()
+      }, 0)
+    }
+  }, [contentControls, isOpen, overlayControls, placement])
 
   const handleDragEnd = async (info: PanInfo) => {
     const contentHeight = modalContentRef.current?.clientHeight ?? 0
@@ -171,6 +176,8 @@ export const Drawer: FC<DrawerProps> = ({
   const canDrag = useRef(false)
   const isDragging = useRef(false)
   const handleTouchStart = (e: React.TouchEvent<HTMLElement>) => {
+    e.stopPropagation()
+
     if (!modalContentRef.current) return
     const modalContainer = modalContentRef.current.parentElement
 
@@ -253,11 +260,15 @@ export const Drawer: FC<DrawerProps> = ({
       closeOnOverlayClick={false}
       // trueもしくはundefined(デフォルト)のときは閉じる
       onEsc={modalProps.closeOnEsc === false ? undefined : handleClose}
+      onOverlayClick={
+        modalProps.closeOnOverlayClick === false ? undefined : handleClose
+      }
     >
       <ModalOverlay
         as={motion.div}
         animate={overlayControls}
         initial={{ opacity: 0 }}
+        onClick={handleClose}
       />
       <MotionSection
         ref={modalContentRef}
