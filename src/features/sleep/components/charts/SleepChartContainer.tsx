@@ -84,7 +84,7 @@ const SleepChartContainer: FC<{
                 h="full"
                 templateColumns={{
                   base: undefined,
-                  md: isRightColumnOpen ? '1fr 320px' : '1fr 0px',
+                  md: isRightColumnOpen ? '1fr 336px' : '1fr 0px',
                 }}
                 transition="all 0.3s"
               >
