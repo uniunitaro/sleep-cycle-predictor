@@ -42,3 +42,6 @@ next-env.d.ts
 
 public/sw.js*
 public/workbox-*.js*
+/test-results/
+/playwright-report/
+/playwright/.cache/

@@ -81,6 +81,7 @@
     "@chakra-ui/storybook-addon": "^5.0.1",
     "@chakra-ui/styled-system": "^2.9.1",
     "@faker-js/faker": "^8.0.2",
+    "@playwright/test": "^1.37.1",
     "@storybook/addon-essentials": "^7.1.0",
     "@storybook/addon-interactions": "^7.1.0",
     "@storybook/addon-links": "^7.1.0",
