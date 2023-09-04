@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { updateAuthUser } from '../repositories/users'
 
 export const updateAvatar = async (
-  dataUrl: string,
+  formData: FormData,
   existingAvatarUrl?: string
 ): Promise<{ error?: true }> => {
   try {
@@ -20,17 +20,17 @@ export const updateAvatar = async (
     const objectKey = `avatars/${uuid}.jpg`
     const imageUrl = `${r2Url}/${bucket}/${objectKey}`
 
-    const blob = (() => {
-      const base64 = dataUrl.split(',')[1]
-      const binary = atob(base64)
-      const array = []
-      for (let i = 0; i < binary.length; i++) {
-        array.push(binary.charCodeAt(i))
-      }
-      return new Blob([new Uint8Array(array)], { type: 'image/jpeg' })
-    })()
+    const file = formData.get('file') as File
+    const blob = new Blob([file], { type: file.type })
 
-    const res = await client.fetch(imageUrl, {
+    const signed = await client.sign(imageUrl, {
+      method: 'PUT',
+      aws: {
+        signQuery: true,
+      },
+    })
+
+    const res = await fetch(signed.url, {
       body: blob,
       method: 'PUT',
       headers: {

@@ -136,21 +136,30 @@ const AvatarSetting: FC<{ nickname: string; srcUrl?: string }> = ({
     const cropper = cropperRef.current?.cropper
     if (!cropper) return
 
-    const dataUrl = cropper
+    cropper
       .getCroppedCanvas({
         width: 240,
         height: 240,
       })
-      .toDataURL('image/jpeg', 0.85)
-    startTransition(async () => {
-      const { error } = await updateAvatar(dataUrl, srcUrl)
-      if (error) {
-        errorToast()
-        return
-      } else {
-        onClose()
-      }
-    })
+      .toBlob(
+        (blob) => {
+          if (!blob) return
+          const formData = new FormData()
+          formData.append('file', blob)
+
+          startTransition(async () => {
+            const { error } = await updateAvatar(formData, srcUrl)
+            if (error) {
+              errorToast()
+              return
+            } else {
+              onClose()
+            }
+          })
+        },
+        'image/jpeg',
+        0.85
+      )
   }
 
   return (
