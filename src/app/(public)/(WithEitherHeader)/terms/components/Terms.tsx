@@ -15,7 +15,7 @@ import SectionHeading from '@/components/SectionHeading'
 
 const Terms: FC = () => {
   return (
-    <Container maxW="4xl" px={{ base: 0, md: 4 }}>
+    <Container maxW="4xl" px={{ base: 0, md: 6 }}>
       <CardMdOnly bg="contentBg" px={{ base: 4, md: 6 }} py="6">
         <CardHeaderMdOnly>
           <Heading as="h1" size="md" textAlign="center">

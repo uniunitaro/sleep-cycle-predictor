@@ -237,6 +237,11 @@ export const theme = extendTheme({
         borderRadius: 'md',
       },
     },
+    Container: {
+      baseStyle: {
+        px: { base: 4, md: 6 },
+      },
+    },
   },
   styles: {
     global: (props: StyleFunctionProps) => ({

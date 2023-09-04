@@ -22,7 +22,7 @@ const RightColumn: FC<Props> = ({
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   return (
-    <Card overflowY="hidden">
+    <Card overflowY="hidden" h="full">
       {!isPublic && (
         <CardBody flexGrow="0">
           <AddSleepButton w="full" onClick={onOpen} />

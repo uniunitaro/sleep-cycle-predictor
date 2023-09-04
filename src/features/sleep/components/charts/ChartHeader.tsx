@@ -5,12 +5,13 @@ import Link from 'next/link'
 import { FC, memo } from 'react'
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'
 import { BsListUl } from 'react-icons/bs'
-import { useAtom } from 'jotai'
+import { useAtom, useSetAtom } from 'jotai'
 import { useCalendarControl } from '../../hooks/useCalendarControl'
 import { DisplayMode } from '../../types/chart'
 import { useDisplayMode } from '../../hooks/useDisplayMode'
 import { isRightColumnOpenAtom } from '../atoms/rightColumn'
 import AddSleepButton from '../AddSleepButton'
+import { isInputModalOpenAtom } from '../atoms/globalModals'
 import {
   Box,
   HStack,
@@ -39,8 +40,10 @@ const ChartHeader: FC<{
     isRightColumnOpenAtom
   )
 
+  const setIsInputModalOpen = useSetAtom(isInputModalOpenAtom)
+
   return (
-    <HStack>
+    <HStack zIndex="0">
       <IconButton
         as={Link}
         href={previousLink}
@@ -62,35 +65,36 @@ const ChartHeader: FC<{
       />
       <Show above="md">
         <Spacer />
-        <HStack spacing="4">
+        <HStack spacing="4" pos="relative" zIndex="0">
           {!isPublic && (
             <Box
               w={isRightColumnOpen ? '0' : '168px'}
               visibility={isRightColumnOpen ? 'hidden' : 'visible'}
               opacity={isRightColumnOpen ? '0' : '1'}
-              overflow="hidden"
               flexShrink="0"
               transition="all 0.3s"
             >
-              <AddSleepButton />
+              <AddSleepButton onClick={() => setIsInputModalOpen(true)} />
             </Box>
           )}
-          <Select value={currentDisplayMode} onChange={handleSelectChange}>
-            <option value="month">月</option>
-            <option value="week">週</option>
-          </Select>
-          <Tooltip
-            label={isRightColumnOpen ? 'リストを非表示' : 'リストを表示'}
-          >
-            <IconButton
-              icon={<Icon as={BsListUl} color="secondaryGray" boxSize="5" />}
-              aria-label={
-                isRightColumnOpen ? '睡眠リストを非表示' : '睡眠リストを表示'
-              }
-              variant="ghost"
-              onClick={() => setIsRightColumnOpen(!isRightColumnOpen)}
-            />
-          </Tooltip>
+          <HStack spacing="4" bgColor="contentBg" zIndex="1">
+            <Select value={currentDisplayMode} onChange={handleSelectChange}>
+              <option value="month">月</option>
+              <option value="week">週</option>
+            </Select>
+            <Tooltip
+              label={isRightColumnOpen ? 'リストを非表示' : 'リストを表示'}
+            >
+              <IconButton
+                icon={<Icon as={BsListUl} color="secondaryGray" boxSize="5" />}
+                aria-label={
+                  isRightColumnOpen ? '睡眠リストを非表示' : '睡眠リストを表示'
+                }
+                variant="ghost"
+                onClick={() => setIsRightColumnOpen(!isRightColumnOpen)}
+              />
+            </Tooltip>
+          </HStack>
         </HStack>
       </Show>
     </HStack>

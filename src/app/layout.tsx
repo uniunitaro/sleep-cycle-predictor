@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import { Noto_Sans_JP, Roboto } from 'next/font/google'
 import Providers from '@/components/Providers'
 import ThemeColorManager from '@/components/ThemeColorManager'
+import { ogImages } from '@/constants/og'
 
 const DEFAULT_TITLE = 'Sleep Predictor'
 const TITLE_TEMPLATE = '%s - Sleep Predictor'
@@ -30,7 +31,7 @@ export const metadata: Metadata = {
       template: TITLE_TEMPLATE,
     },
     description: DESCRIPTION,
-    images: '/api/og',
+    ...ogImages,
   },
   twitter: {
     card: 'summary_large_image',

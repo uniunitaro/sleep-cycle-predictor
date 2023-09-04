@@ -72,7 +72,7 @@ const SleepChartContainer: FC<{
       <Container
         maxW="8xl"
         h="full"
-        px={{ base: 0, md: 4 }}
+        px={{ base: 0, md: 6 }}
         pb={{ base: 0, md: 4 }}
         bg={{ base: 'contentBg', md: 'transparent' }}
       >
@@ -86,7 +86,6 @@ const SleepChartContainer: FC<{
                   base: undefined,
                   md: isRightColumnOpen ? '1fr 320px' : '1fr 0px',
                 }}
-                gap="4"
                 transition="all 0.3s"
               >
                 <SleepChart
@@ -97,12 +96,14 @@ const SleepChartContainer: FC<{
                   isPublic={isPublic}
                 />
                 <Show above="md">
-                  <RightColumn
-                    sleeps={sleeps}
-                    predictions={predictions}
-                    targetDate={targetDate}
-                    isPublic={isPublic}
-                  />
+                  <Box minH="0" pl="4">
+                    <RightColumn
+                      sleeps={sleeps}
+                      predictions={predictions}
+                      targetDate={targetDate}
+                      isPublic={isPublic}
+                    />
+                  </Box>
                 </Show>
               </Grid>
             )}
