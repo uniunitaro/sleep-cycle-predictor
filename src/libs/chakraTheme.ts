@@ -248,6 +248,7 @@ export const theme = extendTheme({
       body: {
         bg: 'globalBg',
         scrollbarWidth: 'thin',
+        fontFeatureSettings: 'normal',
       },
       '@media(hover: hover) and (pointer: fine)': {
         '::-webkit-scrollbar': {
