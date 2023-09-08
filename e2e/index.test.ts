@@ -15,5 +15,5 @@ test('会員登録リンクがあり、押下すると登録ページに遷移�
 
 test('VRT', async ({ page }) => {
   await page.goto('')
-  await expect(page).toHaveScreenshot()
+  await expect(page).toHaveScreenshot({ fullPage: true })
 })
