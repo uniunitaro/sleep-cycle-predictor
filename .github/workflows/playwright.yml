@@ -5,19 +5,19 @@ on:
   pull_request:
     branches: [main, develop, feature/playwright]
 jobs:
-  test_setup:
-    runs-on: ubuntu-latest
-    outputs:
-      preview_url: ${{ steps.waitForVercelPreviewDeployment.outputs.url }}
-    steps:
-      - name: Waiting for 200 from the Vercel Preview
-        uses: uniunitaro/wait-for-vercel-preview@main
-        id: waitForVercelPreviewDeployment
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          max_timeout: 600
+  # test_setup:
+  #   runs-on: ubuntu-latest
+  #   outputs:
+  #     preview_url: ${{ steps.waitForVercelPreviewDeployment.outputs.url }}
+  #   steps:
+  #     - name: Waiting for 200 from the Vercel Preview
+  #       uses: uniunitaro/wait-for-vercel-preview@main
+  #       id: waitForVercelPreviewDeployment
+  #       with:
+  #         token: ${{ secrets.GITHUB_TOKEN }}
+  #         max_timeout: 600
   test:
-    needs: test_setup
+    if: github.event_name == 'deployment_status' && github.event.deployment_status.state == 'success'
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
@@ -48,7 +48,7 @@ jobs:
       - name: Run Playwright tests
         run: pnpm exec playwright test
         env:
-          PLAYWRIGHT_TEST_BASE_URL: ${{ needs.test_setup.outputs.preview_url }}
+          PLAYWRIGHT_TEST_BASE_URL: ${{ github.event.deployment_status.target_url }}
       - uses: actions/upload-artifact@v3
         if: always()
         with:
