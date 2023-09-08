@@ -5,7 +5,7 @@ on:
   pull_request:
     branches: [main, develop, feature/playwright]
 jobs:
-  test-setup:
+  test_setup:
     runs-on: ubuntu-latest
     outputs:
       preview_url: ${{ steps.waitForVercelPreviewDeployment.outputs.url }}
@@ -17,7 +17,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           max_timeout: 600
   test:
-    needs: test-setup
+    needs: test_setup
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
