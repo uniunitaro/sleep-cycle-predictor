@@ -5,7 +5,19 @@ on:
   pull_request:
     branches: [main, develop, feature/playwright]
 jobs:
+  test-setup:
+    runs-on: ubuntu-latest
+    outputs:
+      preview_url: ${{ steps.waitForVercelPreviewDeployment.outputs.url }}
+    steps:
+      - name: Waiting for 200 from the Vercel Preview
+        uses: patrickedqvist/wait-for-vercel-preview@v1.3.1
+        id: waitForVercelPreviewDeployment
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          max_timeout: 600
   test:
+    needs: test-setup
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
@@ -41,3 +53,5 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
+        env:
+          PLAYWRIGHT_TEST_BASE_URL: ${{ needs.test_setup.outputs.preview_url }}
