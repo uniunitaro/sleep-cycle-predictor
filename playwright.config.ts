@@ -37,28 +37,33 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
+      grepInvert: /mobile/,
       use: { ...devices['Desktop Chrome'] },
     },
 
     {
       name: 'firefox',
+      grepInvert: /mobile/,
       use: { ...devices['Desktop Firefox'] },
     },
 
     {
       name: 'webkit',
+      grepInvert: /mobile/,
       use: { ...devices['Desktop Safari'] },
     },
 
     /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
-    // },
+    {
+      name: 'Mobile Chrome',
+      grepInvert: /desktop/,
+      use: { ...devices['Pixel 5'] },
+    },
+    {
+      name: 'Mobile Safari',
+      grepInvert: /desktop/,
+      use: { ...devices['iPhone 12'] },
+    },
 
     /* Test against branded browsers. */
     // {

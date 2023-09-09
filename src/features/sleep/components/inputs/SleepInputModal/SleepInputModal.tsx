@@ -89,7 +89,7 @@ const SleepInputModal = forwardRef<HTMLDivElement, Props>(
         {...modalProps}
       >
         <ModalOverlay />
-        <ModalContent mx="4" ref={ref}>
+        <ModalContent mx="4" minWidth={300} ref={ref}>
           <ModalHeader>
             {isUpdate ? '睡眠記録を編集' : '睡眠記録を追加'}
           </ModalHeader>
