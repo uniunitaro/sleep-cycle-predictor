@@ -45,3 +45,6 @@ public/workbox-*.js*
 /test-results/
 /playwright-report/
 /playwright/.cache/
+
+node_modules
+.react-email
