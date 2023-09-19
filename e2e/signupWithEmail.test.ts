@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import { deleteAccount } from './utils/deleteAccount'
 
 test.describe('signup/with-email', () => {
   test.beforeEach(async ({ page }) => {
@@ -46,12 +47,8 @@ test.describe('signup/with-email', () => {
 
     const newPage = await pagePromise
     await expect(newPage).toHaveURL('/home')
-    await newPage.waitForLoadState('networkidle')
 
-    await newPage.getByRole('button', { name: 'register-test' }).click()
-    await newPage.getByRole('menuitem', { name: '設定' }).click()
-    await newPage.getByRole('button', { name: 'アカウントを削除する' }).click()
-    await newPage.getByRole('button', { name: '削除する' }).click()
+    await deleteAccount(newPage)
     await expect(newPage).toHaveURL('/')
   })
 })
