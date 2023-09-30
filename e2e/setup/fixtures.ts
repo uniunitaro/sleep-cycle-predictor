@@ -15,9 +15,12 @@ export const authedTest = baseTest.extend<
     async ({ browser }, use) => {
       // Use parallelIndex as a unique identifier for each worker.
       const index = authedTest.info().parallelIndex
-      const id = process.env.CI
-        ? process.env.AUTH_ID!
-        : `e2e-${index + 1}@example.com`
+
+      // TODO 並列でGitHub Actions回すときに設定する
+      // const id = process.env.CI
+      //   ? process.env.AUTH_ID!
+      //   : `e2e-${index + 1}@example.com`
+      const id = `e2e-${index + 1}@example.com`
       const fileName = path.resolve(
         authedTest.info().project.outputDir,
         `.auth/${id}.json`
