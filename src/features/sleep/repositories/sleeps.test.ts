@@ -1,7 +1,7 @@
 import { addSleep, deleteSleep, getSleeps, updateSleep } from './sleeps'
 import { db } from '@/db'
 import { sleepFactory } from '@/libs/drizzleFactories'
-import { uuidToBin } from '@/utils/uuidToBin'
+import { uuidToBin } from '@/utils/uuid'
 
 jest.mock('@/utils/getAuthUserId', () => ({
   getAuthUserIdWithServerAction: jest

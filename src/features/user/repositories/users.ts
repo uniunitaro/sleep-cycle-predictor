@@ -10,7 +10,7 @@ import {
   getAuthUserIdWithServerAction,
   getAuthUserIdWithServerComponent,
 } from '@/utils/getAuthUserId'
-import { uuidToBin } from '@/utils/uuidToBin'
+import { uuidToBin } from '@/utils/uuid'
 
 export const addUser = async ({
   id,

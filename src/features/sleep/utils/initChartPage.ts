@@ -48,8 +48,8 @@ export const initChartPage = async ({
     | DisplayMode
     | undefined
   const displayMode: DisplayMode =
-    (typeof searchParams.view === 'string' &&
-      (searchParams.view as DisplayMode)) ||
+    (typeof searchParams.displayMode === 'string' &&
+      (searchParams.displayMode as DisplayMode)) ||
     storedDisplayMode ||
     (isMobile ? 'week' : 'month')
 

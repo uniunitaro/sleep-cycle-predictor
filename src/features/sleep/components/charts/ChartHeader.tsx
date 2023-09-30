@@ -48,7 +48,7 @@ const ChartHeader: FC<{
         as={Link}
         href={previousLink}
         icon={<Icon as={FaChevronLeft} color="secondaryGray" />}
-        aria-label="前の月を表示"
+        aria-label={displayMode === 'week' ? '前の週を表示' : '前の月を表示'}
         size="sm"
         variant="ghost"
       />
@@ -59,7 +59,7 @@ const ChartHeader: FC<{
         as={Link}
         href={nextLink}
         icon={<Icon as={FaChevronRight} color="secondaryGray" />}
-        aria-label="次の月を表示"
+        aria-label={displayMode === 'week' ? '次の週を表示' : '次の月を表示'}
         size="sm"
         variant="ghost"
       />
@@ -78,7 +78,11 @@ const ChartHeader: FC<{
             </Box>
           )}
           <HStack spacing="4" bgColor="contentBg" zIndex="1">
-            <Select value={currentDisplayMode} onChange={handleSelectChange}>
+            <Select
+              value={currentDisplayMode}
+              onChange={handleSelectChange}
+              aria-label="表示形式の切り替え"
+            >
               <option value="month">月</option>
               <option value="week">週</option>
             </Select>

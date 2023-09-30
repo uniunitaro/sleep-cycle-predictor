@@ -8,7 +8,7 @@ import { getAuthUserIdWithServerComponent } from '@/utils/getAuthUserId'
 import { db } from '@/db'
 import { config, sleep } from '@/db/schema'
 import { Result } from '@/types/global'
-import { uuidToBin } from '@/utils/uuidToBin'
+import { uuidToBin } from '@/utils/uuid'
 
 export const getPredictions = async ({
   userId,

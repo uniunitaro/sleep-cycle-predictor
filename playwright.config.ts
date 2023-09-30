@@ -8,7 +8,7 @@ import dotenv from 'dotenv'
  */
 // require('dotenv').config();
 
-dotenv.config({ path: path.resolve(__dirname, '.env.test') })
+dotenv.config({ path: path.resolve(__dirname, '.env.e2e') })
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
@@ -21,7 +21,8 @@ export default defineConfig({
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  // e2e用アカウントは5個なのでworkerはmax5
+  workers: process.env.CI ? 1 : 5,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -41,21 +42,34 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     {
+      name: 'setup',
+      testMatch: /global\.setup\.ts/,
+      // teardown: 'cleanup',
+    },
+    // {
+    //   name: 'cleanup',
+    //   testMatch: /global\.teardown\.ts/,
+    // },
+
+    {
       name: 'chromium',
       grepInvert: /mobile/,
       use: { ...devices['Desktop Chrome'] },
+      dependencies: ['setup'],
     },
 
     {
       name: 'firefox',
       grepInvert: /mobile/,
       use: { ...devices['Desktop Firefox'] },
+      dependencies: ['setup'],
     },
 
     {
       name: 'webkit',
       grepInvert: /mobile/,
       use: { ...devices['Desktop Safari'] },
+      dependencies: ['setup'],
     },
 
     /* Test against mobile viewports. */
@@ -63,11 +77,13 @@ export default defineConfig({
       name: 'Mobile Chrome',
       grepInvert: /desktop/,
       use: { ...devices['Pixel 5'] },
+      dependencies: ['setup'],
     },
     {
       name: 'Mobile Safari',
       grepInvert: /desktop/,
       use: { ...devices['iPhone 12'] },
+      dependencies: ['setup'],
     },
 
     /* Test against branded browsers. */
