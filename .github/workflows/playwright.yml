@@ -20,6 +20,17 @@ jobs:
     needs: test_setup
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard:
+          [
+            { shard: 1/5, authId: 1 },
+            { shard: 2/5, authId: 2 },
+            { shard: 3/5, authId: 3 },
+            { shard: 4/5, authId: 4 },
+            { shard: 5/5, authId: 5 },
+          ]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -46,13 +57,60 @@ jobs:
       - name: Install Playwright Browsers
         run: pnpm exec playwright install --with-deps
       - name: Run Playwright tests
-        run: pnpm exec playwright test
+        run: pnpm exec playwright test --shard ${{ matrix.shard.shard }}
         env:
           PLAYWRIGHT_TEST_BASE_URL: ${{ needs.test_setup.outputs.preview_url }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      - uses: actions/upload-artifact@v3
+          AUTH_ID: ${{ matrix.shard.authId }}
+      - name: Upload blob report to GitHub Actions Artifacts
         if: always()
+        uses: actions/upload-artifact@v3
         with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 30
+          name: all-blob-reports
+          path: blob-report
+          retention-days: 1
+  merge-reports:
+    # Merge reports after playwright-tests, even if some shards have failed
+    if: always()
+    needs: [test]
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        with:
+          version: 8
+          run_install: false
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Download blob reports from GitHub Actions Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: all-blob-reports
+          path: all-blob-reports
+
+      - name: Merge into HTML Report
+        run: npx playwright merge-reports --reporter html ./all-blob-reports
+
+      - name: Upload HTML report
+        uses: actions/upload-artifact@v3
+        with:
+          name: html-report--attempt-${{ github.run_attempt }}
+          path: playwright-report
+          retention-days: 14
