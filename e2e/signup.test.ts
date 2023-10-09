@@ -27,7 +27,7 @@ test.describe('signup', () => {
     await expect(page).toHaveURL(/accounts.google.com/)
   })
 
-  test.skip('Xで登録ボタンがあり、押下するとX認証画面に遷移する', async ({
+  test('Xで登録ボタンがあり、押下するとX認証画面に遷移する', async ({
     page,
   }) => {
     await page.getByRole('button', { name: 'Xで登録' }).click()

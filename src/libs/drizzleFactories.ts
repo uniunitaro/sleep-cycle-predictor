@@ -2,7 +2,7 @@ import { MySqlTable } from 'drizzle-orm/mysql-core'
 import { faker } from '@faker-js/faker'
 import { SQL } from 'drizzle-orm'
 import { db } from '@/db'
-import { NewConfig, NewSleep, NewUser, sleep, user } from '@/db/schema'
+import { NewConfig, NewSleep, NewUser, config, sleep, user } from '@/db/schema'
 
 type AddUnionToType<T, U> = T extends object
   ? {
@@ -37,7 +37,7 @@ const defaultConfig: InsertType<NewConfig> = {
   userId: faker.string.uuid(),
 }
 export const configFactory = createFactory<InsertType<NewConfig>>(
-  user,
+  config,
   defaultConfig
 )
 

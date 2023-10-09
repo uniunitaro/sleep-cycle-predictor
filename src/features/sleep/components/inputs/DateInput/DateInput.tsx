@@ -90,6 +90,7 @@ const DateInput: FC<Props> = memo(({ value, onChange, ...rest }) => {
       onChange={handleChangeDate}
       onBlur={handleBlurDate}
       onFocus={onOpen}
+      aria-label="日付"
       {...rest}
     />
   )

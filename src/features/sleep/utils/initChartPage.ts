@@ -66,7 +66,7 @@ export const initChartPage = async ({
   if (isPublic) {
     const { predictions, error } = await getPredictions({
       userId,
-      start,
+      start: new Date(),
       end,
     })
 
@@ -75,7 +75,7 @@ export const initChartPage = async ({
     const { sleeps, error } = await getSleeps({ start, end })
 
     const { predictions, error: predictionsError } = await getMyPredictions({
-      start,
+      start: new Date(),
       end,
     })
 

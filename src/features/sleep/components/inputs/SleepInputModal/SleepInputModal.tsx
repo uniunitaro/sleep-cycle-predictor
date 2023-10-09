@@ -96,9 +96,7 @@ const SleepInputModal = forwardRef<HTMLDivElement, Props>(
           <ModalCloseButton />
           <ModalBody>
             <Stack spacing="5">
-              <form>
-                <SleepInputForm sleeps={sleeps} onChange={setSleeps} />
-              </form>
+              <SleepInputForm sleeps={sleeps} onChange={setSleeps} />
               {error && (
                 <Alert status="error">
                   <AlertIcon />

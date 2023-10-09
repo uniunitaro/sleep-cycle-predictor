@@ -191,7 +191,7 @@ const SleepChart: FC<Props> = memo(
                 isPublic={isPublic}
               />
             </Box>
-            <Flex flex="1" overflowY="auto">
+            <Flex flex="1" overflowY="auto" aria-hidden>
               <Flex position="relative" flex="1" minH="400px" overflowX="auto">
                 <VStack
                   mr="3"
@@ -548,8 +548,7 @@ const SleepBarWithDetail: FC<{
       onMouseEnter={() => setHoveredSleepId(sleep.id)}
       onMouseLeave={() => setHoveredSleepId(undefined)}
       onClick={handleClick}
-      // TODO アクセシビリティ考慮
-      tabIndex={0}
+      tabIndex={-1}
       cursor="pointer"
     />
   )

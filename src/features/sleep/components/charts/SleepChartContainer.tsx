@@ -87,6 +87,7 @@ const SleepChartContainer: FC<{
                   md: isRightColumnOpen ? '1fr 336px' : '1fr 0px',
                 }}
                 transition="all 0.3s"
+                overflow="hidden"
               >
                 <SleepChart
                   sleeps={sleeps}
@@ -96,7 +97,7 @@ const SleepChartContainer: FC<{
                   isPublic={isPublic}
                 />
                 <Show above="md">
-                  <Box minH="0" pl="4">
+                  <Box minH="0" pl="4" w="336px">
                     <RightColumn
                       sleeps={sleeps}
                       predictions={predictions}

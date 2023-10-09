@@ -25,11 +25,6 @@ const testCases = [
 
 describe('getSleeps', () => {
   test('指定した期間のSleepの配列が返される', async () => {
-    const payload = {
-      start: new Date('2022-01-02T00:00:00.000Z'),
-      end: new Date('2022-01-03T00:00:00.000Z'),
-    }
-
     const sleeps = [
       {
         userId: uuidToBin(userId),
@@ -49,6 +44,11 @@ describe('getSleeps', () => {
     ] satisfies Parameters<typeof sleepFactory.create>[0]
     await sleepFactory.create(sleeps)
 
+    const payload = {
+      start: new Date('2022-01-02T00:00:00.000Z'),
+      end: new Date('2022-01-03T00:00:00.000Z'),
+    }
+
     const { sleeps: result } = await getSleeps(payload)
     expect(result).toHaveLength(1)
     expect(result?.[0].sleeps[0].start).toEqual(sleeps[1].start)
@@ -56,11 +56,6 @@ describe('getSleeps', () => {
   })
 
   test('SleepとSegmentedSleepをまとめた配列が返される', async () => {
-    const payload = {
-      start: new Date('2022-01-02T00:00:00.000Z'),
-      end: new Date('2022-01-03T00:00:00.000Z'),
-    }
-
     const sleeps = [
       {
         id: 100,
@@ -77,6 +72,11 @@ describe('getSleeps', () => {
     ] satisfies Parameters<typeof sleepFactory.create>[0]
     await sleepFactory.create(sleeps)
 
+    const payload = {
+      start: new Date('2022-01-02T00:00:00.000Z'),
+      end: new Date('2022-01-03T00:00:00.000Z'),
+    }
+
     const { sleeps: result } = await getSleeps(payload)
     expect(result).toHaveLength(1)
     expect(result?.[0].sleeps).toHaveLength(2)
@@ -88,11 +88,6 @@ describe('getSleeps', () => {
   })
 
   test('昇順で返される', async () => {
-    const payload = {
-      start: new Date('2022-01-01T00:00:00.000Z'),
-      end: new Date('2022-01-04T00:00:00.000Z'),
-    }
-
     // 降順に並べている
     const sleeps = [
       {
@@ -112,6 +107,11 @@ describe('getSleeps', () => {
       },
     ] satisfies Parameters<typeof sleepFactory.create>[0]
     await sleepFactory.create(sleeps)
+
+    const payload = {
+      start: new Date('2022-01-01T00:00:00.000Z'),
+      end: new Date('2022-01-04T00:00:00.000Z'),
+    }
 
     const { sleeps: result } = await getSleeps(payload)
     expect(result).toHaveLength(3)

@@ -69,7 +69,7 @@ jobs:
           name: all-blob-reports
           path: blob-report
           retention-days: 1
-  merge-reports:
+  merge_reports:
     # Merge reports after playwright-tests, even if some shards have failed
     if: always()
     needs: [test]

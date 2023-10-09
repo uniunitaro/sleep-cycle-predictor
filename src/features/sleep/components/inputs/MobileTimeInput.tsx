@@ -37,7 +37,7 @@ const MobileTimeInput: FC<Props> = memo(({ value, onChange, ...rest }) => {
 
   return (
     <>
-      <Input value={inputValue} onFocus={onOpen} {...rest} />
+      <Input value={inputValue} onFocus={onOpen} isReadOnly {...rest} />
       <Modal
         isOpen={isOpen}
         onClose={onClose}

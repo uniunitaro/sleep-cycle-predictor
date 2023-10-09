@@ -41,12 +41,13 @@ const SleepList: FC<Props> = memo(
     }
 
     return (
-      <Stack gap="4">
+      <Stack gap="4" role="list" aria-label="睡眠リスト">
         {currentMonthSleeps.map((sleep) => (
           <Box key={sleep.id} onClick={() => handleClickSleep(sleep)}>
             <SleepOverview
               sleep={sleep}
               variant={variant === 'desktop' ? 'withMenu' : 'default'}
+              role="listitem"
             />
           </Box>
         ))}
@@ -57,6 +58,7 @@ const SleepList: FC<Props> = memo(
           >
             <SleepOverview
               prediction={prediction}
+              role="listitem"
               key={prediction.start.getTime()}
             />
           </Box>
