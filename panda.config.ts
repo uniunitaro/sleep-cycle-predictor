@@ -18,7 +18,8 @@ export default defineConfig({
           base: {
             cellTrigger: {
               _today: {
-                border: '1px solid !important',
+                border:
+                  '1px solid var(--chakra-colors-secondaryGray) !important',
                 _before: {
                   content: '""',
                 },
