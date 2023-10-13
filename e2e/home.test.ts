@@ -112,6 +112,9 @@ authedTest.describe('home', () => {
 
           await page.getByRole('button', { name: '削除する' }).click()
 
+          // ダイアログが閉じるまで待つ
+          await expect(page.getByRole('alertdialog')).toHaveCount(0)
+
           await expect(
             page
               .getByRole('listitem', { name: '過去の睡眠' })

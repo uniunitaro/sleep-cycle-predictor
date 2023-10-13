@@ -23,12 +23,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [
-            { shard: 1/1, authId: 1 },
-            # { shard: 2/5, authId: 2 },
-            # { shard: 3/5, authId: 3 },
-            # { shard: 4/5, authId: 4 },
-            # { shard: 5/5, authId: 5 },
+        shard:
+          [
+            { shard: 1/5, authId: 1 },
+            { shard: 2/5, authId: 2 },
+            { shard: 3/5, authId: 3 },
+            { shard: 4/5, authId: 4 },
+            { shard: 5/5, authId: 5 },
           ]
     steps:
       - uses: actions/checkout@v3
