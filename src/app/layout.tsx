@@ -2,22 +2,40 @@ import { Metadata } from 'next'
 import { Noto_Sans_JP, Roboto } from 'next/font/google'
 import Providers from '@/components/Providers'
 import ThemeColorManager from '@/components/ThemeColorManager'
+import { ogImages } from '@/constants/og'
+
+const DEFAULT_TITLE = 'Sleep Predictor'
+const TITLE_TEMPLATE = '%s - Sleep Predictor'
+const DESCRIPTION =
+  '非24時間睡眠覚醒症候群の人をサポートする、睡眠サイクル予測アプリケーション。あなたの体内時計に合わせて、日々のスケジュールを調整しましょう。'
 
 export const metadata: Metadata = {
   title: {
-    template: '%s - Sleep Predictor',
-    absolute: 'Sleep Predictor',
+    default: DEFAULT_TITLE,
+    template: TITLE_TEMPLATE,
   },
-  description:
-    '非24時間睡眠覚醒症候群の人をサポートする、睡眠サイクル予測アプリケーション。あなたの体内時計に合わせて、日々のスケジュールを調整しましょう。',
+  description: DESCRIPTION,
   robots: { index: false },
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'Sleep Predictor',
+    title: DEFAULT_TITLE,
   },
   themeColor: '#f7f9f7',
+  openGraph: {
+    type: 'website',
+    siteName: 'Sleep Predictor',
+    title: {
+      default: DEFAULT_TITLE,
+      template: TITLE_TEMPLATE,
+    },
+    description: DESCRIPTION,
+    ...ogImages,
+  },
+  twitter: {
+    card: 'summary_large_image',
+  },
 }
 
 export const runtime = 'edge'

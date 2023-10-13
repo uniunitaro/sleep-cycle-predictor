@@ -19,6 +19,8 @@ import {
 } from '@/components/chakra'
 
 const UserMenu: FC<{ authUser: AuthUser }> = ({ authUser }) => {
+  const { nickname, avatarUrl } = authUser
+
   const router = useRouter()
   const [, startTransition] = useTransition()
   const handleClickSignOut = async () => {
@@ -36,7 +38,15 @@ const UserMenu: FC<{ authUser: AuthUser }> = ({ authUser }) => {
     <Menu placement="bottom-end">
       <MenuButton
         as={IconButton}
-        icon={<Avatar size="sm" name={authUser.nickname} />}
+        icon={
+          <Avatar
+            size="sm"
+            name={nickname}
+            src={avatarUrl ?? undefined}
+            background={avatarUrl ? 'unset' : undefined}
+            ignoreFallback
+          />
+        }
         aria-label={`アカウント: ${authUser.nickname}`}
         variant="ghost"
         rounded="full"

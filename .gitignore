@@ -28,6 +28,7 @@ yarn-error.log*
 # local and test env files
 .env*.local
 .env*.test
+.env*.e2e
 
 # vercel
 .vercel
@@ -42,3 +43,11 @@ next-env.d.ts
 
 public/sw.js*
 public/workbox-*.js*
+/test-results/
+/playwright-report/
+/playwright/.cache/
+
+node_modules
+.react-email
+
+/styled-system

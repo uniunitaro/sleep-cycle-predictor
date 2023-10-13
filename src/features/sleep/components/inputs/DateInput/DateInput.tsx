@@ -2,28 +2,33 @@
 
 import { format, isValid, parse } from 'date-fns'
 import { FC, memo, useCallback, useEffect, useRef, useState } from 'react'
-import DatePickerWrapper from '../DatePickerWrapper'
+import { DateValue, parseDate } from '@internationalized/date'
 import {
+  Box,
   Hide,
   Input,
-  InputProps,
   Modal,
+  ModalBody,
   ModalContent,
   ModalOverlay,
   Popover,
   PopoverAnchor,
+  PopoverBody,
   PopoverContent,
   Show,
   useDisclosure,
   useOutsideClick,
 } from '@/components/chakra'
+import DatePicker from '@/components/DatePicker'
 
 type Props = {
   value: Date
+  id?: string
+  ariaLabel?: string
   onChange: (value: Date) => void
-} & Omit<InputProps, 'value' | 'onChange'>
+}
 
-const DateInput: FC<Props> = memo(({ value, onChange, ...rest }) => {
+const DateInput: FC<Props> = memo(({ value, id, ariaLabel, onChange }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const popoverContentRef = useRef<HTMLElement>(null)
   useOutsideClick({
@@ -33,23 +38,12 @@ const DateInput: FC<Props> = memo(({ value, onChange, ...rest }) => {
         popoverContentRef.current &&
         inputRef.current !== document.activeElement
       ) {
-        setTimeout(() => {
-          setHasModalRendered(false)
-        }, 100)
         onClose()
       }
     },
   })
 
-  const [hasModalRendered, setHasModalRendered] = useState(false)
-  useEffect(() => {
-    if (isOpen) {
-      setHasModalRendered(true)
-    }
-  }, [isOpen])
-
   const handleCloseModal = () => {
-    setHasModalRendered(false)
     onClose()
   }
 
@@ -68,6 +62,14 @@ const DateInput: FC<Props> = memo(({ value, onChange, ...rest }) => {
   }
 
   const handleBlurDate = (e: React.FocusEvent<HTMLInputElement>) => {
+    // キーボードによるフォーカス移動の場合に閉じる
+    if (
+      popoverContentRef.current &&
+      !popoverContentRef.current.contains(e.relatedTarget)
+    ) {
+      onClose()
+    }
+
     const parsedDate = parse(e.target.value, 'yyyy/MM/dd', new Date())
     if (!isValid(parsedDate)) {
       setInputValue(oldInputValue)
@@ -81,29 +83,18 @@ const DateInput: FC<Props> = memo(({ value, onChange, ...rest }) => {
   }
 
   const handleClickDate = useCallback(
-    (date: string) => {
+    (details: { value: DateValue[] }) => {
+      const date = details.value[0].toString()
+      console.log(date)
+
       onChange(new Date(date))
 
       const formatted = format(new Date(date), 'yyyy/MM/dd')
       setInputValue(formatted)
       setOldInputValue(formatted)
-      setTimeout(() => {
-        setHasModalRendered(false)
-      }, 100)
       onClose()
     },
     [onChange, onClose]
-  )
-
-  const dateInput = (
-    <Input
-      ref={inputRef}
-      value={inputValue}
-      onChange={handleChangeDate}
-      onBlur={handleBlurDate}
-      onFocus={onOpen}
-      {...rest}
-    />
   )
 
   return (
@@ -112,29 +103,57 @@ const DateInput: FC<Props> = memo(({ value, onChange, ...rest }) => {
         <Popover
           isOpen={isOpen}
           placement="bottom-start"
-          initialFocusRef={inputRef}
+          autoFocus={false}
+          returnFocusOnClose={false}
           isLazy
         >
-          <PopoverAnchor>{dateInput}</PopoverAnchor>
+          <PopoverAnchor>
+            <Input
+              ref={inputRef}
+              value={inputValue}
+              onChange={handleChangeDate}
+              onBlur={handleBlurDate}
+              onMouseDown={onOpen}
+              aria-label={ariaLabel ?? '日付'}
+              id={id}
+            />
+          </PopoverAnchor>
           <Show above="md">
-            <PopoverContent
-              ref={popoverContentRef}
-              w="auto"
-              sx={{
-                visibility: hasModalRendered ? 'visible' : 'hidden !important',
-              }}
-            >
-              <DatePickerWrapper
-                value={oldInputValue}
-                colorScheme="green"
-                onChange={handleClickDate}
-              />
+            <PopoverContent ref={popoverContentRef} w="auto">
+              <PopoverBody p="0">
+                <DatePicker
+                  value={[parseDate(oldInputValue.replaceAll('/', '-'))]}
+                  selectionMode="single"
+                  locale="ja"
+                  disableFocus
+                  onChange={handleClickDate}
+                />
+              </PopoverBody>
             </PopoverContent>
           </Show>
         </Popover>
       </Show>
       <Hide above="md">
-        {dateInput}
+        <Box
+          role="button"
+          aria-label={ariaLabel ?? '日付'}
+          onClick={onOpen}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              onOpen()
+            }
+          }}
+          tabIndex={0}
+        >
+          <Input
+            ref={inputRef}
+            value={inputValue}
+            tabIndex={-1}
+            id=""
+            isReadOnly
+            aria-hidden
+          />
+        </Box>
         <Modal
           isOpen={isOpen}
           onClose={handleCloseModal}
@@ -142,15 +161,17 @@ const DateInput: FC<Props> = memo(({ value, onChange, ...rest }) => {
           isCentered
         >
           <ModalOverlay />
-          <ModalContent
-            w={300}
-            visibility={hasModalRendered ? 'visible' : 'hidden'}
-          >
-            <DatePickerWrapper
-              value={oldInputValue}
-              colorScheme="green"
-              onChange={handleClickDate}
-            />
+          <ModalContent w={300}>
+            <ModalBody p="0" display="flex" justifyContent="center">
+              <DatePicker
+                value={[parseDate(oldInputValue.replaceAll('/', '-'))]}
+                selectionMode="single"
+                locale="ja"
+                disableFocus
+                fixedWeeks
+                onChange={handleClickDate}
+              />
+            </ModalBody>
           </ModalContent>
         </Modal>
       </Hide>

@@ -7,7 +7,7 @@ import { revalidatePath } from 'next/cache'
 import { db } from '@/db'
 import { getAuthUserIdWithServerAction } from '@/utils/getAuthUserId'
 import { config, sleep, user } from '@/db/schema'
-import { uuidToBin } from '@/utils/uuidToBin'
+import { uuidToBin } from '@/utils/uuid'
 
 export const deleteAccount = async (): Promise<{ error?: true }> => {
   try {

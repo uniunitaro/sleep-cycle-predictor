@@ -7,14 +7,12 @@ import {
   timestamp,
   index,
   binary,
+  text,
 } from 'drizzle-orm/mysql-core'
-import { InferModel, relations, sql } from 'drizzle-orm'
+import { relations, sql } from 'drizzle-orm'
 
 export const user = mysqlTable('User', {
   id: binary('id', { length: 16 }).primaryKey().notNull(),
-  email: varchar('email', { length: 255 }).unique(),
-  newEmail: varchar('newEmail', { length: 255 }),
-  nickname: varchar('nickname', { length: 255 }).notNull(),
   createdAt: timestamp('createdAt')
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
@@ -22,10 +20,14 @@ export const user = mysqlTable('User', {
     .default(sql`CURRENT_TIMESTAMP`)
     .onUpdateNow()
     .notNull(),
+  email: varchar('email', { length: 255 }).unique(),
+  newEmail: varchar('newEmail', { length: 255 }),
+  nickname: varchar('nickname', { length: 255 }).notNull(),
+  avatarUrl: text('avatarUrl'),
 })
 
-export type User = InferModel<typeof user>
-export type NewUser = InferModel<typeof user, 'insert'>
+export type User = typeof user.$inferSelect
+export type NewUser = typeof user.$inferInsert
 
 export const userRelations = relations(user, ({ one, many }) => ({
   config: one(config, { fields: [user.id], references: [config.userId] }),
@@ -56,8 +58,8 @@ export const config = mysqlTable('Config', {
     .notNull(),
 })
 
-export type Config = InferModel<typeof config>
-export type NewConfig = InferModel<typeof config, 'insert'>
+export type Config = typeof config.$inferSelect
+export type NewConfig = typeof config.$inferInsert
 
 export const sleep = mysqlTable(
   'Sleep',
@@ -89,8 +91,8 @@ export const sleep = mysqlTable(
   }
 )
 
-export type Sleep = InferModel<typeof sleep>
-export type NewSleep = InferModel<typeof sleep, 'insert'>
+export type Sleep = typeof sleep.$inferSelect
+export type NewSleep = typeof sleep.$inferInsert
 
 export const sleepRelations = relations(sleep, ({ one, many }) => ({
   user: one(user, { fields: [sleep.userId], references: [user.id] }),

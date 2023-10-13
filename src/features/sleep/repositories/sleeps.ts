@@ -12,7 +12,7 @@ import {
 } from '@/utils/getAuthUserId'
 import { Result } from '@/types/global'
 import { getLastInsertId } from '@/utils/getLastInsertId'
-import { uuidToBin } from '@/utils/uuidToBin'
+import { uuidToBin } from '@/utils/uuid'
 
 const getSleepAndSegmentedSleeps = (sleeps: { start: Date; end: Date }[]) => {
   const sortedSleeps = [...sleeps].sort(

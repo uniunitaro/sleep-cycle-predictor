@@ -102,34 +102,53 @@ const SleepInputForm: FC<{
 
   return (
     <Stack spacing="5">
-      <Stack spacing="5">
-        {sleeps.map((sleep, index) => (
-          <Box key={sleep.id}>
-            {sleeps.length > 1 && (
-              <Flex align="center" fontSize="sm" color="secondaryGray">
-                睡眠{index + 1}
-                <CloseButton ml="auto" onClick={() => removeSleep(index)} />
-              </Flex>
-            )}
-            <Stack spacing="5">
-              <FormControl>
-                <FormLabel htmlFor="sleep-start">就寝日時</FormLabel>
-                <DateAndTimeInput
-                  value={sleep.start}
-                  onChange={(value) => handleChangeStart(index, value)}
-                />
-              </FormControl>
-              <FormControl>
-                <FormLabel htmlFor="sleep-end">起床日時</FormLabel>
-                <DateAndTimeInput
-                  value={sleep.end}
-                  onChange={(value) => handleChangeEnd(index, value)}
-                />
-              </FormControl>
-            </Stack>
-          </Box>
-        ))}
-      </Stack>
+      <form>
+        <Stack spacing="5">
+          {sleeps.map((sleep, index) => (
+            <Box key={sleep.id} role="group">
+              {sleeps.length > 1 && (
+                <Flex align="center" fontSize="sm" color="secondaryGray">
+                  {`睡眠${index + 1}`}
+                  <CloseButton ml="auto" onClick={() => removeSleep(index)} />
+                </Flex>
+              )}
+              <Stack spacing="5">
+                <FormControl>
+                  <Box mb="2" fontSize="sm" id="sleep-start">
+                    就寝日時
+                  </Box>
+                  <DateAndTimeInput
+                    value={sleep.start}
+                    labelText={
+                      sleeps.length > 1
+                        ? `睡眠${index + 1} 就寝日時`
+                        : '就寝日時'
+                    }
+                    // FormControl以下は自動でidがつき、全てのfieldに同じidがついてしまうので空にする
+                    id=""
+                    onChange={(value) => handleChangeStart(index, value)}
+                  />
+                </FormControl>
+                <FormControl>
+                  <Box mb="2" fontSize="sm" id="sleep-end">
+                    起床日時
+                  </Box>
+                  <DateAndTimeInput
+                    value={sleep.end}
+                    labelText={
+                      sleeps.length > 1
+                        ? `睡眠${index + 1} 起床日時`
+                        : '起床日時'
+                    }
+                    id=""
+                    onChange={(value) => handleChangeEnd(index, value)}
+                  />
+                </FormControl>
+              </Stack>
+            </Box>
+          ))}
+        </Stack>
+      </form>
       <Button
         leftIcon={<AddIcon />}
         variant="ghost"

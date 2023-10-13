@@ -19,7 +19,7 @@ export const useDisplayMode = (displayMode: DisplayMode) => {
     startTransition(() => {
       setCookie('displayMode', displayMode, addMonths(new Date(), 1))
     })
-    router.push(addSearchParamsWithCurrentPathname('view', displayMode))
+    router.push(addSearchParamsWithCurrentPathname('displayMode', displayMode))
   }
 
   return { currentDisplayMode, handleChange }

@@ -8,9 +8,10 @@ import { Box, HStack } from '@/components/chakra'
 
 const DateAndTimeInput: FC<{
   value: Date
-  labelledBy?: string
+  labelText?: string
+  id?: string
   onChange: (value: Date) => void
-}> = memo(({ value, labelledBy, onChange }) => {
+}> = memo(({ value, labelText, id, onChange }) => {
   const handleChangeDate = useCallback(
     (date: Date) => {
       const dateTimeValue = setHours(
@@ -39,14 +40,16 @@ const DateAndTimeInput: FC<{
         <DateInput
           value={value}
           onChange={handleChangeDate}
-          aria-labelledby={labelledBy}
+          ariaLabel={labelText + ' 日付'}
+          id={id}
         />
       </Box>
       <Box flex="1">
         <TimeInput
           value={value}
           onChange={handleChangeTime}
-          aria-labelledby={labelledBy}
+          id={id}
+          labelText={labelText}
         />
       </Box>
     </HStack>

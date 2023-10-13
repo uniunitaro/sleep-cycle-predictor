@@ -43,6 +43,13 @@
       "when": 1692838157654,
       "tag": "0005_short_betty_ross",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1693476827243,
+      "tag": "0006_hot_shriek",
+      "breakpoints": true
     }
   ]
 }

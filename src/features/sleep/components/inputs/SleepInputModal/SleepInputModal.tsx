@@ -89,16 +89,14 @@ const SleepInputModal = forwardRef<HTMLDivElement, Props>(
         {...modalProps}
       >
         <ModalOverlay />
-        <ModalContent mx="4" ref={ref}>
+        <ModalContent mx="4" minWidth={300} ref={ref}>
           <ModalHeader>
             {isUpdate ? '睡眠記録を編集' : '睡眠記録を追加'}
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Stack spacing="5">
-              <form>
-                <SleepInputForm sleeps={sleeps} onChange={setSleeps} />
-              </form>
+              <SleepInputForm sleeps={sleeps} onChange={setSleeps} />
               {error && (
                 <Alert status="error">
                   <AlertIcon />
@@ -113,7 +111,6 @@ const SleepInputModal = forwardRef<HTMLDivElement, Props>(
                 variant="ghost"
                 color="secondaryGray"
                 onClick={modalProps.onClose}
-                flex="1"
               >
                 キャンセル
               </Button>
@@ -121,7 +118,6 @@ const SleepInputModal = forwardRef<HTMLDivElement, Props>(
                 colorScheme="green"
                 isLoading={isLoading}
                 onClick={handleSubmit}
-                flex="1"
               >
                 {isUpdate ? '更新する' : '追加する'}
               </Button>

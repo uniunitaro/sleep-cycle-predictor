@@ -1,7 +1,9 @@
 {
   "typescript.preferences.autoImportFileExcludePatterns": [
-    "node_modules/@mui/**/*"
+    "node_modules/@mui/**/*",
+    "node_modules/@ark-ui/**/*"
   ],
   "prettier.prettierPath": "./node_modules/prettier",
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "git.commandsToLog": ["push"]
 }

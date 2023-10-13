@@ -16,7 +16,7 @@ import SectionHeading from '@/components/SectionHeading'
 
 const Privacy: FC = () => {
   return (
-    <Container maxW="4xl" px={{ base: 0, md: 4 }}>
+    <Container maxW="4xl" px={{ base: 0, md: 6 }}>
       <CardMdOnly bg="contentBg" px={{ base: 4, md: 6 }} py="6">
         <CardHeaderMdOnly>
           <Heading as="h1" size="md" textAlign="center">
@@ -170,7 +170,7 @@ const Privacy: FC = () => {
           </Text>
           <Text mt="4">
             Email:{' '}
-            <Link href="mailto:contact@sleep-predictor.com" color="blue.500">
+            <Link href="mailto:contact@sleep-predictor.com">
               contact@sleep-predictor.com
             </Link>
           </Text>

@@ -1,6 +1,12 @@
 'use client'
 
-import { RefObject, forwardRef, useImperativeHandle, useRef } from 'react'
+import {
+  AriaRole,
+  RefObject,
+  forwardRef,
+  useImperativeHandle,
+  useRef,
+} from 'react'
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons'
 import {
   format,
@@ -33,9 +39,19 @@ export type SleepOverviewRef = {
 
 const SleepOverview = forwardRef<
   SleepOverviewRef,
-  | { sleep: Sleep; prediction?: undefined; variant?: 'default' | 'withMenu' }
-  | { sleep?: undefined; prediction: Prediction; variant?: undefined }
->(({ sleep, prediction, variant = 'default' }, ref) => {
+  | {
+      sleep: Sleep
+      prediction?: undefined
+      variant?: 'default' | 'withMenu'
+      role?: AriaRole
+    }
+  | {
+      sleep?: undefined
+      prediction: Prediction
+      variant?: undefined
+      role?: AriaRole
+    }
+>(({ sleep, prediction, variant = 'default', role }, ref) => {
   const firstSleep = sleep ? sleep?.sleeps[0] : prediction
   const sleeps = sleep ? sleep?.sleeps : [prediction]
 
@@ -94,25 +110,31 @@ const SleepOverview = forwardRef<
       : undefined
 
   return (
-    <HStack minH="0" align="normal" gap="2">
+    <HStack
+      minH="0"
+      align="normal"
+      gap="2"
+      aria-label={sleep ? '過去の睡眠' : '予測された睡眠'}
+      role={role}
+    >
       <Box bgColor={sleep ? 'chartBrand' : 'chartBlue'} w="1" rounded="full" />
       <Box flex="1" sx={{ fontVariantNumeric: 'tabular-nums' }}>
         <Flex align="center">
-          <Box fontSize="sm" color={displayDateStart.color}>
+          <Box as="span" fontSize="sm" color={displayDateStart.color}>
             {displayDateStart.date}
           </Box>
-          <Box fontSize="xs" ml="1" color={displayDateStart.color}>
+          <Box as="span" fontSize="xs" ml="1" color={displayDateStart.color}>
             {displayDateStart.day}
           </Box>
           {displayDateEnd && (
             <>
-              <Box mx="1" fontSize="xs">
+              <Box as="span" mx="1" fontSize="xs">
                 ～
               </Box>
-              <Box fontSize="sm" color={displayDateEnd.color}>
+              <Box as="span" fontSize="sm" color={displayDateEnd.color}>
                 {displayDateEnd.date}
               </Box>
-              <Box fontSize="xs" ml="1" color={displayDateEnd.color}>
+              <Box as="span" fontSize="xs" ml="1" color={displayDateEnd.color}>
                 {displayDateEnd.day}
               </Box>
             </>
@@ -120,20 +142,22 @@ const SleepOverview = forwardRef<
         </Flex>
         {sleeps.map((s) => (
           <Flex align="center" key={s.start.getTime()}>
-            <Box fontWeight="semibold" fontSize="lg">
+            <Box as="span" fontWeight="semibold" fontSize="lg">
               {format(s.start, 'HH:mm', { locale: ja })}
             </Box>
-            <Box ml="1">～</Box>
-            <Box ml="1" fontWeight="semibold" fontSize="lg">
+            <Box as="span" ml="1">
+              ～
+            </Box>
+            <Box as="span" ml="1" fontWeight="semibold" fontSize="lg">
               {format(s.end, 'HH:mm', { locale: ja })}
             </Box>
             {sleep && (
               <Box ml="auto" pl="3" fontSize="sm">
-                {differenceInHours(s.end, s.start)}時間
-                {(differenceInMinutes(s.end, s.start) % 60)
+                {`${differenceInHours(s.end, s.start)}時間${(
+                  differenceInMinutes(s.end, s.start) % 60
+                )
                   .toString()
-                  .padStart(2, '0')}
-                分
+                  .padStart(2, '0')}分`}
               </Box>
             )}
           </Flex>
@@ -148,6 +172,7 @@ const SleepOverview = forwardRef<
               variant="ghost"
               size="sm"
               color="secondaryGray"
+              aria-label="詳細"
             />
             <MenuList>
               <MenuItem

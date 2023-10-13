@@ -3,12 +3,12 @@
 import { and, asc, eq, gte, isNull } from 'drizzle-orm'
 import { Prediction } from '../types/sleep'
 import { getSrcStart } from '../utils/getSrcStart'
-import { predictWithLR } from '../utils/predictWithLR'
+import { predictWithLR } from '../utils/predictWithLR/predictWithLR'
 import { getAuthUserIdWithServerComponent } from '@/utils/getAuthUserId'
 import { db } from '@/db'
 import { config, sleep } from '@/db/schema'
 import { Result } from '@/types/global'
-import { uuidToBin } from '@/utils/uuidToBin'
+import { uuidToBin } from '@/utils/uuid'
 
 export const getPredictions = async ({
   userId,

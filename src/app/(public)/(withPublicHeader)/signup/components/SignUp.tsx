@@ -1,7 +1,7 @@
 'use client'
 
 import { FC } from 'react'
-import Link from 'next/link'
+import NextLink from 'next/link'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import {
   Box,
@@ -9,7 +9,9 @@ import {
   Divider,
   HStack,
   Heading,
+  Link,
   Stack,
+  Text,
 } from '@/components/chakra'
 import {
   BasicCard,
@@ -20,14 +22,17 @@ import {
 import GoogleLogo from '@/features/auth/components/GoogleLogo'
 import { useErrorToast } from '@/hooks/useErrorToast'
 import ProviderButton from '@/features/auth/components/ProviderButton'
+import XLogo from '@/features/auth/components/XLogo'
 
 const SignUp: FC = () => {
   const supabase = createClientComponentClient()
   const errorToast = useErrorToast()
-  const handleGoogleSignUp = async () => {
+  const handleProviderSignUp = async (provider: 'google' | 'twitter') => {
     const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: { redirectTo: `${location.origin}/api/auth/google?next=/home` },
+      provider,
+      options: {
+        redirectTo: `${location.origin}/api/auth/callback/oauth?next=/home`,
+      },
     })
     if (error) {
       errorToast()
@@ -46,9 +51,15 @@ const SignUp: FC = () => {
           <Stack spacing="6">
             <ProviderButton
               leftIcon={<GoogleLogo />}
-              onClick={handleGoogleSignUp}
+              onClick={() => handleProviderSignUp('google')}
             >
               Googleで登録
+            </ProviderButton>
+            <ProviderButton
+              leftIcon={<XLogo />}
+              onClick={() => handleProviderSignUp('twitter')}
+            >
+              Xで登録
             </ProviderButton>
             <HStack>
               <Divider />
@@ -58,13 +69,18 @@ const SignUp: FC = () => {
               <Divider />
             </HStack>
             <Button
-              as={Link}
+              as={NextLink}
               href="/signup/with-email"
               colorScheme="green"
               w="full"
             >
               メールアドレスで登録
             </Button>
+            <Text fontSize="sm" color="secondaryGray" mt="4">
+              <Link href="/terms">利用規約</Link>、
+              <Link href="/privacy">プライバシーポリシー</Link>
+              に同意したうえで登録してください。
+            </Text>
           </Stack>
         </BasicCardBody>
       </BasicCard>

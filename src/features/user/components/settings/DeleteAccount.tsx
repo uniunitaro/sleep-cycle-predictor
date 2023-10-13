@@ -63,7 +63,6 @@ const DeleteAccount: FC = () => {
                 color="secondaryGray"
                 variant="ghost"
                 onClick={onClose}
-                flex="1"
               >
                 キャンセル
               </Button>
@@ -71,7 +70,6 @@ const DeleteAccount: FC = () => {
                 colorScheme="red"
                 isLoading={isPending}
                 onClick={handleDelete}
-                flex="1"
               >
                 削除する
               </Button>

@@ -71,9 +71,10 @@ type Props = {
   predictions: Prediction[]
   targetDate: Date
   displayMode: DisplayMode
+  isPublic: boolean
 }
 const SleepChart: FC<Props> = memo(
-  ({ sleeps, predictions, targetDate, displayMode }) => {
+  ({ sleeps, predictions, targetDate, displayMode, isPublic }) => {
     const [optimisticTargetDate, setOptimisticTargetDate] =
       useOptimistic(targetDate)
 
@@ -187,9 +188,10 @@ const SleepChart: FC<Props> = memo(
               <ChartHeader
                 targetDate={optimisticTargetDate}
                 displayMode={displayMode}
+                isPublic={isPublic}
               />
             </Box>
-            <Flex flex="1" overflowY="auto">
+            <Flex flex="1" overflowY="auto" aria-hidden>
               <Flex position="relative" flex="1" minH="400px" overflowX="auto">
                 <VStack
                   mr="3"
@@ -287,8 +289,19 @@ const DragContainer: FC<{
   children: ReactNode
 }> = ({ targetDate, displayMode, currentChartRef, onDateChange, children }) => {
   const dragContainerRef = useRef<HTMLDivElement>(null)
-  const dragContainerDimensions = useDimensions(dragContainerRef, true)
-  const dragContainerWidth = dragContainerDimensions?.contentBox.width ?? 0
+  const [dragContainerWidth, setDragContainerWidth] = useState(0)
+  useEffect(() => {
+    if (!dragContainerRef.current) return
+
+    const observer = new ResizeObserver(() => {
+      setDragContainerWidth(dragContainerRef.current?.clientWidth ?? 0)
+    })
+    observer.observe(dragContainerRef.current)
+
+    return () => {
+      observer.disconnect()
+    }
+  }, [])
 
   const dragControls = useDragControls()
   const controls = useAnimationControls()
@@ -355,11 +368,13 @@ const DragContainer: FC<{
     const shouldSnapToPrevious =
       (currentEdgeType.current === 'both' ||
         currentEdgeType.current === 'left') &&
-      (info.offset.x > dragContainerWidth / 2 || info.velocity.x > 20)
+      ((info.velocity.x >= 0 && info.offset.x > dragContainerWidth / 2) ||
+        (info.velocity.x > 20 && info.offset.x > 0))
     const shouldSnapToNext =
       (currentEdgeType.current === 'both' ||
         currentEdgeType.current === 'right') &&
-      (info.offset.x < -dragContainerWidth / 2 || info.velocity.x < -20)
+      ((info.velocity.x <= 0 && info.offset.x < -dragContainerWidth / 2) ||
+        (info.velocity.x < -20 && info.offset.x < 0))
 
     currentEdgeType.current = undefined
 
@@ -533,8 +548,7 @@ const SleepBarWithDetail: FC<{
       onMouseEnter={() => setHoveredSleepId(sleep.id)}
       onMouseLeave={() => setHoveredSleepId(undefined)}
       onClick={handleClick}
-      // TODO アクセシビリティ考慮
-      tabIndex={0}
+      tabIndex={-1}
       cursor="pointer"
     />
   )

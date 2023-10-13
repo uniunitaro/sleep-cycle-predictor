@@ -7,6 +7,7 @@ import React, { FC, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { PickerSelectionState } from '@mui/x-date-pickers/internals'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
+import { jaJP } from '@mui/x-date-pickers/locales'
 import HourMinuteInput from '../HourMinuteInput/HourMinuteInput'
 import {
   Box,
@@ -65,16 +66,19 @@ const TimePicker: FC<{ value: Date; onChange: (value: Date) => void }> = ({
     }
   }, [])
   const muiThemeColor = useColorModeValue('#38A169', '#9AE6B4')
-  const muiTheme = createTheme({
-    palette: {
-      primary: {
-        main: muiThemeColor,
+  const muiTheme = createTheme(
+    {
+      palette: {
+        primary: {
+          main: muiThemeColor,
+        },
+      },
+      typography: {
+        fontFamily: 'var(--font-roboto), sans-serif',
       },
     },
-    typography: {
-      fontFamily: 'var(--font-roboto), sans-serif',
-    },
-  })
+    jaJP
+  )
 
   return (
     <Box
@@ -106,16 +110,20 @@ const TimePicker: FC<{ value: Date; onChange: (value: Date) => void }> = ({
               <HourMinuteInput
                 isSelected={selectedField === 'hour'}
                 isReadOnly
+                aria-label="時間を選択する"
+                id=""
                 {...register('hour')}
               />
             </Box>
-            <Center width="4" fontSize="2xl" fontWeight="bold">
+            <Center width="4" fontSize="2xl" fontWeight="bold" aria-hidden>
               :
             </Center>
             <Box onClick={() => setSelectedField('minute')}>
               <HourMinuteInput
                 isSelected={selectedField === 'minute'}
                 isReadOnly
+                aria-label="分を選択する"
+                id=""
                 {...register('minute')}
               />
             </Box>

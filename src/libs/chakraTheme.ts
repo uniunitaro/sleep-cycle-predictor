@@ -61,6 +61,10 @@ export const theme = extendTheme({
         default: 'brand.500',
         _dark: 'brand.200',
       },
+      linkBlue: {
+        default: 'blue.600',
+        _dark: 'blue.300',
+      },
     },
   },
   colors: {
@@ -223,23 +227,44 @@ export const theme = extendTheme({
         },
       },
     },
+    Link: {
+      baseStyle: {
+        color: 'linkBlue',
+      },
+    },
+    Tooltip: {
+      baseStyle: {
+        borderRadius: 'md',
+      },
+    },
+    Container: {
+      baseStyle: {
+        px: { base: 4, md: 6 },
+      },
+    },
   },
   styles: {
     global: (props: StyleFunctionProps) => ({
       body: {
         bg: 'globalBg',
         scrollbarWidth: 'thin',
+        fontFeatureSettings: 'normal',
       },
       '@media(hover: hover) and (pointer: fine)': {
         '::-webkit-scrollbar': {
-          width: '8px',
-          height: '8px',
+          width: '16px',
+          height: '16px',
         },
         '::-webkit-scrollbar-thumb': {
           bg: mode('blackAlpha.400', 'whiteAlpha.400')(props),
-          borderRadius: 'full',
+          borderRadius: '8px',
+          border: '4px solid transparent',
+          backgroundClip: 'content-box',
           '&:hover': {
             bg: mode('blackAlpha.600', 'whiteAlpha.600')(props),
+            borderRadius: '8px',
+            border: '4px solid transparent',
+            backgroundClip: 'content-box',
           },
         },
       },

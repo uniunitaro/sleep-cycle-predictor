@@ -10,7 +10,7 @@ import {
   getAuthUserIdWithServerAction,
   getAuthUserIdWithServerComponent,
 } from '@/utils/getAuthUserId'
-import { uuidToBin } from '@/utils/uuidToBin'
+import { uuidToBin } from '@/utils/uuid'
 
 export const addUser = async ({
   id,
@@ -104,9 +104,11 @@ export const getAuthUserWithConfig = async (): Promise<
 export const updateAuthUser = async ({
   nickname,
   newEmail,
+  avatarUrl,
 }: {
   nickname?: string
   newEmail?: string
+  avatarUrl?: string
 }): Promise<{ error?: true }> => {
   try {
     const { userId, error } = await getAuthUserIdWithServerAction()
@@ -117,6 +119,7 @@ export const updateAuthUser = async ({
       .set({
         nickname: nickname,
         newEmail: newEmail,
+        avatarUrl: avatarUrl,
       })
       .where(eq(user.id, uuidToBin(userId)))
 
