@@ -46,7 +46,7 @@ authedTest.describe('home', () => {
           await page.getByRole('dialog').waitFor()
 
           await page.getByLabel('就寝日時 日付').fill('2023/01/05')
-          await page.getByLabel('就寝日時 時間').fill('13')
+          await page.getByLabel('就寝日時 時間').fill('14')
           await page.getByLabel('就寝日時 分').fill('00')
           await page.getByLabel('起床日時 日付').fill('2023/01/06')
           await page.getByLabel('起床日時 時間').fill('02')
