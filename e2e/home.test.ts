@@ -40,7 +40,7 @@ authedTest.describe('home', () => {
         await page.waitForURL(/displayMode=week/)
       })
 
-      authedTest.describe('睡眠作成・編集・削除', () => {
+      authedTest.describe.serial('睡眠作成・編集・削除', () => {
         authedTest('睡眠の新規作成ができる', async ({ page }) => {
           await page.getByRole('button', { name: '睡眠記録を追加' }).click()
           await page.getByRole('dialog').waitFor()
@@ -52,10 +52,12 @@ authedTest.describe('home', () => {
           await page.getByLabel('起床日時 時間').fill('02')
           await page.getByLabel('起床日時 分').fill('00')
 
+          // 日付選択popoverを表示してVRT
+          await page.getByLabel('就寝日時 日付').click()
           await expect(page).toHaveScreenshot({ fullPage: true })
 
           // 日付選択popoverを閉じる
-          await page.getByLabel('睡眠記録を追加').click()
+          await page.keyboard.press('Tab')
           await expect(page).toHaveScreenshot({ fullPage: true })
 
           await page.getByRole('button', { name: '追加する' }).click()

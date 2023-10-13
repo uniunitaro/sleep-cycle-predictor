@@ -16,8 +16,8 @@ export default defineConfig({
   testDir: './e2e',
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
-  /* Retry 2 times */
-  retries: 2,
+  /* Retry times */
+  retries: process.env.CI ? 2 : 1,
   /* Opt out of parallel tests on CI. */
   // e2e用アカウントは5個なのでworkerはmax5
   workers: process.env.CI ? 1 : 5,

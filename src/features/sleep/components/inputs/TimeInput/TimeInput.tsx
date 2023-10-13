@@ -67,7 +67,7 @@ const TimeInput: FC<Props> = memo(({ value, labelText, onChange, ...rest }) => {
       <Hide above="md">
         <MobileTimeInput
           value={value}
-          aria-label={labelText ? labelText + ' 時間' : '時間'}
+          ariaLabel={labelText ? labelText + ' 時間' : '時間'}
           onChange={onChange}
         />
       </Hide>

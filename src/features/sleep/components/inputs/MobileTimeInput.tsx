@@ -2,10 +2,10 @@ import { FC, memo, useState } from 'react'
 import { format } from 'date-fns'
 import TimePicker from './TimePicker/TimePicker'
 import {
+  Box,
   Button,
   ButtonGroup,
   Input,
-  InputProps,
   Modal,
   ModalBody,
   ModalContent,
@@ -16,9 +16,10 @@ import {
 
 type Props = {
   value: Date
+  ariaLabel?: string
   onChange: (value: Date) => void
-} & Omit<InputProps, 'value' | 'onChange'>
-const MobileTimeInput: FC<Props> = memo(({ value, onChange, ...rest }) => {
+}
+const MobileTimeInput: FC<Props> = memo(({ value, ariaLabel, onChange }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   const formatted = format(value, 'HH:mm')
@@ -37,7 +38,19 @@ const MobileTimeInput: FC<Props> = memo(({ value, onChange, ...rest }) => {
 
   return (
     <>
-      <Input value={inputValue} onFocus={onOpen} isReadOnly {...rest} />
+      <Box
+        role="button"
+        aria-label={ariaLabel ?? '日付'}
+        onClick={onOpen}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            onOpen()
+          }
+        }}
+        tabIndex={0}
+      >
+        <Input value={inputValue} tabIndex={-1} id="" isReadOnly aria-hidden />
+      </Box>
       <Modal
         isOpen={isOpen}
         onClose={onClose}

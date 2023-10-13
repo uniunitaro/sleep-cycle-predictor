@@ -40,7 +40,7 @@ const DateAndTimeInput: FC<{
         <DateInput
           value={value}
           onChange={handleChangeDate}
-          aria-label={labelText + ' 日付'}
+          ariaLabel={labelText + ' 日付'}
           id={id}
         />
       </Box>

@@ -2,11 +2,11 @@
 
 import { format, isValid, parse } from 'date-fns'
 import { FC, memo, useCallback, useEffect, useRef, useState } from 'react'
-import DatePickerWrapper from '../DatePickerWrapper'
+import { DateValue, parseDate } from '@internationalized/date'
 import {
+  Box,
   Hide,
   Input,
-  InputProps,
   Modal,
   ModalBody,
   ModalContent,
@@ -19,13 +19,16 @@ import {
   useDisclosure,
   useOutsideClick,
 } from '@/components/chakra'
+import DatePicker from '@/components/DatePicker'
 
 type Props = {
   value: Date
+  id?: string
+  ariaLabel?: string
   onChange: (value: Date) => void
-} & Omit<InputProps, 'value' | 'onChange'>
+}
 
-const DateInput: FC<Props> = memo(({ value, onChange, ...rest }) => {
+const DateInput: FC<Props> = memo(({ value, id, ariaLabel, onChange }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const popoverContentRef = useRef<HTMLElement>(null)
   useOutsideClick({
@@ -59,6 +62,14 @@ const DateInput: FC<Props> = memo(({ value, onChange, ...rest }) => {
   }
 
   const handleBlurDate = (e: React.FocusEvent<HTMLInputElement>) => {
+    // キーボードによるフォーカス移動の場合に閉じる
+    if (
+      popoverContentRef.current &&
+      !popoverContentRef.current.contains(e.relatedTarget)
+    ) {
+      onClose()
+    }
+
     const parsedDate = parse(e.target.value, 'yyyy/MM/dd', new Date())
     if (!isValid(parsedDate)) {
       setInputValue(oldInputValue)
@@ -72,7 +83,10 @@ const DateInput: FC<Props> = memo(({ value, onChange, ...rest }) => {
   }
 
   const handleClickDate = useCallback(
-    (date: string) => {
+    (details: { value: DateValue[] }) => {
+      const date = details.value[0].toString()
+      console.log(date)
+
       onChange(new Date(date))
 
       const formatted = format(new Date(date), 'yyyy/MM/dd')
@@ -83,34 +97,35 @@ const DateInput: FC<Props> = memo(({ value, onChange, ...rest }) => {
     [onChange, onClose]
   )
 
-  const dateInput = (
-    <Input
-      ref={inputRef}
-      value={inputValue}
-      onChange={handleChangeDate}
-      onBlur={handleBlurDate}
-      onFocus={onOpen}
-      aria-label="日付"
-      {...rest}
-    />
-  )
-
   return (
     <>
       <Show above="md">
         <Popover
           isOpen={isOpen}
           placement="bottom-start"
-          initialFocusRef={inputRef}
+          autoFocus={false}
+          returnFocusOnClose={false}
           isLazy
         >
-          <PopoverAnchor>{dateInput}</PopoverAnchor>
+          <PopoverAnchor>
+            <Input
+              ref={inputRef}
+              value={inputValue}
+              onChange={handleChangeDate}
+              onBlur={handleBlurDate}
+              onMouseDown={onOpen}
+              aria-label={ariaLabel ?? '日付'}
+              id={id}
+            />
+          </PopoverAnchor>
           <Show above="md">
             <PopoverContent ref={popoverContentRef} w="auto">
               <PopoverBody p="0">
-                <DatePickerWrapper
-                  value={oldInputValue}
-                  colorScheme="green"
+                <DatePicker
+                  value={[parseDate(oldInputValue.replaceAll('/', '-'))]}
+                  selectionMode="single"
+                  locale="ja"
+                  disableFocus
                   onChange={handleClickDate}
                 />
               </PopoverBody>
@@ -119,7 +134,26 @@ const DateInput: FC<Props> = memo(({ value, onChange, ...rest }) => {
         </Popover>
       </Show>
       <Hide above="md">
-        {dateInput}
+        <Box
+          role="button"
+          aria-label={ariaLabel ?? '日付'}
+          onClick={onOpen}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              onOpen()
+            }
+          }}
+          tabIndex={0}
+        >
+          <Input
+            ref={inputRef}
+            value={inputValue}
+            tabIndex={-1}
+            id=""
+            isReadOnly
+            aria-hidden
+          />
+        </Box>
         <Modal
           isOpen={isOpen}
           onClose={handleCloseModal}
@@ -128,10 +162,13 @@ const DateInput: FC<Props> = memo(({ value, onChange, ...rest }) => {
         >
           <ModalOverlay />
           <ModalContent w={300}>
-            <ModalBody p="0">
-              <DatePickerWrapper
-                value={oldInputValue}
-                colorScheme="green"
+            <ModalBody p="0" display="flex" justifyContent="center">
+              <DatePicker
+                value={[parseDate(oldInputValue.replaceAll('/', '-'))]}
+                selectionMode="single"
+                locale="ja"
+                disableFocus
+                fixedWeeks
                 onChange={handleClickDate}
               />
             </ModalBody>
