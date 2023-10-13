@@ -40,7 +40,7 @@ authedTest.describe('home', () => {
         await page.waitForURL(/displayMode=week/)
       })
 
-      authedTest.describe.serial('睡眠作成・編集・削除', () => {
+      authedTest.describe('睡眠作成・編集・削除', () => {
         authedTest('睡眠の新規作成ができる', async ({ page }) => {
           await page.getByRole('button', { name: '睡眠記録を追加' }).click()
           await page.getByRole('dialog').waitFor()
