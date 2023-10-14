@@ -1,7 +1,7 @@
 'use server'
 
 import { and, asc, eq, gte, isNull } from 'drizzle-orm'
-import { Logger } from 'next-axiom'
+import { log } from 'next-axiom'
 import { Prediction } from '../types/sleep'
 import { getSrcStart } from '../utils/getSrcStart'
 import { predictWithLR } from '../utils/predictWithLR/predictWithLR'
@@ -45,9 +45,7 @@ export const getPredictions = async ({
     const predictions = predictWithLR(sleeps, start, end)
     return { predictions }
   } catch (e) {
-    const logger = new Logger()
-    logger.error(e as any)
-    await logger.flush()
+    log.error(e as string)
     return { error: true }
   }
 }
