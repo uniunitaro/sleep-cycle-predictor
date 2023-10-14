@@ -30,5 +30,3 @@ class MyLogger extends Logger {
 export const logger = new MyLogger({
   autoFlush: true,
 })
-
-logger.error
