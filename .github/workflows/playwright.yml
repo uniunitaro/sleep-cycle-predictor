@@ -16,8 +16,19 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           max_timeout: 600
+  db_setup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Setup Database
+        run: npx tsx ./e2e/setup/setupForCI.ts
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
   test:
-    needs: test_setup
+    needs: [test_setup, db_setup]
     timeout-minutes: 60
     runs-on: ubuntu-latest
     strategy:
