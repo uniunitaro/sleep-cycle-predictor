@@ -45,7 +45,7 @@ export const getPredictions = async ({
     const predictions = predictWithLR(sleeps, start, end)
     return { predictions }
   } catch (e) {
-    log.error(e as string)
+    log.error('this is test')
     return { error: true }
   }
 }
