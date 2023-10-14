@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import { Noto_Sans_JP, Roboto } from 'next/font/google'
+import { AxiomWebVitals } from 'next-axiom'
 import Providers from '@/components/Providers'
 import ThemeColorManager from '@/components/ThemeColorManager'
 import { ogImages } from '@/constants/og'
@@ -60,6 +61,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja-JP" className={`${notoSans.variable} ${roboto.variable}`}>
+      <AxiomWebVitals />
       <body>
         <Providers>
           {children}
