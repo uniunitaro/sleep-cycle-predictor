@@ -45,7 +45,6 @@ export const getPredictions = async ({
     return { predictions }
   } catch (e) {
     logger.error('this is test')
-    await logger.flush()
     return { error: true }
   }
 }
