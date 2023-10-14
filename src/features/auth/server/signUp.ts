@@ -3,6 +3,7 @@
 import { cookies, headers } from 'next/headers'
 import { createServerActionClient } from '@supabase/auth-helpers-nextjs'
 import { addUser } from '@/features/user/repositories/users'
+import { logger } from '@/libs/axiomLogger'
 
 export const signUp = async ({
   nickname,
@@ -40,7 +41,7 @@ export const signUp = async ({
 
     return {}
   } catch (e) {
-    console.error(e)
+    logger.error(e)
     return { error: true }
   }
 }
