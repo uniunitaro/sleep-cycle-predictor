@@ -85,7 +85,6 @@ const DateInput: FC<Props> = memo(({ value, id, ariaLabel, onChange }) => {
   const handleClickDate = useCallback(
     (details: { value: DateValue[] }) => {
       const date = details.value[0].toString()
-      console.log(date)
 
       onChange(new Date(date))
 

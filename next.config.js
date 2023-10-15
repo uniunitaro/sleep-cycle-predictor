@@ -3,13 +3,16 @@
 const withPWA = require('@ducanh2912/next-pwa').default({
   dest: 'public',
   disable: process.env.NODE_ENV === 'development',
-  buildExcludes: [/\/_next\/static\/.*(?<!\.p)\.woff2/],
+  buildExcludes: [/woff2/],
 })
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 })
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { withAxiom } = require('next-axiom')
 
 const nextConfig = {
   reactStrictMode: true,
@@ -55,4 +58,4 @@ const nextConfig = {
   },
 }
 
-module.exports = withBundleAnalyzer(withPWA(nextConfig))
+module.exports = withAxiom(withBundleAnalyzer(withPWA(nextConfig)))

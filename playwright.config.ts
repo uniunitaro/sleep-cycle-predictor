@@ -32,6 +32,7 @@ export default defineConfig({
     trace: 'on-first-retry',
     locale: 'ja-JP',
     timezoneId: 'Asia/Tokyo',
+    serviceWorkers: 'block',
   },
   expect: {
     timeout: 15000,

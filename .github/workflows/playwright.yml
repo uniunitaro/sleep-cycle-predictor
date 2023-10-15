@@ -1,9 +1,7 @@
 name: Playwright Tests
 on:
-  push:
-    branches: [main, develop]
   pull_request:
-    branches: [main, develop]
+    branches: [main]
 jobs:
   test_setup:
     runs-on: ubuntu-latest
@@ -16,8 +14,38 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           max_timeout: 600
+  db_setup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        with:
+          version: 8
+          run_install: false
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Setup database
+        run: pnpm tsx ./e2e/setup/setupForCI.ts
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
   test:
-    needs: test_setup
+    needs: [test_setup, db_setup]
     timeout-minutes: 60
     runs-on: ubuntu-latest
     strategy:

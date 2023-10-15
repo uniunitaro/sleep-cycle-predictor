@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { cookies } from 'next/headers'
 import { addUser } from '@/features/user/repositories/users'
+import { log } from '@/libs/axiomLogger'
 
 export const runtime = 'edge'
 
@@ -14,7 +15,7 @@ export const GET = async (request: NextRequest) => {
     const supabase = createRouteHandlerClient({ cookies })
     const { data, error } = await supabase.auth.exchangeCodeForSession(code)
     if (error || !data.user || !data.user.email || !data.session) {
-      console.error(error)
+      log.error(error)
       return
     }
 

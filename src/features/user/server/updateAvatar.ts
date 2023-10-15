@@ -3,6 +3,7 @@
 import { AwsClient } from 'aws4fetch'
 import { v4 as uuidv4 } from 'uuid'
 import { updateAuthUser } from '../repositories/users'
+import { log } from '@/libs/axiomLogger'
 
 export const updateAvatar = async (
   formData: FormData,
@@ -59,7 +60,7 @@ export const updateAvatar = async (
 
     return {}
   } catch (e) {
-    console.error(e)
+    log.error(e)
     return { error: true }
   }
 }

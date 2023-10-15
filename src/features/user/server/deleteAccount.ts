@@ -8,6 +8,7 @@ import { db } from '@/db'
 import { getAuthUserIdWithServerAction } from '@/utils/getAuthUserId'
 import { config, sleep, user } from '@/db/schema'
 import { uuidToBin } from '@/utils/uuid'
+import { log } from '@/libs/axiomLogger'
 
 export const deleteAccount = async (): Promise<{ error?: true }> => {
   try {
@@ -28,7 +29,7 @@ export const deleteAccount = async (): Promise<{ error?: true }> => {
         await tx.delete(sleep).where(eq(sleep.userId, uuidToBin(userId)))
       })
       .catch((e) => {
-        console.error(e)
+        log.error(e)
         // DBの削除に失敗してもフロントにエラーは返さない
       })
 
@@ -39,7 +40,7 @@ export const deleteAccount = async (): Promise<{ error?: true }> => {
 
     return {}
   } catch (e) {
-    console.error(e)
+    log.error(e)
     return { error: true }
   }
 }

@@ -9,6 +9,7 @@ import { db } from '@/db'
 import { config, sleep } from '@/db/schema'
 import { Result } from '@/types/global'
 import { uuidToBin } from '@/utils/uuid'
+import { log } from '@/libs/axiomLogger'
 
 export const getPredictions = async ({
   userId,
@@ -43,7 +44,7 @@ export const getPredictions = async ({
     const predictions = predictWithLR(sleeps, start, end)
     return { predictions }
   } catch (e) {
-    console.error(e)
+    log.error(e)
     return { error: true }
   }
 }
@@ -57,7 +58,7 @@ export const getMyPredictions = async ({
 }): Promise<Result<{ predictions: Prediction[] }, true>> => {
   const { userId, error } = await getAuthUserIdWithServerComponent()
   if (error) {
-    console.error(error)
+    log.error(error)
     return { error: true }
   }
 
