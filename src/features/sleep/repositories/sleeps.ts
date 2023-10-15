@@ -13,7 +13,7 @@ import {
 import { Result } from '@/types/global'
 import { getLastInsertId } from '@/utils/getLastInsertId'
 import { uuidToBin } from '@/utils/uuid'
-import { logger } from '@/libs/axiomLogger'
+import { log } from '@/libs/axiomLogger'
 
 const getSleepAndSegmentedSleeps = (sleeps: { start: Date; end: Date }[]) => {
   const sortedSleeps = [...sleeps].sort(
@@ -107,7 +107,7 @@ export const addSleep = async (
     revalidatePath('/home')
     return {}
   } catch (e) {
-    logger.error(e)
+    log.error(e)
     return { error: true }
   }
 }
@@ -160,7 +160,7 @@ export const updateSleep = async (
     revalidatePath('/home')
     return {}
   } catch (e) {
-    logger.error(e)
+    log.error(e)
     return { error: true }
   }
 }
@@ -182,7 +182,7 @@ export const deleteSleep = async (id: number): Promise<{ error?: true }> => {
     revalidatePath('/home')
     return {}
   } catch (e) {
-    logger.error(e)
+    log.error(e)
     return { error: true }
   }
 }
@@ -228,7 +228,7 @@ export const getSleeps = async ({
       })),
     }
   } catch (e) {
-    logger.error(e)
+    log.error(e)
     return { error: true }
   }
 }

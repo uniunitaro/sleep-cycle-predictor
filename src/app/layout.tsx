@@ -61,7 +61,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja-JP" className={`${notoSans.variable} ${roboto.variable}`}>
-      <AxiomWebVitals />
+      {process.env.VERCEL_ENV === 'production' && <AxiomWebVitals />}
       <body>
         <Providers>
           {children}

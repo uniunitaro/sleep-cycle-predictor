@@ -11,7 +11,7 @@ import {
   getAuthUserIdWithServerComponent,
 } from '@/utils/getAuthUserId'
 import { uuidToBin } from '@/utils/uuid'
-import { logger } from '@/libs/axiomLogger'
+import { log } from '@/libs/axiomLogger'
 
 export const addUser = async ({
   id,
@@ -42,7 +42,7 @@ export const addUser = async ({
 
     return {}
   } catch (e) {
-    logger.error(e)
+    log.error(e)
     return { error: true }
   }
 }
@@ -61,7 +61,7 @@ export const getAuthUser = async (): Promise<
 
     return { authUser }
   } catch (e) {
-    logger.error(e)
+    log.error(e)
     return { error: true }
   }
 }
@@ -77,7 +77,7 @@ export const getUser = async (
 
     return { user: userResult }
   } catch (e) {
-    logger.error(e)
+    log.error(e)
     return { error: true }
   }
 }
@@ -97,7 +97,7 @@ export const getAuthUserWithConfig = async (): Promise<
 
     return { authUserWithConfig }
   } catch (e) {
-    logger.error(e)
+    log.error(e)
     return { error: true }
   }
 }
@@ -129,7 +129,7 @@ export const updateAuthUser = async ({
     revalidatePath('/[userId]')
     return {}
   } catch (e) {
-    logger.error(e)
+    log.error(e)
     return { error: true }
   }
 }
@@ -157,7 +157,7 @@ export const updateEmail = async (
     revalidatePath('/settings')
     return {}
   } catch (e) {
-    logger.error(e)
+    log.error(e)
     return { error: true }
   }
 }
@@ -183,7 +183,7 @@ export const updateConfig = async ({
     revalidatePath('/[userId]')
     return {}
   } catch (e) {
-    logger.error(e)
+    log.error(e)
     return { error: true }
   }
 }
