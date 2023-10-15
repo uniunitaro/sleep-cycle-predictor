@@ -3,11 +3,13 @@ import { NextResponse } from 'next/server'
 
 import type { NextRequest } from 'next/server'
 
-const middleware = async (req: NextRequest) => {
+export const middleware = async (req: NextRequest) => {
   const res = NextResponse.next()
   const supabase = createMiddlewareClient({ req, res })
   await supabase.auth.getSession()
   return res
 }
 
-export default middleware
+export const config = {
+  matcher: ['/((?!public|static|api|_next).*)'],
+}

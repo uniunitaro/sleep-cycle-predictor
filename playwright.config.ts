@@ -37,6 +37,7 @@ export default defineConfig({
   expect: {
     timeout: 15000,
   },
+  fullyParallel: true,
 
   /* Configure projects for major browsers */
   projects: [

@@ -1,9 +1,9 @@
 'use client'
 
-import { format, isValid, parse } from 'date-fns'
-import { FC, memo, useState } from 'react'
+import { FC, memo, useRef } from 'react'
 import MobileTimeInput from '../MobileTimeInput'
 import { Box, HStack, Hide, Input, InputProps, Show } from '@/components/chakra'
+import { useTimeInput } from '@/features/sleep/hooks/useTimeInput'
 
 type Props = {
   value: Date
@@ -12,31 +12,21 @@ type Props = {
 } & Omit<InputProps, 'value' | 'onChange'>
 
 const TimeInput: FC<Props> = memo(({ value, labelText, onChange, ...rest }) => {
-  const formatted = format(value, 'HH:mm')
-  const [hour, setHour] = useState(formatted.split(':')[0])
-  const [minute, setMinute] = useState(formatted.split(':')[1])
+  const hourRef = useRef<HTMLInputElement>(null)
+  const minuteRef = useRef<HTMLInputElement>(null)
+  const {
+    hour,
+    minute,
+    handleChangeHour,
+    handleChangeMinute,
+    setAndReturnValidTime,
+  } = useTimeInput({ date: value, hourRef, minuteRef })
 
-  const [oldValue, setOldValue] = useState(value)
-
-  const handleChangeHour = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setHour(e.target.value)
-  }
-  const handleChangeMinute = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setMinute(e.target.value)
-  }
-
-  const handleBlurDate = () => {
-    const parsedDate = parse(`${hour}:${minute}`, 'HH:mm', new Date())
-    if (!isValid(parsedDate)) {
-      setHour(format(oldValue, 'HH'))
-      setMinute(format(oldValue, 'mm'))
-      return
+  const handleBlurTime = () => {
+    const parsedDate = setAndReturnValidTime()
+    if (parsedDate) {
+      onChange(parsedDate)
     }
-
-    setHour(format(parsedDate, 'HH'))
-    setMinute(format(parsedDate, 'mm'))
-    onChange(parsedDate)
-    setOldValue(parsedDate)
   }
 
   return (
@@ -44,22 +34,26 @@ const TimeInput: FC<Props> = memo(({ value, labelText, onChange, ...rest }) => {
       <Show above="md">
         <HStack align="baseline" spacing="1">
           <Input
+            ref={hourRef}
             value={hour}
             onChange={handleChangeHour}
-            onBlur={handleBlurDate}
+            onBlur={handleBlurTime}
             onFocus={(e) => e.target.select()}
             aria-label={labelText ? labelText + ' 時間' : '時間'}
+            maxLength={2}
             {...rest}
           />
           <Box fontSize="xl" aria-hidden>
             :
           </Box>
           <Input
+            ref={minuteRef}
             value={minute}
             onChange={handleChangeMinute}
-            onBlur={handleBlurDate}
+            onBlur={handleBlurTime}
             onFocus={(e) => e.target.select()}
             aria-label={labelText ? labelText + ' 分' : '分'}
+            maxLength={2}
             {...rest}
           />
         </HStack>

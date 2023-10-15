@@ -30,17 +30,6 @@ const TimePicker: FC<{ value: Date; onChange: (value: Date) => void }> = ({
 
   const [selectedField, setSelectedField] = useState<'hour' | 'minute'>('hour')
 
-  // TODO キーボード入力版も作る
-  // const handleChangeHour = (hour: string) => {
-  //   const newValue = setHours(value, Number(hour))
-  //   onChange(newValue)
-  // }
-
-  // const handleChangeMinute = (minute: string) => {
-  //   const newValue = setMinutes(value, Number(minute))
-  //   onChange(newValue)
-  // }
-
   const handleChangeTimeClock = (
     newValue: Date,
     selectionState?: PickerSelectionState
@@ -110,8 +99,9 @@ const TimePicker: FC<{ value: Date; onChange: (value: Date) => void }> = ({
               <HourMinuteInput
                 isSelected={selectedField === 'hour'}
                 isReadOnly
-                aria-label="時間を選択する"
                 id=""
+                tabIndex={-1}
+                aria-hidden
                 {...register('hour')}
               />
             </Box>
@@ -122,8 +112,9 @@ const TimePicker: FC<{ value: Date; onChange: (value: Date) => void }> = ({
               <HourMinuteInput
                 isSelected={selectedField === 'minute'}
                 isReadOnly
-                aria-label="分を選択する"
                 id=""
+                tabIndex={-1}
+                aria-hidden
                 {...register('minute')}
               />
             </Box>
@@ -131,16 +122,18 @@ const TimePicker: FC<{ value: Date; onChange: (value: Date) => void }> = ({
         </Center>
         <ThemeProvider theme={muiTheme}>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <TimeClock
-              value={value}
-              sx={{ mx: '-10px' }}
-              ampm={false}
-              view={selectedField === 'hour' ? 'hours' : 'minutes'}
-              readOnly={!isTouched}
-              onChange={(newValue, selectionState) =>
-                newValue && handleChangeTimeClock(newValue, selectionState)
-              }
-            />
+            <Box aria-hidden>
+              <TimeClock
+                value={value}
+                sx={{ mx: '-10px' }}
+                ampm={false}
+                view={selectedField === 'hour' ? 'hours' : 'minutes'}
+                readOnly={!isTouched}
+                onChange={(newValue, selectionState) =>
+                  newValue && handleChangeTimeClock(newValue, selectionState)
+                }
+              />
+            </Box>
           </LocalizationProvider>
         </ThemeProvider>
       </Stack>
