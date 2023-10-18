@@ -108,10 +108,11 @@ const SignIn: FC = () => {
             </ProviderButton>
             <HStack>
               <Divider />
-              <Box flexShrink="0" fontSize="sm">
+              <Box flexShrink="0" fontSize="sm" aria-hidden>
                 または
               </Box>
-              <Divider />
+              <Box srOnly>メールアドレスとパスワードでログイン</Box>
+              <Divider aria-hidden />
             </HStack>
             <form onSubmit={handleSubmit(onSubmit)} noValidate>
               <Stack spacing="10">

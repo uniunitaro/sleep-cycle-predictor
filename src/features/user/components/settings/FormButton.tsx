@@ -18,19 +18,24 @@ const FormButton: FC<ButtonProps & { isSuccess?: boolean }> = ({
   }, [isSuccess])
 
   return (
-    <Button mt="29px" ml="4" flexShrink="0" colorScheme="green" {...props}>
-      <Flex
-        align="center"
-        pos="absolute"
-        opacity={showSuccessIcon ? 1 : 0}
-        transition="opacity 0.3s"
-      >
-        <Icon as={CheckIcon} />
-      </Flex>
-      <Box opacity={showSuccessIcon ? 0 : 1} transition="opacity 0.3s">
-        {children}
+    <>
+      <Button mt="29px" ml="4" flexShrink="0" colorScheme="green" {...props}>
+        <Flex
+          align="center"
+          pos="absolute"
+          opacity={showSuccessIcon ? 1 : 0}
+          transition="opacity 0.3s"
+        >
+          <Icon as={CheckIcon} />
+        </Flex>
+        <Box opacity={showSuccessIcon ? 0 : 1} transition="opacity 0.3s">
+          {children}
+        </Box>
+      </Button>
+      <Box srOnly aria-live="polite">
+        {isSuccess && '正常に更新されました'}
       </Box>
-    </Button>
+    </>
   )
 }
 

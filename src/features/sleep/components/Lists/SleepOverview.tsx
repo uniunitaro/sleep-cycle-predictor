@@ -1,12 +1,6 @@
 'use client'
 
-import {
-  AriaRole,
-  RefObject,
-  forwardRef,
-  useImperativeHandle,
-  useRef,
-} from 'react'
+import { RefObject, forwardRef, useImperativeHandle, useRef } from 'react'
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons'
 import {
   format,
@@ -22,6 +16,7 @@ import SleepInputModal from '../inputs/SleepInputModal/SleepInputModal'
 import SleepDeleteModal from '../SleepDeleteModal'
 import {
   Box,
+  BoxProps,
   Flex,
   HStack,
   Icon,
@@ -39,19 +34,20 @@ export type SleepOverviewRef = {
 
 const SleepOverview = forwardRef<
   SleepOverviewRef,
-  | {
-      sleep: Sleep
-      prediction?: undefined
-      variant?: 'default' | 'withMenu'
-      role?: AriaRole
-    }
-  | {
-      sleep?: undefined
-      prediction: Prediction
-      variant?: undefined
-      role?: AriaRole
-    }
->(({ sleep, prediction, variant = 'default', role }, ref) => {
+  (
+    | {
+        sleep: Sleep
+        prediction?: undefined
+        variant?: 'default' | 'withMenu'
+      }
+    | {
+        sleep?: undefined
+        prediction: Prediction
+        variant?: undefined
+      }
+  ) &
+    BoxProps
+>(({ sleep, prediction, variant = 'default', ...rest }, ref) => {
   const firstSleep = sleep ? sleep?.sleeps[0] : prediction
   const sleeps = sleep ? sleep?.sleeps : [prediction]
 
@@ -81,7 +77,7 @@ const SleepOverview = forwardRef<
     })
   }
   const formatDay = (date: Date) => {
-    return format(date, '(E)', { locale: ja })
+    return format(date, 'E', { locale: ja })
   }
 
   const lastSleep = sleeps[sleeps.length - 1]
@@ -114,17 +110,17 @@ const SleepOverview = forwardRef<
       minH="0"
       align="normal"
       gap="2"
-      aria-label={sleep ? '過去の睡眠' : '予測された睡眠'}
-      role={role}
+      // aria-label={sleep ? '過去の睡眠' : '予測された睡眠'}
+      {...rest}
     >
       <Box bgColor={sleep ? 'chartBrand' : 'chartBlue'} w="1" rounded="full" />
-      <Box flex="1" sx={{ fontVariantNumeric: 'tabular-nums' }}>
+      <Box flex="1" sx={{ fontVariantNumeric: 'tabular-nums' }} aria-hidden>
         <Flex align="center">
           <Box as="span" fontSize="sm" color={displayDateStart.color}>
             {displayDateStart.date}
           </Box>
           <Box as="span" fontSize="xs" ml="1" color={displayDateStart.color}>
-            {displayDateStart.day}
+            {`(${displayDateStart.day})`}
           </Box>
           {displayDateEnd && (
             <>
@@ -135,7 +131,7 @@ const SleepOverview = forwardRef<
                 {displayDateEnd.date}
               </Box>
               <Box as="span" fontSize="xs" ml="1" color={displayDateEnd.color}>
-                {displayDateEnd.day}
+                {`(${displayDateEnd.day})`}
               </Box>
             </>
           )}
@@ -152,7 +148,7 @@ const SleepOverview = forwardRef<
               {format(s.end, 'HH:mm', { locale: ja })}
             </Box>
             {sleep && (
-              <Box ml="auto" pl="3" fontSize="sm">
+              <Box as="span" ml="auto" pl="3" fontSize="sm">
                 {`${differenceInHours(s.end, s.start)}時間${(
                   differenceInMinutes(s.end, s.start) % 60
                 )
@@ -162,6 +158,24 @@ const SleepOverview = forwardRef<
             )}
           </Flex>
         ))}
+      </Box>
+      <Box srOnly>
+        {(sleep ? '過去の睡眠、' : '予測された睡眠、') +
+          `${displayDateStart.date}${displayDateStart.day}曜日` +
+          (displayDateEnd
+            ? `から${displayDateEnd.date}${displayDateEnd.day}曜日、`
+            : '、') +
+          sleeps
+            .map(
+              (s) =>
+                `${format(s.start, 'H時m分')}から${format(s.end, 'H時m分')}、` +
+                (sleep
+                  ? `睡眠の長さ、${differenceInHours(s.end, s.start)}時間${
+                      differenceInMinutes(s.end, s.start) % 60
+                    }分`
+                  : '')
+            )
+            .join('、')}
       </Box>
       {sleep && variant === 'withMenu' && (
         <Flex align="center">

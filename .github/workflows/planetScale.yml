@@ -3,6 +3,7 @@ on:
   pull_request:
     types: [closed]
     branches: [main]
+    paths: ['src/db/schema.ts']
 
 jobs:
   merge_changes:

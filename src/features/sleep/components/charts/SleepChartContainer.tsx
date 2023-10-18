@@ -97,7 +97,12 @@ const SleepChartContainer: FC<{
                   isPublic={isPublic}
                 />
                 <Show above="md">
-                  <Box minH="0" pl="4" w="336px">
+                  <Box
+                    minH="0"
+                    pl="4"
+                    w="336px"
+                    aria-hidden={!isRightColumnOpen}
+                  >
                     <RightColumn
                       sleeps={sleeps}
                       predictions={predictions}

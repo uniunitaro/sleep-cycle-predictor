@@ -32,18 +32,16 @@ const DatePicker = (props: DatePickerProps & { disableFocus?: boolean }) => {
               <Stack justify="space-between" direction="row">
                 <DatePickerPrevTrigger asChild>
                   <IconButton
-                    size="sm"
                     variant="ghost"
                     aria-label="前の月へ"
                     icon={<ChevronLeftIcon color="secondaryGray" boxSize="5" />}
-                    tabIndex={disableFocus ? -1 : 0}
+                    tabIndex={disableFocus ? -1 : undefined}
                   ></IconButton>
                 </DatePickerPrevTrigger>
                 <DatePickerViewTrigger asChild>
                   <Button
                     variant="ghost"
-                    size="sm"
-                    tabIndex={disableFocus ? -1 : 0}
+                    tabIndex={disableFocus ? -1 : undefined}
                   >
                     {api.view === 'day' && api.visibleRangeText.start}
                     {api.view === 'month' && api.visibleRange.start.year}
@@ -53,13 +51,12 @@ const DatePicker = (props: DatePickerProps & { disableFocus?: boolean }) => {
                 </DatePickerViewTrigger>
                 <DatePickerNextTrigger asChild>
                   <IconButton
-                    size="sm"
                     variant="ghost"
                     aria-label="次の月へ"
                     icon={
                       <ChevronRightIcon color="secondaryGray" boxSize="5" />
                     }
-                    tabIndex={disableFocus ? -1 : 0}
+                    tabIndex={disableFocus ? -1 : undefined}
                   ></IconButton>
                 </DatePickerNextTrigger>
               </Stack>
@@ -81,11 +78,36 @@ const DatePicker = (props: DatePickerProps & { disableFocus?: boolean }) => {
                               <Button
                                 variant="ghost"
                                 px="0"
-                                tabIndex={disableFocus ? -1 : 0}
+                                tabIndex={disableFocus ? -1 : undefined}
                                 _selected={{
                                   bg: 'buttonBrand',
                                   color: 'chakra-inverse-text',
                                 }}
+                                onClick={(e) => {
+                                  // data-selectedがtrueな場合閉じる
+                                  if (
+                                    e.currentTarget.getAttribute(
+                                      'data-selected'
+                                    ) === ''
+                                  ) {
+                                    console.log('uhi')
+                                    props.onChange?.({ value: [day] })
+                                  }
+                                }}
+                                onKeyDown={
+                                  // data-selectedがtrueな場合閉じる
+                                  (e) => {
+                                    if (
+                                      e.currentTarget.getAttribute(
+                                        'data-selected'
+                                      ) === ''
+                                    ) {
+                                      if (e.key === 'Enter') {
+                                        props.onChange?.({ value: [day] })
+                                      }
+                                    }
+                                  }
+                                }
                               >
                                 {day.day}
                               </Button>

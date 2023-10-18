@@ -16,7 +16,14 @@ const Settings: FC<{ userWithConfig: AuthUserWithConfig }> = ({
   return (
     <Flex direction="column" h="full">
       <SettingsHeader />
-      <Container maxW="xl" h="full" minH="0" px="0" pb={{ base: 0, md: 4 }}>
+      <Container
+        as="main"
+        maxW="xl"
+        h="full"
+        minH="0"
+        px="0"
+        pb={{ base: 0, md: 4 }}
+      >
         <CardMdOnly h="full" px={{ base: 6, md: 0 }} overflowY="auto">
           <CardBodyMdOnly px={{ base: 0, md: 8 }}>
             <Stack spacing="16">

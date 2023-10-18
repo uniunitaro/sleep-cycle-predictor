@@ -45,11 +45,12 @@ const SrcDurationSelect: FC<{ srcDuration: SrcDuration }> = ({
   return (
     <Flex>
       <FormControl>
-        <FormLabel htmlFor="nickname">
+        <FormLabel htmlFor="srcDuration">
           睡眠予測に使用する睡眠データの期間
         </FormLabel>
         <Select
           value={selected}
+          id="srcDuration"
           onChange={(e) => handleChange(e.target.value as SrcDuration)}
         >
           {options.map((option) => (
@@ -61,7 +62,7 @@ const SrcDurationSelect: FC<{ srcDuration: SrcDuration }> = ({
       </FormControl>
       <IconButton
         icon={<Icon as={RepeatClockIcon} color="secondaryGray" boxSize="5" />}
-        aria-label="設定をリセット"
+        aria-label="睡眠予測に使用する睡眠データの期間をリセット"
         mt="29px"
         ml="4"
         variant="ghost"

@@ -5,11 +5,13 @@ import { FC, memo, useCallback, useEffect, useRef, useState } from 'react'
 import { DateValue, parseDate } from '@internationalized/date'
 import {
   Box,
+  Button,
   Hide,
   Input,
   Modal,
   ModalBody,
   ModalContent,
+  ModalFooter,
   ModalOverlay,
   Popover,
   PopoverAnchor,
@@ -135,11 +137,12 @@ const DateInput: FC<Props> = memo(({ value, id, ariaLabel, onChange }) => {
       <Hide above="md">
         <Box
           role="button"
-          aria-label={ariaLabel ?? '日付'}
+          aria-label={(ariaLabel ?? '日付') + ' ' + inputValue}
           onClick={onOpen}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
               onOpen()
+              e.preventDefault()
             }
           }}
           tabIndex={0}
@@ -151,14 +154,10 @@ const DateInput: FC<Props> = memo(({ value, id, ariaLabel, onChange }) => {
             id=""
             isReadOnly
             aria-hidden
+            _focusVisible={{}}
           />
         </Box>
-        <Modal
-          isOpen={isOpen}
-          onClose={handleCloseModal}
-          returnFocusOnClose={false}
-          isCentered
-        >
+        <Modal isOpen={isOpen} onClose={handleCloseModal} isCentered>
           <ModalOverlay />
           <ModalContent w={300}>
             <ModalBody p="0" display="flex" justifyContent="center">
@@ -166,11 +165,19 @@ const DateInput: FC<Props> = memo(({ value, id, ariaLabel, onChange }) => {
                 value={[parseDate(oldInputValue.replaceAll('/', '-'))]}
                 selectionMode="single"
                 locale="ja"
-                disableFocus
                 fixedWeeks
                 onChange={handleClickDate}
               />
             </ModalBody>
+            <ModalFooter pt="0" px="2" justifyContent="start">
+              <Button
+                variant="ghost"
+                color="secondaryGray"
+                onClick={handleCloseModal}
+              >
+                キャンセル
+              </Button>
+            </ModalFooter>
           </ModalContent>
         </Modal>
       </Hide>

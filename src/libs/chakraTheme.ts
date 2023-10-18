@@ -209,12 +209,18 @@ export const theme = extendTheme({
     Modal: {
       parts: ['overlay', 'dialog'],
       baseStyle: {
-        // overlay: {
-        //   bg: 'blackAlpha.400',
-        //   backdropFilter: 'blur(20px) saturate(180%)',
-        // },
+        overlay: {
+          _focusVisible: {
+            outline: 'none',
+          },
+        },
         dialog: {
           borderRadius: '2xl',
+        },
+        dialogContainer: {
+          _focusVisible: {
+            outline: 'none',
+          },
         },
       },
     },

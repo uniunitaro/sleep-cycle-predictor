@@ -27,7 +27,7 @@ const EmailUpdatedPage = async ({
   })()
 
   return (
-    <Box h="full">
+    <Box as="main" h="full">
       <BasicCardLayout>
         <BasicCard>
           <BasicCardBody>

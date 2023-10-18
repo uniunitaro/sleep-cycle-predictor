@@ -57,6 +57,7 @@ const BottomSheetButton: FC<ButtonProps> = (props) => {
       w="full"
       h="14"
       px="6"
+      display="flex"
       variant="ghost"
       rounded="none"
       justifyContent="left"
