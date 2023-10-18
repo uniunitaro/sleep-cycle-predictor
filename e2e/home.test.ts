@@ -63,7 +63,7 @@ authedTest.describe('home', () => {
           await page.getByRole('button', { name: '追加する' }).click()
 
           await expect(
-            page.getByRole('listitem', { name: '過去の睡眠' })
+            page.getByRole('listitem').filter({ hasText: '過去の睡眠' })
           ).toContainText(['5日'])
 
           await expect(page).toHaveScreenshot({ fullPage: true })
@@ -71,7 +71,8 @@ authedTest.describe('home', () => {
 
         authedTest('睡眠の編集ができる', async ({ page }) => {
           await page
-            .getByRole('listitem', { name: '過去の睡眠' })
+            .getByRole('listitem')
+            .filter({ hasText: '過去の睡眠' })
             .filter({ hasText: '5日' })
             .getByRole('button', { name: '詳細' })
             .click()
@@ -89,14 +90,16 @@ authedTest.describe('home', () => {
 
           await expect(
             page
-              .getByRole('listitem', { name: '過去の睡眠' })
+              .getByRole('listitem')
+              .filter({ hasText: '過去の睡眠' })
               .filter({ hasText: '5日' })
           ).toContainText('14:00')
         })
 
         authedTest('睡眠の削除ができる', async ({ page }) => {
           await page
-            .getByRole('listitem', { name: '過去の睡眠' })
+            .getByRole('listitem')
+            .filter({ hasText: '過去の睡眠' })
             .filter({ hasText: '5日' })
             .getByRole('button', { name: '詳細' })
             .click()
@@ -113,7 +116,8 @@ authedTest.describe('home', () => {
 
           await expect(
             page
-              .getByRole('listitem', { name: '過去の睡眠' })
+              .getByRole('listitem')
+              .filter({ hasText: '過去の睡眠' })
               .filter({ hasText: '5日' })
           ).toHaveCount(0)
         })
@@ -146,7 +150,8 @@ authedTest.describe('home', () => {
 
           await expect(
             page
-              .getByRole('listitem', { name: '過去の睡眠' })
+              .getByRole('listitem')
+              .filter({ hasText: '過去の睡眠' })
               .filter({ hasText: '5日' })
           ).toContainText('3:00')
 
@@ -155,7 +160,8 @@ authedTest.describe('home', () => {
 
         authedTest('分割睡眠の編集ができる', async ({ page }) => {
           await page
-            .getByRole('listitem', { name: '過去の睡眠' })
+            .getByRole('listitem')
+            .filter({ hasText: '過去の睡眠' })
             .filter({ hasText: '5日' })
             .getByRole('button', { name: '詳細' })
             .click()
@@ -168,14 +174,16 @@ authedTest.describe('home', () => {
 
           await expect(
             page
-              .getByRole('listitem', { name: '過去の睡眠' })
+              .getByRole('listitem')
+              .filter({ hasText: '過去の睡眠' })
               .filter({ hasText: '5日' })
           ).toContainText('4:00')
         })
 
         authedTest('分割睡眠の削除ができる', async ({ page }) => {
           await page
-            .getByRole('listitem', { name: '過去の睡眠' })
+            .getByRole('listitem')
+            .filter({ hasText: '過去の睡眠' })
             .filter({ hasText: '5日' })
             .getByRole('button', { name: '詳細' })
             .click()
@@ -191,7 +199,8 @@ authedTest.describe('home', () => {
 
           await expect(
             page
-              .getByRole('listitem', { name: '過去の睡眠' })
+              .getByRole('listitem')
+              .filter({ hasText: '過去の睡眠' })
               .filter({ hasText: '5日' })
           ).toHaveCount(0)
         })

@@ -43,6 +43,13 @@ const MobileTimeInput: FC<Props> = memo(({ value, ariaLabel, onChange }) => {
     setInputMode(mode)
   }
 
+  const handleOpen = () => {
+    setInputMode(
+      (localStorage.getItem('timeInputMode') as 'clock' | 'keyboard') ?? 'clock'
+    )
+    onOpen()
+  }
+
   const formatted = format(value, 'HH:mm')
   const [inputValue, setInputValue] = useState(formatted)
 
@@ -71,33 +78,39 @@ const MobileTimeInput: FC<Props> = memo(({ value, ariaLabel, onChange }) => {
   }
 
   const handleConfirmTimePicker = () => {
-    const resultValue =
-      inputMode === 'clock' ? timeValueInModal : timeValueInModal
-    onChange(resultValue)
-    setInputValue(format(resultValue, 'HH:mm'))
+    const parsedDate = setAndReturnValidTime()
+    if (!parsedDate) return
+
+    onChange(parsedDate)
+    setInputValue(format(parsedDate, 'HH:mm'))
     onClose()
   }
+
+  const switchButtonRef = useRef<HTMLButtonElement>(null)
 
   return (
     <>
       <Box
         role="button"
-        aria-label={ariaLabel ?? '日付'}
-        onClick={onOpen}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') {
-            onOpen()
-          }
-        }}
+        aria-label={(ariaLabel ?? '日付') + ' ' + inputValue}
+        onClick={handleOpen}
+        onKeyDown={(e) => e.key === 'Enter' && handleOpen()}
         tabIndex={0}
       >
-        <Input value={inputValue} tabIndex={-1} id="" isReadOnly aria-hidden />
+        <Input
+          value={inputValue}
+          tabIndex={-1}
+          id=""
+          isReadOnly
+          aria-hidden
+          _focusVisible={{}}
+        />
       </Box>
       <Modal
         isOpen={isOpen}
         onClose={onClose}
-        returnFocusOnClose={false}
         isCentered
+        initialFocusRef={inputMode === 'clock' ? switchButtonRef : hourRef}
       >
         <ModalOverlay />
         <ModalContent w={300}>
@@ -113,6 +126,7 @@ const MobileTimeInput: FC<Props> = memo(({ value, ariaLabel, onChange }) => {
                   ref={hourRef}
                   value={hour}
                   id=""
+                  aria-label="時間を入力"
                   onChange={handleChangeHour}
                   onBlur={handleBlurTime}
                   onFocus={() => setHour('')}
@@ -124,15 +138,22 @@ const MobileTimeInput: FC<Props> = memo(({ value, ariaLabel, onChange }) => {
                   ref={minuteRef}
                   value={minute}
                   id=""
+                  aria-label="分を入力"
                   onChange={handleChangeMinute}
                   onBlur={handleBlurTime}
                   onFocus={() => setMinute('')}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      handleConfirmTimePicker()
+                    }
+                  }}
                 />
               </Center>
             )}
           </ModalBody>
           <ModalFooter justifyContent="space-between">
             <IconButton
+              ref={switchButtonRef}
               icon={
                 <Icon
                   as={

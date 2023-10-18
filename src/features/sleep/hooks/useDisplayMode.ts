@@ -1,5 +1,5 @@
 import { useRouter } from 'next/navigation'
-import { addMonths } from 'date-fns'
+import { addYears } from 'date-fns'
 import { useState, useEffect, useTransition } from 'react'
 import { DisplayMode } from '../types/chart'
 import { setCookie } from '../server/setCookie'
@@ -17,7 +17,7 @@ export const useDisplayMode = (displayMode: DisplayMode) => {
   const handleChange = (displayMode: DisplayMode) => {
     setCurrentDisplayMode(displayMode)
     startTransition(() => {
-      setCookie('displayMode', displayMode, addMonths(new Date(), 1))
+      setCookie('displayMode', displayMode, addYears(new Date(), 1))
     })
     router.push(addSearchParamsWithCurrentPathname('displayMode', displayMode))
   }

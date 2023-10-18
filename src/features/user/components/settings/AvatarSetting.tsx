@@ -174,6 +174,7 @@ const AvatarSetting: FC<{ nickname: string; srcUrl?: string }> = ({
         size="xl"
         onClick={handleClickAvatar}
         mb="3"
+        aria-label="プロフィール画像を変更"
       >
         <AvatarBadge bg={badgeColor} border="none" boxSize="1em">
           <EditIcon boxSize="5" color="chakra-body-text"></EditIcon>
@@ -228,6 +229,7 @@ const AvatarSetting: FC<{ nickname: string; srcUrl?: string }> = ({
               <Slider
                 value={sliderValue}
                 colorScheme="green"
+                aria-label="画像の拡大率を調整"
                 onChange={handleSliderChange}
               >
                 <SliderTrack>

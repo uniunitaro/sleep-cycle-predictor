@@ -304,7 +304,24 @@ export const Drawer: FC<DrawerProps> = ({
       >
         {placement === 'bottom' && (
           <Box display="grid" placeItems="center" pt="2" pb="4">
-            <Box w="16" h="1" rounded="full" bgColor={topBarColor}></Box>
+            <Box
+              w="16"
+              h="1"
+              rounded="full"
+              bgColor={topBarColor}
+              role="button"
+              tabIndex={0}
+              cursor="default"
+              aria-label="閉じる"
+              onKeyDown={(e) => e.key === 'Enter' && handleClose()}
+              _focusVisible={{
+                _after: {
+                  content: '"閉じる"',
+                  display: 'block',
+                  textAlign: 'center',
+                },
+              }}
+            ></Box>
           </Box>
         )}
         {modalProps.children}

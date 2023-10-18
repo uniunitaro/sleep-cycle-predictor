@@ -14,7 +14,11 @@ export const metadata: Metadata = {
 
 const SignInPage = async () => {
   await redirectBasedOnAuthState('authed', '/home')
-  return <SignIn />
+  return (
+    <main>
+      <SignIn />
+    </main>
+  )
 }
 
 export default SignInPage

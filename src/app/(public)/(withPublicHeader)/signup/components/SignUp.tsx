@@ -63,10 +63,10 @@ const SignUp: FC = () => {
             </ProviderButton>
             <HStack>
               <Divider />
-              <Box flexShrink="0" fontSize="sm">
+              <Box flexShrink="0" fontSize="sm" aria-hidden>
                 または
               </Box>
-              <Divider />
+              <Divider aria-hidden />
             </HStack>
             <Button
               as={NextLink}

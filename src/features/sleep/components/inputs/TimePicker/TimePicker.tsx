@@ -95,7 +95,11 @@ const TimePicker: FC<{ value: Date; onChange: (value: Date) => void }> = ({
       <Stack spacing="6">
         <Center>
           <HStack spacing="0">
-            <Box onClick={() => setSelectedField('hour')}>
+            <Box
+              tabIndex={-1}
+              aria-hidden
+              onClick={() => setSelectedField('hour')}
+            >
               <HourMinuteInput
                 isSelected={selectedField === 'hour'}
                 isReadOnly
@@ -108,7 +112,11 @@ const TimePicker: FC<{ value: Date; onChange: (value: Date) => void }> = ({
             <Center width="4" fontSize="2xl" fontWeight="bold" aria-hidden>
               :
             </Center>
-            <Box onClick={() => setSelectedField('minute')}>
+            <Box
+              tabIndex={-1}
+              aria-hidden
+              onClick={() => setSelectedField('minute')}
+            >
               <HourMinuteInput
                 isSelected={selectedField === 'minute'}
                 isReadOnly

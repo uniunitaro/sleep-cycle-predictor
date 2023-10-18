@@ -12,7 +12,11 @@ export const metadata: Metadata = {
 }
 
 const PrivacyPage = () => {
-  return <Privacy />
+  return (
+    <main>
+      <Privacy />
+    </main>
+  )
 }
 
 export default PrivacyPage

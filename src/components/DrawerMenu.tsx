@@ -7,6 +7,8 @@ import {
   Box,
   Button,
   ButtonProps,
+  CloseButton,
+  HStack,
   Icon,
   IconButton,
   useColorModeValue,
@@ -24,6 +26,11 @@ const DrawerMenu: FC<{ displayMode: DisplayMode }> = ({ displayMode }) => {
 
   return (
     <>
+      {currentDisplayMode !== 'list' && (
+        <Box srOnly>
+          スクリーンリーダーをご利用の方は、メニューの表示形式からリストを選択してください
+        </Box>
+      )}
       <IconButton
         icon={<HamburgerIcon boxSize="5" />}
         aria-label="メニューを開く"
@@ -32,10 +39,18 @@ const DrawerMenu: FC<{ displayMode: DisplayMode }> = ({ displayMode }) => {
       />
       <Drawer isOpen={isOpen} onClose={onClose} placement="left">
         <DrawerHeader bgColor="globalBg">
-          <Logo />
+          <HStack justifyContent="space-between">
+            <Box aria-hidden>
+              <Logo />
+            </Box>
+            <CloseButton onClick={onClose}></CloseButton>
+          </HStack>
         </DrawerHeader>
         <DrawerBody px="0" bgColor="globalBg">
           <Box pr="3">
+            <Box as="h2" srOnly>
+              表示形式
+            </Box>
             <DrawerItem
               leftIcon={<Icon as={BsCalendar3Week} />}
               isSelected={currentDisplayMode === 'week'}
@@ -84,11 +99,13 @@ const DrawerItem: FC<ButtonProps & { isSelected?: boolean }> = ({
       w="full"
       h="14"
       px="6"
+      display="flex"
       borderLeftRadius="none"
       variant="ghost"
       fontWeight="medium"
       justifyContent="left"
       iconSpacing="6"
+      aria-current={isSelected}
       bgColor={isSelected ? bgColor : undefined}
       _hover={{ bgColor: bgColor }}
       _active={{ bgColor: bgActiveColor }}

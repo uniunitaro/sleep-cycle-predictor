@@ -12,7 +12,11 @@ export const metadata: Metadata = {
 }
 
 const TermPage = () => {
-  return <Terms />
+  return (
+    <main>
+      <Terms />
+    </main>
+  )
 }
 
 export default TermPage

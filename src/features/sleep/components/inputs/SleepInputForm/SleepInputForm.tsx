@@ -1,6 +1,6 @@
 'use client'
 
-import { FC } from 'react'
+import React, { FC, RefObject, createRef, useEffect, useRef } from 'react'
 import { AddIcon } from '@chakra-ui/icons'
 import {
   addDays,
@@ -18,7 +18,6 @@ import {
   CloseButton,
   Flex,
   FormControl,
-  FormLabel,
   Stack,
 } from '@/components/chakra'
 
@@ -100,12 +99,26 @@ const SleepInputForm: FC<{
     onChange(sleeps.filter((_, i) => i !== index))
   }
 
+  const sleepGroupRefs = useRef<RefObject<HTMLDivElement>[]>([])
+  sleeps.forEach((_, index) => {
+    sleepGroupRefs.current[index] = createRef()
+  })
+
+  useEffect(() => {
+    sleepGroupRefs.current?.[sleeps.length - 1]?.current?.focus()
+  }, [sleeps.length])
+
   return (
     <Stack spacing="5">
       <form>
         <Stack spacing="5">
           {sleeps.map((sleep, index) => (
-            <Box key={sleep.id} role="group">
+            <Box
+              ref={sleepGroupRefs.current[index]}
+              key={sleep.id}
+              role="group"
+              tabIndex={-1}
+            >
               {sleeps.length > 1 && (
                 <Flex align="center" fontSize="sm" color="secondaryGray">
                   {`睡眠${index + 1}`}
