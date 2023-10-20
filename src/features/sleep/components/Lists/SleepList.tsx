@@ -3,11 +3,11 @@
 import { FC, memo } from 'react'
 import { getMonth } from 'date-fns'
 import { useSetAtom } from 'jotai'
+import SleepOverview from './SleepOverview'
 import {
   isSleepBottomSheetOpenAtom,
   selectedSleepOrPredictionAtom,
-} from '../atoms/globalModals'
-import SleepOverview from './SleepOverview'
+} from '@/features/sleep/atoms/globalModals'
 import { Prediction, Sleep } from '@/features/sleep/types/sleep'
 import { Box, Stack } from '@/components/chakra'
 

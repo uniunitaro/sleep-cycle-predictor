@@ -9,9 +9,9 @@ import { useAtom, useSetAtom } from 'jotai'
 import { useCalendarControl } from '../../hooks/useCalendarControl'
 import { DisplayMode } from '../../types/chart'
 import { useDisplayMode } from '../../hooks/useDisplayMode'
-import { isRightColumnOpenAtom } from '../atoms/rightColumn'
 import AddSleepButton from '../AddSleepButton'
-import { isInputModalOpenAtom } from '../atoms/globalModals'
+import { isRightColumnOpenAtom } from '@/features/sleep/atoms/rightColumn'
+import { isInputModalOpenAtom } from '@/features/sleep/atoms/globalModals'
 import {
   Box,
   HStack,

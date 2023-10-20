@@ -39,7 +39,7 @@ import SleepOverview, { SleepOverviewRef } from '../../Lists/SleepOverview'
 import {
   isSleepBottomSheetOpenAtom,
   selectedSleepOrPredictionAtom,
-} from '../../atoms/globalModals'
+} from '@/features/sleep/atoms/globalModals'
 import {
   Box,
   Center,

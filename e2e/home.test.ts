@@ -15,7 +15,7 @@ authedTest.beforeEach(async ({ context }) => {
 
   await context.addInitScript(() => {
     window.sinon.useFakeTimers({
-      now: new Date(2023, 0, 2),
+      now: new Date(2023, 0, 10),
       toFake: ['Date'],
     })
   })

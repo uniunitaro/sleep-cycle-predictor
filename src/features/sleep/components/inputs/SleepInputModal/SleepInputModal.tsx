@@ -8,7 +8,13 @@ import {
   useState,
   useTransition,
 } from 'react'
-import { setMilliseconds, setMinutes, setSeconds, subHours } from 'date-fns'
+import {
+  isAfter,
+  setMilliseconds,
+  setMinutes,
+  setSeconds,
+  subHours,
+} from 'date-fns'
 import SleepInputForm from '../SleepInputForm/SleepInputForm'
 import {
   Alert,
@@ -56,6 +62,14 @@ const SleepInputModal = forwardRef<HTMLDivElement, Props>(
     const [isLoading, startTransition] = useTransition()
     const handleSubmit = () => {
       setError(undefined)
+
+      const isAfterToday = sleeps.some((sleep) =>
+        isAfter(sleep.end, new Date())
+      )
+      if (isAfterToday) {
+        setError('未来の日付を指定することはできません。')
+        return
+      }
 
       startTransition(async () => {
         const { error: serverError } = isUpdate

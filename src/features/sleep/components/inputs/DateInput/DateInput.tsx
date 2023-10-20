@@ -126,6 +126,7 @@ const DateInput: FC<Props> = memo(({ value, id, ariaLabel, onChange }) => {
                   value={[parseDate(oldInputValue.replaceAll('/', '-'))]}
                   selectionMode="single"
                   locale="ja"
+                  max={parseDate(format(new Date(), 'yyyy-MM-dd'))}
                   disableFocus
                   onChange={handleClickDate}
                 />
@@ -165,6 +166,7 @@ const DateInput: FC<Props> = memo(({ value, id, ariaLabel, onChange }) => {
                 value={[parseDate(oldInputValue.replaceAll('/', '-'))]}
                 selectionMode="single"
                 locale="ja"
+                max={parseDate(format(new Date(), 'yyyy-MM-dd'))}
                 fixedWeeks
                 onChange={handleClickDate}
               />

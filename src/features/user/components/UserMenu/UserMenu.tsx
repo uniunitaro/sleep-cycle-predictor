@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { SettingsIcon } from '@chakra-ui/icons'
 import Link from 'next/link'
 import { MdLogout } from 'react-icons/md'
+import { useAtom } from 'jotai'
 import { AuthUser } from '../../types/user'
 import {
   Avatar,
@@ -15,8 +16,12 @@ import {
   MenuButton,
   MenuGroup,
   MenuItem,
+  MenuItemOption,
   MenuList,
+  MenuOptionGroup,
+  useColorMode,
 } from '@/components/chakra'
+import { useSystemColorModeAtom } from '@/atoms/colorMode'
 
 const UserMenu: FC<{ authUser: AuthUser }> = ({ authUser }) => {
   const { nickname, avatarUrl } = authUser
@@ -34,8 +39,27 @@ const UserMenu: FC<{ authUser: AuthUser }> = ({ authUser }) => {
     })
   }
 
+  const [useSystemColorMode, setUseSystemColorMode] = useAtom(
+    useSystemColorModeAtom
+  )
+  const { colorMode, setColorMode } = useColorMode()
+
+  const handleColorModeChange = (value: string | string[]) => {
+    if (value === 'system') {
+      setColorMode('system')
+      setUseSystemColorMode(true)
+    } else if (value === 'light') {
+      setColorMode('light')
+      setUseSystemColorMode(false)
+    } else if (value === 'dark') {
+      setColorMode('dark')
+      setUseSystemColorMode(false)
+    }
+  }
+
   return (
-    <Menu placement="bottom-end">
+    // useSystemColorModeはlocalStorageから取得するため、isLazyをtrueにしないとバグる
+    <Menu placement="bottom-end" closeOnSelect={false} isLazy>
       <MenuButton
         as={IconButton}
         icon={
@@ -68,6 +92,18 @@ const UserMenu: FC<{ authUser: AuthUser }> = ({ authUser }) => {
             ログアウト
           </MenuItem>
         </MenuGroup>
+        <MenuOptionGroup
+          title="カラーモード"
+          defaultValue={useSystemColorMode ? 'system' : colorMode}
+          type="radio"
+          onChange={handleColorModeChange}
+        >
+          <MenuItemOption value="system">
+            システムのモードを使用する
+          </MenuItemOption>
+          <MenuItemOption value="light">ライトモード</MenuItemOption>
+          <MenuItemOption value="dark">ダークモード</MenuItemOption>
+        </MenuOptionGroup>
       </MenuList>
     </Menu>
   )

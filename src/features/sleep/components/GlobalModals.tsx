@@ -4,13 +4,13 @@ import { FC, useState } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
 import SleepInputModal from './inputs/SleepInputModal/SleepInputModal'
 import SleepDeleteModal from './SleepDeleteModal'
+import SleepBottomSheet from './charts/SleepBottomSheet'
 import {
   isDeleteModalOpenAtom,
   isInputModalOpenAtom,
   isSleepBottomSheetOpenAtom,
   selectedSleepOrPredictionAtom,
-} from './atoms/globalModals'
-import SleepBottomSheet from './charts/SleepBottomSheet'
+} from '@/features/sleep/atoms/globalModals'
 import { Hide } from '@/components/chakra'
 
 const GlobalModals: FC = () => {

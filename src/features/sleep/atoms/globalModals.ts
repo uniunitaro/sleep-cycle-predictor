@@ -1,5 +1,5 @@
 import { atom } from 'jotai'
-import { Prediction, Sleep } from '../../types/sleep'
+import { Prediction, Sleep } from '@/features/sleep/types/sleep'
 
 export const isInputModalOpenAtom = atom(false)
 export const isDeleteModalOpenAtom = atom(false)
