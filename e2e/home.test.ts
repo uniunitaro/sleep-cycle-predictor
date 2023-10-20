@@ -59,15 +59,19 @@ authedTest.describe('home', () => {
           await page.getByRole('button', { name: '睡眠記録を追加' }).click()
           await page.getByRole('dialog').waitFor()
 
-          await page.getByLabel('就寝日時 日付').fill('2023/01/05')
-          await page.getByLabel('就寝日時 時間').fill('13')
-          await page.getByLabel('就寝日時 分').fill('00')
-          await page.getByLabel('起床日時 日付').fill('2023/01/06')
-          await page.getByLabel('起床日時 時間').fill('02')
-          await page.getByLabel('起床日時 分').fill('00')
+          await page
+            .getByRole('textbox', { name: '就寝日時 日付' })
+            .fill('2023/01/05')
+          await page.getByRole('textbox', { name: '就寝日時 時間' }).fill('13')
+          await page.getByRole('textbox', { name: '就寝日時 分' }).fill('00')
+          await page
+            .getByRole('textbox', { name: '起床日時 日付' })
+            .fill('2023/01/06')
+          await page.getByRole('textbox', { name: '起床日時 時間' }).fill('02')
+          await page.getByRole('textbox', { name: '起床日時 分' }).fill('00')
 
           // 日付選択popoverを表示してVRT
-          await page.getByLabel('就寝日時 日付').click()
+          await page.getByRole('textbox', { name: '就寝日時 日付' }).click()
           await expect.soft(page).toHaveScreenshot({ fullPage: true })
 
           // 日付選択popoverを閉じる
@@ -96,7 +100,7 @@ authedTest.describe('home', () => {
 
           await page.getByRole('dialog').waitFor()
 
-          await page.getByLabel('就寝日時 時間').fill('14')
+          await page.getByRole('textbox', { name: '就寝日時 時間' }).fill('14')
 
           await expect.soft(page).toHaveScreenshot({ fullPage: true })
 
@@ -142,21 +146,37 @@ authedTest.describe('home', () => {
           await page.getByRole('button', { name: '睡眠記録を追加' }).click()
           await page.getByRole('dialog').waitFor()
 
-          await page.getByLabel('就寝日時 日付').fill('2023/01/05')
-          await page.getByLabel('就寝日時 時間').fill('13')
-          await page.getByLabel('就寝日時 分').fill('00')
-          await page.getByLabel('起床日時 日付').fill('2023/01/06')
-          await page.getByLabel('起床日時 時間').fill('02')
-          await page.getByLabel('起床日時 分').fill('00')
+          await page
+            .getByRole('textbox', { name: '就寝日時 日付' })
+            .fill('2023/01/05')
+          await page.getByRole('textbox', { name: '就寝日時 時間' }).fill('13')
+          await page.getByRole('textbox', { name: '就寝日時 分' }).fill('00')
+          await page
+            .getByRole('textbox', { name: '起床日時 日付' })
+            .fill('2023/01/06')
+          await page.getByRole('textbox', { name: '起床日時 時間' }).fill('02')
+          await page.getByRole('textbox', { name: '起床日時 分' }).fill('00')
 
           await page.getByRole('button', { name: '分割睡眠を追加' }).click()
 
-          await page.getByLabel('睡眠2 就寝日時 日付').fill('2023/01/06')
-          await page.getByLabel('睡眠2 就寝日時 時間').fill('3')
-          await page.getByLabel('睡眠2 就寝日時 分').fill('00')
-          await page.getByLabel('睡眠2 起床日時 日付').fill('2023/01/06')
-          await page.getByLabel('睡眠2 起床日時 時間').fill('05')
-          await page.getByLabel('睡眠2 起床日時 分').fill('00')
+          await page
+            .getByRole('textbox', { name: '睡眠2 就寝日時 日付' })
+            .fill('2023/01/06')
+          await page
+            .getByRole('textbox', { name: '睡眠2 就寝日時 時間' })
+            .fill('3')
+          await page
+            .getByRole('textbox', { name: '睡眠2 就寝日時 分' })
+            .fill('00')
+          await page
+            .getByRole('textbox', { name: '睡眠2 起床日時 日付' })
+            .fill('2023/01/06')
+          await page
+            .getByRole('textbox', { name: '睡眠2 起床日時 時間' })
+            .fill('05')
+          await page
+            .getByRole('textbox', { name: '睡眠2 起床日時 分' })
+            .fill('00')
 
           await expect.soft(page).toHaveScreenshot({ fullPage: true })
 
@@ -182,7 +202,9 @@ authedTest.describe('home', () => {
           await page.getByRole('menuitem', { name: '睡眠記録を編集' }).click()
 
           await page.getByRole('dialog').waitFor()
-          await page.getByLabel('睡眠2 就寝日時 時間').fill('4')
+          await page
+            .getByRole('textbox', { name: '睡眠2 就寝日時 時間' })
+            .fill('4')
 
           await page.getByRole('button', { name: '更新する' }).click()
 
@@ -225,13 +247,16 @@ authedTest.describe('home', () => {
         async ({ page }) => {
           await page.getByRole('button', { name: '睡眠記録を追加' }).click()
           await page.getByRole('dialog').waitFor()
-
-          await page.getByLabel('就寝日時 日付').fill('2023/01/04')
-          await page.getByLabel('就寝日時 時間').fill('08')
-          await page.getByLabel('就寝日時 分').fill('00')
-          await page.getByLabel('起床日時 日付').fill('2023/01/04')
-          await page.getByLabel('起床日時 時間').fill('15')
-          await page.getByLabel('起床日時 分').fill('00')
+          await page
+            .getByRole('textbox', { name: '就寝日時 日付' })
+            .fill('2023/01/04')
+          await page.getByRole('textbox', { name: '就寝日時 時間' }).fill('08')
+          await page.getByRole('textbox', { name: '就寝日時 分' }).fill('00')
+          await page
+            .getByRole('textbox', { name: '起床日時 日付' })
+            .fill('2023/01/04')
+          await page.getByRole('textbox', { name: '起床日時 時間' }).fill('15')
+          await page.getByRole('textbox', { name: '起床日時 分' }).fill('00')
 
           await page.getByRole('button', { name: '追加する' }).click()
 
