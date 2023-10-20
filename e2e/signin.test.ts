@@ -10,7 +10,7 @@ test.describe('signin', () => {
   })
 
   test('VRT', async ({ page }) => {
-    await expect(page).toHaveScreenshot({ fullPage: true })
+    await expect.soft(page).toHaveScreenshot({ fullPage: true })
   })
 
   test('誤ったメールアドレス、パスワードを入力するとエラーが出る', async ({
@@ -22,7 +22,7 @@ test.describe('signin', () => {
     await expect(
       page.getByText('メールアドレスまたはパスワードが間違っています')
     ).toBeVisible()
-    await expect(page).toHaveScreenshot({ fullPage: true })
+    await expect.soft(page).toHaveScreenshot({ fullPage: true })
   })
 
   test('正常にログインができる', async ({ page }) => {

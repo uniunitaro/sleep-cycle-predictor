@@ -313,6 +313,7 @@ export const Drawer: FC<DrawerProps> = ({
               tabIndex={0}
               cursor="default"
               aria-label="閉じる"
+              onClick={handleClose}
               onKeyDown={(e) => e.key === 'Enter' && handleClose()}
               _focusVisible={{
                 _after: {

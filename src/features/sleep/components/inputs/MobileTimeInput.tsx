@@ -38,11 +38,6 @@ const MobileTimeInput: FC<Props> = memo(({ value, ariaLabel, onChange }) => {
     }
   }, [inputMode])
 
-  const switchInputMode = (mode: 'clock' | 'keyboard') => {
-    localStorage.setItem('timeInputMode', mode)
-    setInputMode(mode)
-  }
-
   const handleOpen = () => {
     setInputMode(
       (localStorage.getItem('timeInputMode') as 'clock' | 'keyboard') ?? 'clock'
@@ -77,7 +72,7 @@ const MobileTimeInput: FC<Props> = memo(({ value, ariaLabel, onChange }) => {
     }
   }
 
-  const handleConfirmTimePicker = () => {
+  const handleConfirmOnKeyboard = () => {
     const parsedDate = setAndReturnValidTime()
     if (!parsedDate) return
 
@@ -86,13 +81,27 @@ const MobileTimeInput: FC<Props> = memo(({ value, ariaLabel, onChange }) => {
     onClose()
   }
 
+  const handleConfirmOnClock = () => {
+    onChange(timeValueInModal)
+    setInputValue(format(timeValueInModal, 'HH:mm'))
+    onClose()
+  }
+
   const switchButtonRef = useRef<HTMLButtonElement>(null)
+
+  const switchInputMode = (mode: 'clock' | 'keyboard') => {
+    setHour(format(timeValueInModal, 'HH'))
+    setMinute(format(timeValueInModal, 'mm'))
+
+    localStorage.setItem('timeInputMode', mode)
+    setInputMode(mode)
+  }
 
   return (
     <>
       <Box
         role="button"
-        aria-label={(ariaLabel ?? '日付') + ' ' + inputValue}
+        aria-label={(ariaLabel ?? '時間') + ' ' + inputValue}
         onClick={handleOpen}
         onKeyDown={(e) => e.key === 'Enter' && handleOpen()}
         tabIndex={0}
@@ -144,7 +153,7 @@ const MobileTimeInput: FC<Props> = memo(({ value, ariaLabel, onChange }) => {
                   onFocus={() => setMinute('')}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
-                      handleConfirmTimePicker()
+                      handleConfirmOnKeyboard()
                     }
                   }}
                 />
@@ -182,7 +191,11 @@ const MobileTimeInput: FC<Props> = memo(({ value, ariaLabel, onChange }) => {
               <Button
                 variant="ghost"
                 colorScheme="green"
-                onClick={handleConfirmTimePicker}
+                onClick={
+                  inputMode === 'clock'
+                    ? handleConfirmOnClock
+                    : handleConfirmOnKeyboard
+                }
               >
                 OK
               </Button>
