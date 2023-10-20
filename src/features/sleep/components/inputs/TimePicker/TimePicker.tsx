@@ -4,7 +4,6 @@ import { LocalizationProvider, TimeClock } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { format } from 'date-fns'
 import React, { FC, useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
 import { PickerSelectionState } from '@mui/x-date-pickers/internals'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import { jaJP } from '@mui/x-date-pickers/locales'
@@ -17,16 +16,12 @@ import {
   useColorModeValue,
 } from '@/components/chakra'
 
-type Schema = {
-  hour: string
-  minute: string
-}
-
 const TimePicker: FC<{ value: Date; onChange: (value: Date) => void }> = ({
   value,
   onChange,
 }) => {
-  const { register, setValue } = useForm<Schema>()
+  const hour = format(value, 'HH')
+  const minute = format(value, 'mm')
 
   const [selectedField, setSelectedField] = useState<'hour' | 'minute'>('hour')
 
@@ -39,11 +34,6 @@ const TimePicker: FC<{ value: Date; onChange: (value: Date) => void }> = ({
     }
     onChange(newValue)
   }
-
-  useEffect(() => {
-    setValue('hour', format(value, 'HH'))
-    setValue('minute', format(value, 'mm'))
-  }, [value, setValue])
 
   // モーダル表示時のタップでTimeClockが反応するのを防ぐ
   const [isTouched, setIsTouched] = useState(false)
@@ -101,12 +91,12 @@ const TimePicker: FC<{ value: Date; onChange: (value: Date) => void }> = ({
               onClick={() => setSelectedField('hour')}
             >
               <HourMinuteInput
+                value={hour}
                 isSelected={selectedField === 'hour'}
                 isReadOnly
                 id=""
                 tabIndex={-1}
                 aria-hidden
-                {...register('hour')}
               />
             </Box>
             <Center width="4" fontSize="2xl" fontWeight="bold" aria-hidden>
@@ -118,12 +108,12 @@ const TimePicker: FC<{ value: Date; onChange: (value: Date) => void }> = ({
               onClick={() => setSelectedField('minute')}
             >
               <HourMinuteInput
+                value={minute}
                 isSelected={selectedField === 'minute'}
                 isReadOnly
                 id=""
                 tabIndex={-1}
                 aria-hidden
-                {...register('minute')}
               />
             </Box>
           </HStack>

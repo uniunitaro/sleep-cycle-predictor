@@ -10,7 +10,7 @@ test.describe('index', () => {
   })
 
   test('VRT', async ({ page }) => {
-    await expect(page).toHaveScreenshot({ fullPage: true })
+    await expect.soft(page).toHaveScreenshot({ fullPage: true })
   })
 
   test('会員登録リンクがあり、押下すると登録ページに遷移する', async ({

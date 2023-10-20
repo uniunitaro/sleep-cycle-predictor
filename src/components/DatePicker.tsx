@@ -24,7 +24,11 @@ import { Stack } from 'styled-system/jsx'
 const DatePicker = (props: DatePickerProps & { disableFocus?: boolean }) => {
   const { disableFocus, ...rest } = props
   return (
-    <_DatePicker inline {...rest}>
+    <_DatePicker
+      inline
+      timeZone={Intl.DateTimeFormat().resolvedOptions().timeZone}
+      {...rest}
+    >
       {(api) => (
         <>
           <DatePickerContent bgColor="transparent" px="2">

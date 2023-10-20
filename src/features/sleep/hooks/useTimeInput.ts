@@ -16,16 +16,8 @@ export const useTimeInput = ({
   const oldValue = useRef(date)
 
   useEffect(() => {
-    if (
-      hourRef.current !== document.activeElement &&
-      minuteRef.current !== document.activeElement
-    ) {
-      // フォーカスされていなければ更新する、フォーカス時に空文字にする処理と競合しないため
-      setHour(format(date, 'HH'))
-      setMinute(format(date, 'mm'))
-    }
     oldValue.current = date
-  }, [date, hourRef, minuteRef])
+  }, [date])
 
   const getHalfWidthNumber = (value: string) => {
     // 全角か半角の数字のみ許可

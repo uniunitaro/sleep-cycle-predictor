@@ -43,35 +43,47 @@ const SleepList: FC<Props> = memo(
     return (
       <Stack gap="4" role="list" aria-label="睡眠リスト">
         {currentMonthSleeps.map((sleep) => (
-          <Box
-            key={sleep.id}
-            tabIndex={variant === 'mobile' ? 0 : undefined}
-            onClick={
-              variant === 'mobile' ? () => handleClickSleep(sleep) : undefined
-            }
-          >
-            <SleepOverview
-              sleep={sleep}
-              variant={variant === 'desktop' ? 'withMenu' : 'default'}
-              role="listitem"
-            />
+          <Box key={sleep.id} role="listitem">
+            <Box
+              role={variant === 'mobile' ? 'button' : undefined}
+              tabIndex={variant === 'mobile' ? 0 : undefined}
+              onClick={
+                variant === 'mobile' ? () => handleClickSleep(sleep) : undefined
+              }
+              onKeyDown={(e) =>
+                variant === 'mobile' &&
+                e.key === 'Enter' &&
+                handleClickSleep(sleep)
+              }
+            >
+              <SleepOverview
+                sleep={sleep}
+                variant={variant === 'desktop' ? 'withMenu' : 'default'}
+              />
+            </Box>
           </Box>
         ))}
         {currentMonthPredictions.map((prediction) => (
-          <Box
-            key={prediction.start.getTime()}
-            tabIndex={variant === 'mobile' ? 0 : undefined}
-            onClick={
-              variant === 'mobile'
-                ? () => handleClickPrediction(prediction)
-                : undefined
-            }
-          >
-            <SleepOverview
-              prediction={prediction}
-              role="listitem"
-              key={prediction.start.getTime()}
-            />
+          <Box key={prediction.start.getTime()} role="listitem">
+            <Box
+              role={variant === 'mobile' ? 'button' : undefined}
+              tabIndex={variant === 'mobile' ? 0 : undefined}
+              onClick={
+                variant === 'mobile'
+                  ? () => handleClickPrediction(prediction)
+                  : undefined
+              }
+              onKeyDown={(e) =>
+                variant === 'mobile' &&
+                e.key === 'Enter' &&
+                handleClickPrediction(prediction)
+              }
+            >
+              <SleepOverview
+                prediction={prediction}
+                key={prediction.start.getTime()}
+              />
+            </Box>
           </Box>
         ))}
       </Stack>
