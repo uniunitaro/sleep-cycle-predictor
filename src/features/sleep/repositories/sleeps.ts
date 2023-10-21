@@ -1,8 +1,24 @@
 'use server'
 
-import { and, asc, eq, gte, isNull, lte, ne, or } from 'drizzle-orm'
+import {
+  and,
+  asc,
+  between,
+  desc,
+  eq,
+  gte,
+  isNull,
+  lte,
+  ne,
+  or,
+} from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
-import { areIntervalsOverlapping, getUnixTime } from 'date-fns'
+import {
+  addHours,
+  areIntervalsOverlapping,
+  getUnixTime,
+  subHours,
+} from 'date-fns'
 import { Sleep } from '../types/sleep'
 import { db } from '@/db'
 import { NewSleep, sleep } from '@/db/schema'
@@ -69,15 +85,66 @@ const checkOverlap = async (
   }
 }
 
-export const addSleep = async (
+type ShortIntervalError = { type: 'shortInterval' }
+const checkShortInterval = async (
+  userId: string,
+  sleeps: { start: Date; end: Date }[],
+  originalSleepId?: number
+): Promise<ShortIntervalError | undefined> => {
+  const sortedSleeps = [...sleeps].sort(
+    (a, b) => getUnixTime(a.start) - getUnixTime(b.start)
+  )
+
+  // 既存の睡眠とリクエストの睡眠との間隔が8時間以上あるかチェック
+  const INTERVAL = 8
+  const shortIntervalSleeps = await db.query.sleep.findMany({
+    where: and(
+      eq(sleep.userId, uuidToBin(userId)),
+      originalSleepId ? ne(sleep.id, originalSleepId) : undefined,
+      originalSleepId
+        ? or(
+            isNull(sleep.parentSleepId),
+            ne(sleep.parentSleepId, originalSleepId)
+          )
+        : undefined,
+      or(
+        between(
+          sleep.end,
+          subHours(sortedSleeps[0].start, INTERVAL),
+          sortedSleeps[0].start
+        ),
+        between(
+          sleep.start,
+          sortedSleeps[sortedSleeps.length - 1].end,
+          addHours(sortedSleeps[sortedSleeps.length - 1].end, INTERVAL)
+        )
+      )
+    ),
+  })
+
+  if (shortIntervalSleeps.length) {
+    return { type: 'shortInterval' }
+  }
+}
+
+export const addSleep = async ({
+  sleeps,
+  ignoreShortInterval,
+}: {
   sleeps: { start: Date; end: Date }[]
-): Promise<{ error?: OverlapError | true }> => {
+  ignoreShortInterval?: boolean
+}): Promise<{ error?: OverlapError | ShortIntervalError | true }> => {
   try {
     const { userId, error } = await getAuthUserIdWithServerAction()
     if (error) throw error
 
     const overlapError = await checkOverlap(userId, sleeps)
     if (overlapError) return { error: overlapError }
+
+    const shortIntervalError = await checkShortInterval(userId, sleeps)
+    if (shortIntervalError && !ignoreShortInterval) {
+      return { error: shortIntervalError }
+    }
 
     const { firstSleep, segmentedSleeps } = getSleepAndSegmentedSleeps(sleeps)
 
@@ -112,10 +179,15 @@ export const addSleep = async (
   }
 }
 
-export const updateSleep = async (
-  id: number,
+export const updateSleep = async ({
+  id,
+  sleeps,
+  ignoreShortInterval,
+}: {
+  id: number
   sleeps: { start: Date; end: Date }[]
-): Promise<{ error?: OverlapError | true }> => {
+  ignoreShortInterval?: boolean
+}): Promise<{ error?: OverlapError | ShortIntervalError | true }> => {
   try {
     const { userId, error } = await getAuthUserIdWithServerAction()
     if (error) throw error
@@ -127,6 +199,11 @@ export const updateSleep = async (
 
     const overlapError = await checkOverlap(userId, sleeps, id)
     if (overlapError) return { error: overlapError }
+
+    const shortIntervalError = await checkShortInterval(userId, sleeps, id)
+    if (shortIntervalError && !ignoreShortInterval) {
+      return { error: shortIntervalError }
+    }
 
     const { firstSleep, segmentedSleeps } = getSleepAndSegmentedSleeps(sleeps)
 

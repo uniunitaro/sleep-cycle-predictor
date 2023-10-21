@@ -137,7 +137,7 @@ describe('addSleep', () => {
       },
     ]
 
-    await addSleep(sleeps)
+    await addSleep({ sleeps })
     const sleep = await db.query.sleep.findFirst({
       with: { segmentedSleeps: true },
     })
@@ -166,7 +166,7 @@ describe('addSleep', () => {
       },
     ]
 
-    await addSleep(sleeps)
+    await addSleep({ sleeps })
     const sleep = await db.query.sleep.findFirst({
       with: { segmentedSleeps: true },
     })
@@ -190,7 +190,7 @@ describe('addSleep', () => {
       })
 
       const sleeps = [{ start, end }]
-      const { error } = await addSleep(sleeps)
+      const { error } = await addSleep({ sleeps })
       expect(error).toEqual({ type: 'overlapWithRecorded' })
     })
   })
@@ -213,7 +213,7 @@ describe('addSleep', () => {
       ])
 
       const sleeps = [{ start, end }]
-      const { error } = await addSleep(sleeps)
+      const { error } = await addSleep({ sleeps })
       expect(error).toEqual({ type: 'overlapWithRecorded' })
     })
   })
@@ -233,7 +233,7 @@ describe('addSleep', () => {
         },
         { start, end },
       ]
-      const { error } = await addSleep(sleeps)
+      const { error } = await addSleep({ sleeps })
       expect(error).toEqual({ type: 'overlapWithRecorded' })
     })
   })
@@ -262,7 +262,7 @@ describe('addSleep', () => {
         },
         { start, end },
       ]
-      const { error } = await addSleep(sleeps)
+      const { error } = await addSleep({ sleeps })
       expect(error).toEqual({ type: 'overlapWithRecorded' })
     })
   })
@@ -276,8 +276,82 @@ describe('addSleep', () => {
         },
         { start, end },
       ]
-      const { error } = await addSleep(sleeps)
+      const { error } = await addSleep({ sleeps })
       expect(error).toEqual({ type: 'overlapInRequest' })
+    })
+  })
+
+  describe('8時間以内に既存の睡眠が存在する場合はshortIntervalエラーが返される', () => {
+    test.each(testCases)(
+      '既存のendとリクエストのstartのパターン start: %p, end: %p',
+      async (start, end) => {
+        await sleepFactory.create([
+          {
+            userId: uuidToBin(userId),
+            start: new Date('2021-12-31T12:00:00.000Z'),
+            end: new Date('2021-12-31T22:00:00.000Z'),
+          },
+        ])
+
+        const sleeps = [{ start, end }]
+        const { error } = await addSleep({ sleeps })
+        expect(error).toEqual({ type: 'shortInterval' })
+      }
+    )
+
+    test.each(testCases)(
+      '既存のstartとリクエストのendのパターンstart: %p, end: %p',
+      async (start, end) => {
+        await sleepFactory.create([
+          {
+            userId: uuidToBin(userId),
+            start: new Date('2022-01-01T10:00:00.000Z'),
+            end: new Date('2022-01-01T22:00:00.000Z'),
+          },
+        ])
+
+        const sleeps = [{ start, end }]
+        const { error } = await addSleep({ sleeps })
+        expect(error).toEqual({ type: 'shortInterval' })
+      }
+    )
+
+    test('8時間以上の場合はエラーが発生しない', async () => {
+      await sleepFactory.create([
+        {
+          userId: uuidToBin(userId),
+          start: new Date('2022-01-01T22:00:00.000Z'),
+          end: new Date('2022-01-01T23:00:00.000Z'),
+        },
+      ])
+
+      const sleeps = [
+        {
+          start: new Date('2022-01-01T00:00:00.000Z'),
+          end: new Date('2022-01-01T08:00:00.000Z'),
+        },
+      ]
+      const { error } = await addSleep({ sleeps })
+      expect(error).toBeUndefined()
+    })
+
+    test('ignoreShortIntervalがtrueの場合はエラーが発生しない', async () => {
+      await sleepFactory.create([
+        {
+          userId: uuidToBin(userId),
+          start: new Date('2021-12-31T12:00:00.000Z'),
+          end: new Date('2021-12-31T22:00:00.000Z'),
+        },
+      ])
+
+      const sleeps = [
+        {
+          start: new Date('2022-01-01T00:00:00.000Z'),
+          end: new Date('2022-01-01T08:00:00.000Z'),
+        },
+      ]
+      const { error } = await addSleep({ sleeps, ignoreShortInterval: true })
+      expect(error).toBeUndefined()
     })
   })
 })
@@ -301,7 +375,7 @@ describe('updateSleep', () => {
       },
     ]
 
-    await updateSleep(originalSleepId, sleeps)
+    await updateSleep({ id: originalSleepId, sleeps })
     const sleep = await db.query.sleep.findFirst({
       with: { segmentedSleeps: true },
     })
@@ -332,7 +406,7 @@ describe('updateSleep', () => {
       },
     ]
 
-    await updateSleep(originalSleepId, sleeps)
+    await updateSleep({ id: originalSleepId, sleeps })
     const sleep = await db.query.sleep.findFirst({
       with: { segmentedSleeps: true },
     })
@@ -367,7 +441,7 @@ describe('updateSleep', () => {
       },
     ]
 
-    await updateSleep(originalSleepId, sleeps)
+    await updateSleep({ id: originalSleepId, sleeps })
     const sleep = await db.query.sleep.findFirst({
       with: { segmentedSleeps: true },
     })
@@ -397,7 +471,7 @@ describe('updateSleep', () => {
       })
 
       const sleeps = [{ start, end }]
-      const { error } = await updateSleep(originalSleepId, sleeps)
+      const { error } = await updateSleep({ id: originalSleepId, sleeps })
       expect(error).toEqual({ type: 'overlapWithRecorded' })
     })
   })
@@ -426,7 +500,7 @@ describe('updateSleep', () => {
       ])
 
       const sleeps = [{ start, end }]
-      const { error } = await updateSleep(originalSleepId, sleeps)
+      const { error } = await updateSleep({ id: originalSleepId, sleeps })
       expect(error).toEqual({ type: 'overlapWithRecorded' })
     })
   })
@@ -452,7 +526,7 @@ describe('updateSleep', () => {
         },
         { start, end },
       ]
-      const { error } = await updateSleep(originalSleepId, sleeps)
+      const { error } = await updateSleep({ id: originalSleepId, sleeps })
       expect(error).toEqual({ type: 'overlapWithRecorded' })
     })
   })
@@ -487,7 +561,7 @@ describe('updateSleep', () => {
         },
         { start, end },
       ]
-      const { error } = await updateSleep(originalSleepId, sleeps)
+      const { error } = await updateSleep({ id: originalSleepId, sleeps })
       expect(error).toEqual({ type: 'overlapWithRecorded' })
     })
   })
@@ -507,7 +581,7 @@ describe('updateSleep', () => {
         },
         { start, end },
       ]
-      const { error } = await updateSleep(originalSleepId, sleeps)
+      const { error } = await updateSleep({ id: originalSleepId, sleeps })
       expect(error).toEqual({ type: 'overlapInRequest' })
     })
   })
@@ -523,7 +597,128 @@ describe('updateSleep', () => {
       })
 
       const sleeps = [{ start, end }]
-      const { error } = await updateSleep(originalSleepId, sleeps)
+      const { error } = await updateSleep({ id: originalSleepId, sleeps })
+      expect(error).toBeUndefined()
+    })
+  })
+
+  describe('8時間以内に既存の睡眠が存在する場合はshortIntervalエラーが返される', () => {
+    test.each(testCases)(
+      '既存のendとリクエストのstartのパターン start: %p, end: %p',
+      async (start, end) => {
+        const originalSleepId = 1
+        await sleepFactory.create({
+          userId: uuidToBin(userId),
+          id: originalSleepId,
+        })
+
+        await sleepFactory.create([
+          {
+            userId: uuidToBin(userId),
+            start: new Date('2021-12-31T12:00:00.000Z'),
+            end: new Date('2021-12-31T22:00:00.000Z'),
+          },
+        ])
+
+        const sleeps = [{ start, end }]
+        const { error } = await updateSleep({ id: originalSleepId, sleeps })
+        expect(error).toEqual({ type: 'shortInterval' })
+      }
+    )
+
+    test.each(testCases)(
+      '既存のstartとリクエストのendのパターンstart: %p, end: %p',
+      async (start, end) => {
+        const originalSleepId = 1
+        await sleepFactory.create({
+          userId: uuidToBin(userId),
+          id: originalSleepId,
+        })
+
+        await sleepFactory.create([
+          {
+            userId: uuidToBin(userId),
+            start: new Date('2022-01-01T10:00:00.000Z'),
+            end: new Date('2022-01-01T22:00:00.000Z'),
+          },
+        ])
+
+        const sleeps = [{ start, end }]
+        const { error } = await updateSleep({ id: originalSleepId, sleeps })
+        expect(error).toEqual({ type: 'shortInterval' })
+      }
+    )
+
+    test('8時間以上の場合はエラーが発生しない', async () => {
+      const originalSleepId = 1
+      await sleepFactory.create({
+        userId: uuidToBin(userId),
+        id: originalSleepId,
+      })
+
+      await sleepFactory.create([
+        {
+          userId: uuidToBin(userId),
+          start: new Date('2022-01-01T22:00:00.000Z'),
+          end: new Date('2022-01-01T23:00:00.000Z'),
+        },
+      ])
+
+      const sleeps = [
+        {
+          start: new Date('2022-01-01T00:00:00.000Z'),
+          end: new Date('2022-01-01T08:00:00.000Z'),
+        },
+      ]
+      const { error } = await updateSleep({ id: originalSleepId, sleeps })
+      expect(error).toBeUndefined()
+    })
+
+    test('ignoreShortIntervalがtrueの場合はエラーが発生しない', async () => {
+      const originalSleepId = 1
+      await sleepFactory.create({
+        userId: uuidToBin(userId),
+        id: originalSleepId,
+      })
+
+      await sleepFactory.create([
+        {
+          userId: uuidToBin(userId),
+          start: new Date('2021-12-31T12:00:00.000Z'),
+          end: new Date('2021-12-31T22:00:00.000Z'),
+        },
+      ])
+
+      const sleeps = [
+        {
+          start: new Date('2022-01-01T00:00:00.000Z'),
+          end: new Date('2022-01-01T08:00:00.000Z'),
+        },
+      ]
+      const { error } = await updateSleep({
+        id: originalSleepId,
+        sleeps,
+        ignoreShortInterval: true,
+      })
+      expect(error).toBeUndefined()
+    })
+
+    test('更新前のSleepが8時間以内に存在するときに誤ってエラーが返されない', async () => {
+      const originalSleepId = 1
+      await sleepFactory.create({
+        userId: uuidToBin(userId),
+        id: originalSleepId,
+        start: new Date('2022-01-01T10:00:00.000Z'),
+        end: new Date('2022-01-01T22:00:00.000Z'),
+      })
+
+      const sleeps = [
+        {
+          start: new Date('2022-01-01T00:00:00.000Z'),
+          end: new Date('2022-01-01T08:00:00.000Z'),
+        },
+      ]
+      const { error } = await updateSleep({ id: originalSleepId, sleeps })
       expect(error).toBeUndefined()
     })
   })
