@@ -47,6 +47,10 @@ const SleepList: FC<Props> = memo(
             <Box
               role={variant === 'mobile' ? 'button' : undefined}
               tabIndex={variant === 'mobile' ? 0 : undefined}
+              userSelect={variant === 'mobile' ? 'none' : undefined}
+              sx={{
+                WebkitTapHighlightColor: 'transparent',
+              }}
               onClick={
                 variant === 'mobile' ? () => handleClickSleep(sleep) : undefined
               }
@@ -68,6 +72,10 @@ const SleepList: FC<Props> = memo(
             <Box
               role={variant === 'mobile' ? 'button' : undefined}
               tabIndex={variant === 'mobile' ? 0 : undefined}
+              userSelect={variant === 'mobile' ? 'none' : undefined}
+              sx={{
+                WebkitTapHighlightColor: 'transparent',
+              }}
               onClick={
                 variant === 'mobile'
                   ? () => handleClickPrediction(prediction)

@@ -17,10 +17,12 @@ export const addUser = async ({
   id,
   nickname,
   email,
+  avatarUrl,
 }: {
   id: string
   nickname: string
   email: string
+  avatarUrl?: string
 }): Promise<{ error?: true }> => {
   try {
     await db.transaction(async (tx) => {
@@ -33,6 +35,7 @@ export const addUser = async ({
         id: uuidToBin(id),
         nickname,
         email,
+        avatarUrl,
       })
 
       await tx.insert(config).values({
