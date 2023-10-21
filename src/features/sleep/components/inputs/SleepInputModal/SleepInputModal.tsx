@@ -176,16 +176,20 @@ const SleepInputModal = forwardRef<HTMLDivElement, Props>(
             <AlertDialogBody>
               <Stack>
                 <Text>
-                  追加しようとしている睡眠の前後8時間以内に別の睡眠が存在します。
+                  {isUpdate ? '更新' : '追加'}
+                  しようとしている睡眠の前後8時間以内に別の睡眠が存在します。
                 </Text>
                 <Text>
                   正確な睡眠予測のためには、一日の睡眠記録は一つである必要があります。
                 </Text>
                 <Text>
-                  もし、追加しようとしている睡眠が昼寝や分割睡眠であれば、すでに記録されている睡眠に「分割睡眠」として追加することをおすすめします。
+                  もし、{isUpdate ? '更新' : '追加'}
+                  しようとしている睡眠が昼寝や分割睡眠であれば、すでに記録されている睡眠に「分割睡眠」として追加することをおすすめします。
                 </Text>
                 <Text>
-                  このまま追加する場合は、「追加する」ボタンを押してください。
+                  このまま{isUpdate ? '更新' : '追加'}する場合は、「
+                  {isUpdate ? '更新する' : '追加する'}
+                  」ボタンを押してください。
                 </Text>
               </Stack>
             </AlertDialogBody>
@@ -200,7 +204,7 @@ const SleepInputModal = forwardRef<HTMLDivElement, Props>(
                   isLoading={isLoading}
                   onClick={() => handleSubmit({ ignoreShortInterval: true })}
                 >
-                  追加する
+                  {isUpdate ? '更新する' : '追加する'}
                 </Button>
               </ButtonGroup>
             </AlertDialogFooter>
