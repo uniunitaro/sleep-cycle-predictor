@@ -200,7 +200,7 @@ const SleepInputModal = forwardRef<HTMLDivElement, Props>(
                 </Button>
                 <Button
                   variant="ghost"
-                  color="green"
+                  colorScheme="green"
                   isLoading={isLoading}
                   onClick={() => handleSubmit({ ignoreShortInterval: true })}
                 >
