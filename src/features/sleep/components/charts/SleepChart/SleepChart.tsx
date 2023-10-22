@@ -39,7 +39,7 @@ import SleepOverview, { SleepOverviewRef } from '../../Lists/SleepOverview'
 import {
   isSleepBottomSheetOpenAtom,
   selectedSleepOrPredictionAtom,
-} from '../../atoms/globalModals'
+} from '@/features/sleep/atoms/globalModals'
 import {
   Box,
   Center,
@@ -260,6 +260,7 @@ const SleepChart: FC<Props> = memo(
                           right={i === 0 ? '100%' : undefined}
                           left={i === 2 ? '100%' : undefined}
                           overflowX="scroll"
+                          overflowY="hidden"
                         >
                           <ChartContent
                             dailySleepsList={dailySleepsList}
@@ -475,12 +476,7 @@ const ChartContent = forwardRef<
       ref={ref}
     >
       {dailySleepsList.map(({ date, sleeps }) => (
-        <ChartColumn
-          key={date.getTime()}
-          date={date}
-          w={`${100 / dailySleepsList.length}%`}
-          h="full"
-        >
+        <ChartColumn key={date.getTime()} date={date} flex="1" h="full">
           <Box position="relative" h="full" flex="1" px="15%">
             <Box position="relative" h="full">
               {sleeps &&

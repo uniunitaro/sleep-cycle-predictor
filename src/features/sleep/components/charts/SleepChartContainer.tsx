@@ -9,9 +9,9 @@ import RightColumn from '../RightColumn'
 import { DisplayMode } from '../../types/chart'
 import GlobalModals from '../GlobalModals'
 import SleepList from '../Lists/SleepList'
-import { isRightColumnOpenAtom } from '../atoms/rightColumn'
 import SleepChart from './SleepChart/SleepChart'
 import ChartHeader from './ChartHeader'
+import { isRightColumnOpenAtom } from '@/features/sleep/atoms/rightColumn'
 import {
   Box,
   Container,

@@ -2,7 +2,6 @@
 import { FC } from 'react'
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons'
 import SleepOverview from '../Lists/SleepOverview'
-import {} from '../atoms/globalModals'
 import { Prediction, Sleep } from '../../types/sleep'
 import { Box, Button, ButtonProps, Divider } from '@/components/chakra'
 import { Drawer, DrawerBody, DrawerProps } from '@/components/Drawer/Drawer'

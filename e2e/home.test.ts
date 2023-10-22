@@ -15,7 +15,7 @@ authedTest.beforeEach(async ({ context }) => {
 
   await context.addInitScript(() => {
     window.sinon.useFakeTimers({
-      now: new Date(2023, 0, 2),
+      now: new Date(2023, 0, 10),
       toFake: ['Date'],
     })
   })
@@ -261,6 +261,32 @@ authedTest.describe('home', () => {
           await page.getByRole('button', { name: '追加する' }).click()
 
           await expect(page.getByRole('alert')).toContainText('重複しています')
+
+          await expect.soft(page).toHaveScreenshot({ fullPage: true })
+        }
+      )
+
+      authedTest(
+        '睡眠作成時に過去の睡眠との間隔が8時間以内の場合はアラートが出る',
+        async ({ page }) => {
+          await page.getByRole('button', { name: '睡眠記録を追加' }).click()
+          await page.getByRole('dialog').waitFor()
+          await page
+            .getByRole('textbox', { name: '就寝日時 日付' })
+            .fill('2023/01/04')
+          await page.getByRole('textbox', { name: '就寝日時 時間' }).fill('22')
+          await page.getByRole('textbox', { name: '就寝日時 分' }).fill('00')
+          await page
+            .getByRole('textbox', { name: '起床日時 日付' })
+            .fill('2023/01/04')
+          await page.getByRole('textbox', { name: '起床日時 時間' }).fill('23')
+          await page.getByRole('textbox', { name: '起床日時 分' }).fill('00')
+
+          await page.getByRole('button', { name: '追加する' }).click()
+
+          await expect(page.getByRole('alertdialog')).toContainText(
+            '間隔が短い'
+          )
 
           await expect.soft(page).toHaveScreenshot({ fullPage: true })
         }

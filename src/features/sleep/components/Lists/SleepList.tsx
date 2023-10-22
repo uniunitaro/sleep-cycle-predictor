@@ -3,11 +3,11 @@
 import { FC, memo } from 'react'
 import { getMonth } from 'date-fns'
 import { useSetAtom } from 'jotai'
+import SleepOverview from './SleepOverview'
 import {
   isSleepBottomSheetOpenAtom,
   selectedSleepOrPredictionAtom,
-} from '../atoms/globalModals'
-import SleepOverview from './SleepOverview'
+} from '@/features/sleep/atoms/globalModals'
 import { Prediction, Sleep } from '@/features/sleep/types/sleep'
 import { Box, Stack } from '@/components/chakra'
 
@@ -47,6 +47,10 @@ const SleepList: FC<Props> = memo(
             <Box
               role={variant === 'mobile' ? 'button' : undefined}
               tabIndex={variant === 'mobile' ? 0 : undefined}
+              userSelect={variant === 'mobile' ? 'none' : undefined}
+              sx={{
+                WebkitTapHighlightColor: 'transparent',
+              }}
               onClick={
                 variant === 'mobile' ? () => handleClickSleep(sleep) : undefined
               }
@@ -68,6 +72,10 @@ const SleepList: FC<Props> = memo(
             <Box
               role={variant === 'mobile' ? 'button' : undefined}
               tabIndex={variant === 'mobile' ? 0 : undefined}
+              userSelect={variant === 'mobile' ? 'none' : undefined}
+              sx={{
+                WebkitTapHighlightColor: 'transparent',
+              }}
               onClick={
                 variant === 'mobile'
                   ? () => handleClickPrediction(prediction)

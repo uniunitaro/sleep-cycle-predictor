@@ -28,7 +28,12 @@ const SleepDeleteModal = forwardRef<HTMLDivElement, Props>(
     }
     const cancelRef = useRef<HTMLButtonElement>(null)
     return (
-      <AlertDialog leastDestructiveRef={cancelRef} isCentered {...modalProps}>
+      <AlertDialog
+        leastDestructiveRef={cancelRef}
+        isCentered
+        size="sm"
+        {...modalProps}
+      >
         <AlertDialogOverlay />
         <AlertDialogContent mx="4" ref={ref}>
           <AlertDialogHeader>睡眠記録を削除</AlertDialogHeader>

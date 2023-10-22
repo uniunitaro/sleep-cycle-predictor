@@ -1,6 +1,6 @@
 'use client'
 
-import { format, getDay } from 'date-fns'
+import { format, getDay, isToday } from 'date-fns'
 import { ja } from 'date-fns/locale'
 import { FC, memo } from 'react'
 import { Box, BoxProps, Center } from '@/components/chakra'
@@ -27,7 +27,16 @@ const ChartColumn: FC<Props & BoxProps> = memo(
         {...rest}
       >
         <Center h={`${headerHeight}px`} flexDirection="column">
-          <Box color={dayColor}>{format(date, 'd')}</Box>
+          <Box
+            color={isToday(date) ? 'chakra-inverse-text' : dayColor}
+            bgColor={isToday(date) ? 'buttonBrand' : undefined}
+            borderRadius="full"
+            w="24px"
+            h="24px"
+            textAlign="center"
+          >
+            {format(date, 'd')}
+          </Box>
           <Box fontSize="xs" color={dayColor}>
             {format(date, 'EEEEEE', { locale: ja })}
           </Box>

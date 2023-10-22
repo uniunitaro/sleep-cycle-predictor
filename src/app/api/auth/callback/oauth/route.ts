@@ -24,6 +24,7 @@ export const GET = async (request: NextRequest) => {
       id: data.user.id,
       nickname: data.user.user_metadata.name,
       email: data.user.email,
+      avatarUrl: data.user.user_metadata.avatar_url,
     })
   }
 

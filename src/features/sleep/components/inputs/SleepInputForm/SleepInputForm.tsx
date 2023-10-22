@@ -7,6 +7,7 @@ import {
   getHours,
   getMinutes,
   isAfter,
+  isEqual,
   setHours,
   setMinutes,
   subDays,
@@ -42,7 +43,10 @@ const SleepInputForm: FC<{
         setHours(new Date(), getHours(end)),
         getMinutes(end)
       )
-      if (isAfter(startTimeOnly, endTimeOnly)) {
+      if (
+        isEqual(startTimeOnly, endTimeOnly) ||
+        isAfter(startTimeOnly, endTimeOnly)
+      ) {
         // endがstartの翌日になる場合
         return setMinutes(
           setHours(addDays(start, 1), getHours(end)),
@@ -68,7 +72,10 @@ const SleepInputForm: FC<{
         setHours(new Date(), getHours(end)),
         getMinutes(end)
       )
-      if (isAfter(startTimeOnly, endTimeOnly)) {
+      if (
+        isEqual(startTimeOnly, endTimeOnly) ||
+        isAfter(startTimeOnly, endTimeOnly)
+      ) {
         // endがstartの翌日になる場合
         return setMinutes(
           setHours(subDays(end, 1), getHours(start)),
