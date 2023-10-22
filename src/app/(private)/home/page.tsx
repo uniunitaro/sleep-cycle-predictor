@@ -12,7 +12,7 @@ const HomePage = async ({ searchParams }: { searchParams: SearchParams }) => {
   await redirectBasedOnAuthState('unauthed', '/signin')
 
   // TODO エラー処理
-  const { targetDate, displayMode, sleeps, predictions, error } =
+  const { targetDate, hasTargetDate, displayMode, sleeps, predictions, error } =
     await initChartPage({ isPublic: false, searchParams })
 
   return (
@@ -22,6 +22,7 @@ const HomePage = async ({ searchParams }: { searchParams: SearchParams }) => {
         sleeps={sleeps}
         predictions={predictions}
         targetDate={targetDate}
+        hasTargetDate={hasTargetDate}
         displayMode={displayMode}
       />
     )

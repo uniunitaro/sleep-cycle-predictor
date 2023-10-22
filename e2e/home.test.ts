@@ -31,11 +31,9 @@ authedTest.describe('home', () => {
       await expect(page).toHaveTitle(/ホーム/)
     })
 
-    authedTest('今月が表示されている', async ({ page }) => {
-      const currentMonth = `${new Date().getMonth() + 1}月`
-      await expect(
-        page.getByRole('heading', { name: currentMonth })
-      ).toBeVisible()
+    authedTest('クライアントにおける今月が表示されている', async ({ page }) => {
+      // fakeTimerで2023/01/10を指定しているので、今月は1月
+      await expect(page.getByRole('heading', { name: '1月' })).toBeVisible()
     })
   })
 

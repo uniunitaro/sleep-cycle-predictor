@@ -86,11 +86,13 @@ const DateInput: FC<Props> = memo(({ value, id, ariaLabel, onChange }) => {
 
   const handleClickDate = useCallback(
     (details: { value: DateValue[] }) => {
-      const date = details.value[0].toString()
+      const date = details.value[0].toDate(
+        Intl.DateTimeFormat().resolvedOptions().timeZone
+      )
 
-      onChange(new Date(date))
+      onChange(date)
 
-      const formatted = format(new Date(date), 'yyyy/MM/dd')
+      const formatted = format(date, 'yyyy/MM/dd')
       setInputValue(formatted)
       setOldInputValue(formatted)
       onClose()

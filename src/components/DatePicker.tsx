@@ -94,7 +94,6 @@ const DatePicker = (props: DatePickerProps & { disableFocus?: boolean }) => {
                                       'data-selected'
                                     ) === ''
                                   ) {
-                                    console.log('uhi')
                                     props.onChange?.({ value: [day] })
                                   }
                                 }}

@@ -1,33 +1,40 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useReducer, useRef } from 'react'
 
 export const useOptimistic = <T>(src: T) => {
-  const [optimisticState, setOptimisticState] = useState(src)
+  // HACK 再レンダリング抑制のためにrefを使っている
+
+  const optimisticState = useRef(src)
+  const [, forceUpdate] = useReducer((x) => x + 1, 0)
 
   const previousSrc = useRef(src)
-  const previousOptimisticState = useRef(optimisticState)
+  const previousOptimisticState = useRef(src)
+
+  const latestChange = useRef<'src' | 'optimistic'>('src')
+
+  const setOptimisticState = (value: T) => {
+    if (JSON.stringify(optimisticState.current) !== JSON.stringify(value)) {
+      previousOptimisticState.current = optimisticState.current
+    }
+    optimisticState.current = value
+    latestChange.current = 'optimistic'
+
+    forceUpdate()
+  }
 
   // HACK JSON.stringifyでは正確性が保証されないので変える
   useEffect(() => {
     if (JSON.stringify(previousSrc.current) !== JSON.stringify(src)) {
       previousSrc.current = src
-    } else if (
-      JSON.stringify(previousOptimisticState.current) !==
-      JSON.stringify(optimisticState)
-    ) {
-      previousOptimisticState.current = optimisticState
-    }
-  })
 
-  const latestValue = (() => {
-    if (
-      JSON.stringify(previousOptimisticState.current) !==
-      JSON.stringify(optimisticState)
-    ) {
-      return optimisticState
-    } else {
-      return src
+      latestChange.current = 'src'
+
+      optimisticState.current = src
+      previousOptimisticState.current = src
     }
-  })()
+  }, [src])
+
+  const latestValue =
+    latestChange.current === 'src' ? src : optimisticState.current
 
   return [latestValue, setOptimisticState] as const
 }

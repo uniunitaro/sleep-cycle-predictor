@@ -45,6 +45,7 @@ const UserPage = async ({ params, searchParams }: Props) => {
 
   const {
     targetDate,
+    hasTargetDate,
     displayMode,
     predictions,
     error: predictionsError,
@@ -59,6 +60,7 @@ const UserPage = async ({ params, searchParams }: Props) => {
       user={user}
       predictions={predictions}
       targetDate={targetDate}
+      hasTargetDate={hasTargetDate}
       displayMode={displayMode}
     />
   )
