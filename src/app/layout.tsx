@@ -4,6 +4,7 @@ import { AxiomWebVitals } from 'next-axiom'
 import Providers from '@/components/Providers'
 import ThemeColorManager from '@/components/ThemeColorManager'
 import { ogImages } from '@/constants/og'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 const DEFAULT_TITLE = 'Sleep Predictor'
 const TITLE_TEMPLATE = '%s - Sleep Predictor'
@@ -62,6 +63,7 @@ export default function RootLayout({
   return (
     <html lang="ja-JP" className={`${notoSans.variable} ${roboto.variable}`}>
       {process.env.VERCEL_ENV === 'production' && <AxiomWebVitals />}
+      <GoogleAnalytics />
       <body>
         <Providers>
           {children}
