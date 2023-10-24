@@ -59,6 +59,7 @@ const NicknameForm: FC<{ nickname: string }> = ({ nickname }) => {
           </FormErrorMessage>
         </FormControl>
         <FormButton
+          aria-label="ニックネームを変更する"
           type="submit"
           isSuccess={hasNicknameChanged}
           isLoading={isSubmitting}

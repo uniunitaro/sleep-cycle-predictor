@@ -8,8 +8,9 @@ const Home: FC<{
   sleeps: Sleep[]
   predictions: Prediction[]
   targetDate: Date
+  hasTargetDate: boolean
   displayMode: DisplayMode
-}> = ({ sleeps, predictions, targetDate, displayMode }) => {
+}> = ({ sleeps, predictions, targetDate, hasTargetDate, displayMode }) => {
   const SleepChartContainer = dynamic(
     () => import('@/features/sleep/components/charts/SleepChartContainer'),
     { ssr: false }
@@ -25,6 +26,7 @@ const Home: FC<{
             sleeps={sleeps}
             predictions={predictions}
             targetDate={targetDate}
+            hasTargetDate={hasTargetDate}
             displayMode={displayMode}
             isPublic={false}
           />

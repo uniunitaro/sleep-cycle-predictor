@@ -29,6 +29,7 @@ const SleepChartContainer: FC<{
   sleeps: Sleep[]
   predictions: Prediction[]
   targetDate: Date
+  hasTargetDate: boolean
   displayMode: DisplayMode
   isPublic: boolean
   userHeading?: ReactNode
@@ -36,6 +37,7 @@ const SleepChartContainer: FC<{
   sleeps,
   predictions,
   targetDate,
+  hasTargetDate,
   displayMode,
   isPublic,
   userHeading,
@@ -67,6 +69,24 @@ const SleepChartContainer: FC<{
 
   const isRightColumnOpen = useAtomValue(isRightColumnOpenAtom)
 
+  /**
+   * クライアントのタイムゾーンにおけるtargetDate
+   *
+   * targetDateが指定されているとき
+   * targetDateが2023-01-01T00:00:00.000Zのとき、
+   * Asia/Tokyoの場合は2023-01-01T00:00:00.000+09:00
+   *
+   * targetDateが指定されていないとき
+   * クライアントの現在日時
+   */
+  const zonedTargetDate = hasTargetDate
+    ? new Date(
+        targetDate.getUTCFullYear(),
+        targetDate.getUTCMonth(),
+        targetDate.getUTCDate()
+      )
+    : new Date()
+
   return (
     <Box as="main" h="full">
       <Container
@@ -92,7 +112,7 @@ const SleepChartContainer: FC<{
                 <SleepChart
                   sleeps={sleeps}
                   predictions={predictions}
-                  targetDate={targetDate}
+                  targetDate={zonedTargetDate}
                   displayMode={displayMode}
                   isPublic={isPublic}
                 />
@@ -106,7 +126,7 @@ const SleepChartContainer: FC<{
                     <RightColumn
                       sleeps={sleeps}
                       predictions={predictions}
-                      targetDate={targetDate}
+                      targetDate={zonedTargetDate}
                       isPublic={isPublic}
                     />
                   </Box>
@@ -117,7 +137,7 @@ const SleepChartContainer: FC<{
               <Flex direction="column" h="full" overflow="auto" pt="2" pb="4">
                 <Box mb="3" px="4">
                   <ChartHeader
-                    targetDate={targetDate}
+                    targetDate={zonedTargetDate}
                     displayMode="month"
                     isPublic={false}
                   />
@@ -126,7 +146,7 @@ const SleepChartContainer: FC<{
                   <SleepList
                     sleeps={sleeps}
                     predictions={predictions}
-                    targetDate={targetDate}
+                    targetDate={zonedTargetDate}
                     variant="mobile"
                   />
                 </Box>

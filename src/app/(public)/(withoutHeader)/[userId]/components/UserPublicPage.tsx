@@ -10,8 +10,9 @@ const UserPublicPage: FC<{
   user: User
   predictions: Prediction[]
   targetDate: Date
+  hasTargetDate: boolean
   displayMode: DisplayMode
-}> = ({ user, predictions, targetDate, displayMode }) => {
+}> = ({ user, predictions, targetDate, hasTargetDate, displayMode }) => {
   const SleepChartContainer = dynamic(
     () => import('@/features/sleep/components/charts/SleepChartContainer'),
     { ssr: false }
@@ -24,6 +25,7 @@ const UserPublicPage: FC<{
           sleeps={[]}
           predictions={predictions}
           targetDate={targetDate}
+          hasTargetDate={hasTargetDate}
           displayMode={displayMode}
           isPublic={true}
           userHeading={

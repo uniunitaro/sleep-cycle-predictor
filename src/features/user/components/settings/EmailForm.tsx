@@ -98,6 +98,7 @@ const EmailForm: FC<{ email: string }> = ({ email }) => {
           </FormErrorMessage>
         </FormControl>
         <FormButton
+          aria-label="メールアドレスを変更する"
           type="submit"
           isSuccess={hasEmailChanged}
           isLoading={isSubmitting || isPending}

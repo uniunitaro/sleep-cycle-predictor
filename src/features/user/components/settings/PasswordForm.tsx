@@ -58,12 +58,17 @@ const PasswordForm: FC = () => {
       <Flex>
         <FormControl isInvalid={!!errors.password}>
           <FormLabel htmlFor="password">パスワード</FormLabel>
-          <PasswordField id="password" {...register('password')} />
+          <PasswordField
+            id="password"
+            autoComplete="new-password"
+            {...register('password')}
+          />
           <FormErrorMessage>
             {errors.password && errors.password.message}
           </FormErrorMessage>
         </FormControl>
         <FormButton
+          aria-label="パスワードを変更する"
           type="submit"
           isSuccess={hasPasswordChanged}
           isLoading={isSubmitting}
