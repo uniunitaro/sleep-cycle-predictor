@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Link } from '@chakra-ui/next-js'
+import NextLink from 'next/link'
 import {
   Alert,
   AlertIcon,
@@ -18,7 +20,6 @@ import {
   HStack,
   Heading,
   Input,
-  Link,
   Stack,
   Text,
 } from '@/components/chakra'
@@ -138,13 +139,23 @@ const SignIn: FC = () => {
                     メールアドレスまたはパスワードが間違っています。
                   </Alert>
                 )}
-                <Button
-                  colorScheme="green"
-                  type="submit"
-                  isLoading={isSubmitting}
-                >
-                  メールアドレスでログイン
-                </Button>
+                <Stack spacing="4">
+                  <Button
+                    colorScheme="green"
+                    type="submit"
+                    isLoading={isSubmitting}
+                  >
+                    メールアドレスでログイン
+                  </Button>
+                  <Button
+                    as={NextLink}
+                    href="/reset-password"
+                    variant="ghost"
+                    colorScheme="green"
+                  >
+                    パスワードをお忘れの方はこちら
+                  </Button>
+                </Stack>
                 <Text fontSize="sm" color="secondaryGray">
                   <Link href="/terms">利用規約</Link>、
                   <Link href="/privacy">プライバシーポリシー</Link>

@@ -61,7 +61,7 @@ const SignUpWithEmail: FC = () => {
       if (error) {
         setError(true)
       } else {
-        router.replace('/home')
+        router.replace('/signup/with-email/confirm')
       }
     })
   }
@@ -94,7 +94,11 @@ const SignUpWithEmail: FC = () => {
                 </FormControl>
                 <FormControl isInvalid={!!errors.password}>
                   <FormLabel htmlFor="password">パスワード</FormLabel>
-                  <PasswordField id="password" {...register('password')} />
+                  <PasswordField
+                    id="password"
+                    autoComplete="new-password"
+                    {...register('password')}
+                  />
                   <FormErrorMessage>
                     {errors.password && errors.password.message}
                   </FormErrorMessage>

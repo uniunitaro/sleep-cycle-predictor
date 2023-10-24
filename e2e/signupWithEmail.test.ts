@@ -37,8 +37,7 @@ test.describe('signup/with-email', () => {
     await page.getByLabel('パスワード', { exact: true }).fill('pass0000')
     await page.getByRole('button', { name: '登録する' }).click()
 
-    // // TODO 確認ページ作る
-    await expect(page).toHaveURL('/signin')
+    await expect(page).toHaveURL('/signup/with-email/confirm')
 
     const pagePromise = context.waitForEvent('page')
     await emailPage

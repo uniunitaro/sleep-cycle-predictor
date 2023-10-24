@@ -24,7 +24,12 @@ const Settings: FC<{ userWithConfig: AuthUserWithConfig }> = ({
         px="0"
         pb={{ base: 0, md: 4 }}
       >
-        <CardMdOnly h="full" px={{ base: 6, md: 0 }} overflowY="auto">
+        <CardMdOnly
+          h="full"
+          px={{ base: 6, md: 0 }}
+          overflowY="auto"
+          data-testid="scrollContainer"
+        >
           <CardBodyMdOnly px={{ base: 0, md: 8 }}>
             <Stack spacing="16">
               <Stack spacing="5">

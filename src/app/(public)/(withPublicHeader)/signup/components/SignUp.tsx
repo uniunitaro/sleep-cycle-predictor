@@ -3,13 +3,13 @@
 import { FC } from 'react'
 import NextLink from 'next/link'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { Link } from '@chakra-ui/next-js'
 import {
   Box,
   Button,
   Divider,
   HStack,
   Heading,
-  Link,
   Stack,
   Text,
 } from '@/components/chakra'

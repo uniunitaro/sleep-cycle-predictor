@@ -54,7 +54,10 @@ export default defineConfig({
     {
       name: 'chromium',
       grepInvert: /mobile/,
-      use: { ...devices['Desktop Chrome'] },
+      use: {
+        ...devices['Desktop Chrome'],
+        permissions: ['clipboard-read', 'clipboard-write'],
+      },
       dependencies: ['setup'],
     },
 
@@ -76,7 +79,10 @@ export default defineConfig({
     {
       name: 'Mobile Chrome',
       grepInvert: /desktop/,
-      use: { ...devices['Pixel 5'] },
+      use: {
+        ...devices['Pixel 5'],
+        permissions: ['clipboard-read', 'clipboard-write'],
+      },
       dependencies: ['setup'],
     },
     {

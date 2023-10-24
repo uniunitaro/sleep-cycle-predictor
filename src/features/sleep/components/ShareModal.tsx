@@ -25,26 +25,32 @@ const ShareModal: FC<Omit<ModalProps, 'children'>> = (props) => {
   const [userId, setUserId] = useState<string>('')
   const [userName, setUserName] = useState<string>('')
 
-  const [, startTransition] = useTransition()
+  const [isLoading, setIsLoading] = useState(false)
+
+  const [isPending, startTransition] = useTransition()
   useEffect(() => {
-    ;(async () => {
-      const { data, error } = await supabase.auth.getSession()
-      if (error || !data.session) {
-        return
-      }
+    if (props.isOpen) {
+      setIsLoading(true)
+      ;(async () => {
+        const { data, error } = await supabase.auth.getSession()
+        if (error || !data.session) {
+          return
+        }
 
-      setUserId(data.session.user.id)
-    })()
+        setUserId(data.session.user.id)
+        setIsLoading(false)
+      })()
 
-    startTransition(async () => {
-      const { authUser, error } = await getAuthUser()
-      if (error || !authUser) {
-        return
-      }
+      startTransition(async () => {
+        const { authUser, error } = await getAuthUser()
+        if (error || !authUser) {
+          return
+        }
 
-      setUserName(authUser.nickname)
-    })
-  }, [supabase.auth])
+        setUserName(authUser.nickname)
+      })
+    }
+  }, [supabase.auth, props.isOpen])
 
   const shareData = {
     title: `${userName}さんの睡眠予測`,
@@ -73,18 +79,22 @@ const ShareModal: FC<Omit<ModalProps, 'children'>> = (props) => {
   }
 
   const toast = useToast()
-  const handleCopy = () => {
+  const handleCopy = async () => {
     if (!userId) {
       return
     }
 
-    navigator.clipboard.writeText(shareData.url)
-    toast({
-      title: 'リンクをコピーしました',
-      status: 'success',
-      duration: 2000,
-      isClosable: true,
-    })
+    try {
+      await navigator.clipboard.writeText(shareData.url)
+      toast({
+        title: 'リンクをコピーしました。',
+        status: 'success',
+        duration: 2000,
+        isClosable: true,
+      })
+    } catch {
+      return
+    }
   }
 
   return (
@@ -109,7 +119,7 @@ const ShareModal: FC<Omit<ModalProps, 'children'>> = (props) => {
           <UnorderedList>
             <ListItem>睡眠記録</ListItem>
           </UnorderedList>
-          {(!userId || !userName) && (
+          {!isLoading && !isPending && (!userId || !userName) && (
             <Alert status="error" mt="4">
               <AlertIcon />
               リンクの生成中にエラーが発生しました。

@@ -10,9 +10,17 @@ type Props = {
   searchParams: SearchParams
 }
 
+const isUuid = (userId: string) => {
+  return /^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(userId)
+}
+
 export const generateMetadata = async ({
   params,
 }: Props): Promise<Metadata> => {
+  if (!isUuid(params.userId)) {
+    return {}
+  }
+
   const { user, error } = await getUser(params.userId)
   if (error) {
     return {}
@@ -38,6 +46,10 @@ export const generateMetadata = async ({
 
 const UserPage = async ({ params, searchParams }: Props) => {
   const { userId } = params
+  if (!isUuid(userId)) {
+    notFound()
+  }
+
   const { user, error } = await getUser(userId)
   if (error) {
     notFound()

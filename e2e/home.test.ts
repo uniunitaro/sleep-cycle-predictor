@@ -290,6 +290,37 @@ authedTest.describe('home', () => {
         }
       )
     })
+
+    authedTest('共有ができる', async ({ page }) => {
+      await page.getByRole('button', { name: '共有' }).click()
+      await page.getByRole('dialog').waitFor()
+      await expect.soft(page).toHaveScreenshot({ fullPage: true })
+
+      await page.getByRole('button', { name: 'リンクをコピー' }).click()
+
+      await expect(page.getByText('リンクをコピーしました')).toBeVisible()
+    })
+
+    authedTest('設定ページに遷移できる', async ({ page }) => {
+      await page.getByRole('button', { name: 'アカウント' }).click()
+      await page.getByRole('menuitem', { name: '設定' }).click()
+
+      await page.waitForURL(/settings/)
+    })
+
+    authedTest('カラーモードを変更できる', async ({ page }) => {
+      await page.getByRole('button', { name: 'アカウント' }).click()
+
+      await page.getByRole('menuitemradio', { name: 'ダークモード' }).click()
+      await expect.soft(page).toHaveScreenshot({ fullPage: true })
+
+      await page.getByRole('menuitemradio', { name: 'ライトモード' }).click()
+      await expect.soft(page).toHaveScreenshot({ fullPage: true })
+
+      await page
+        .getByRole('menuitemradio', { name: 'システムのモード' })
+        .click()
+    })
   })
 
   authedTest.describe('mobile-date: ${currentYear}-01-01', () => {
