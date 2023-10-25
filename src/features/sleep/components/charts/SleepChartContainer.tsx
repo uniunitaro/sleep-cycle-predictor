@@ -139,7 +139,7 @@ const SleepChartContainer: FC<{
                   <ChartHeader
                     targetDate={zonedTargetDate}
                     displayMode="month"
-                    isPublic={false}
+                    isPublic={isPublic}
                   />
                 </Box>
                 <Box ref={listContainerRef} overflowY="auto" px="6">

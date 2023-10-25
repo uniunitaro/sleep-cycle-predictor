@@ -15,7 +15,10 @@ export const signUp = async ({
   password: string
 }): Promise<{ error?: boolean }> => {
   try {
-    const supabase = createServerActionClient({ cookies })
+    const supabase = createServerActionClient(
+      { cookies },
+      { supabaseKey: process.env.SUPABASE_SERVICE_ROLE }
+    )
 
     const headersList = headers()
     const origin = headersList.get('origin')
@@ -37,7 +40,10 @@ export const signUp = async ({
       nickname,
       email,
     })
-    if (dbError) throw dbError
+    if (dbError) {
+      await supabase.auth.admin.deleteUser(data.user.id)
+      throw dbError
+    }
 
     return {}
   } catch (e) {
