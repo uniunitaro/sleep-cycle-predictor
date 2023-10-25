@@ -11,9 +11,12 @@ export const metadata: Metadata = {
 const HomePage = async ({ searchParams }: { searchParams: SearchParams }) => {
   await redirectBasedOnAuthState('unauthed', '/signin')
 
-  // TODO エラー処理
   const { targetDate, hasTargetDate, displayMode, sleeps, predictions, error } =
     await initChartPage({ isPublic: false, searchParams })
+
+  if (error) {
+    throw new Error('Failed to initialize chart')
+  }
 
   return (
     sleeps &&

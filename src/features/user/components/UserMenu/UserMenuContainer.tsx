@@ -3,8 +3,12 @@ import { getAuthUser } from '../../repositories/users'
 import UserMenu from './UserMenu'
 
 const UserMenuContainer: FC = async () => {
-  // TODO エラー処理
   const { authUser, error } = await getAuthUser()
+
+  if (error) {
+    throw new Error('Failed to get user')
+  }
+
   return authUser && <UserMenu authUser={authUser} />
 }
 

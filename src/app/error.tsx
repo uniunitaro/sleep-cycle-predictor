@@ -3,8 +3,7 @@
 import { useLogger } from 'next-axiom'
 import { useEffect } from 'react'
 import Link from 'next/link'
-import { Button, Heading } from '@/components/chakra'
-import { Center, Stack } from '@styled-system/jsx'
+import { Button, Center, Heading, Stack } from '@/components/chakra'
 
 const Error = ({
   error,
@@ -20,8 +19,8 @@ const Error = ({
   }, [error, log])
 
   return (
-    <Center h="full">
-      <Stack>
+    <Center pt="40">
+      <Stack gap="5">
         <Heading size="md">エラーが発生しました</Heading>
         <Button as={Link} colorScheme="brand" variant="outline" href="/">
           トップページに戻る

@@ -22,16 +22,22 @@ import {
   useColorMode,
 } from '@/components/chakra'
 import { useSystemColorModeAtom } from '@/atoms/colorMode'
+import { useErrorToast } from '@/hooks/useErrorToast'
 
 const UserMenu: FC<{ authUser: AuthUser }> = ({ authUser }) => {
   const { nickname, avatarUrl } = authUser
 
   const router = useRouter()
   const [, startTransition] = useTransition()
+
+  const errorToast = useErrorToast()
   const handleClickSignOut = async () => {
     const supabase = createClientComponentClient()
-    // TODO エラー処理
-    await supabase.auth.signOut()
+    const { error } = await supabase.auth.signOut()
+    if (error) {
+      errorToast()
+      return
+    }
 
     startTransition(() => {
       router.refresh()
