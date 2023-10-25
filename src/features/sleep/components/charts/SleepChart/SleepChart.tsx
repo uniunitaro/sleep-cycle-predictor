@@ -30,7 +30,7 @@ import {
   useAnimationControls,
   useDragControls,
 } from 'framer-motion'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useSetAtom } from 'jotai'
 import ChartColumn from '../ChartColumn'
 import SleepBar from '../SleepBar'
@@ -311,6 +311,7 @@ const DragContainer: FC<{
   const canStartDrag = useRef(false)
   const isDragging = useRef(false)
   const currentEdgeType = useRef<'left' | 'right' | 'both'>()
+  const isSnapping = useRef(false)
 
   const handleTouchStart = (e: TouchEvent) => {
     touchStartX.current = e.touches[0].pageX
@@ -338,7 +339,7 @@ const DragContainer: FC<{
 
       currentEdgeType.current =
         isOnLeftEdge && isOnRightEdge ? 'both' : isOnLeftEdge ? 'left' : 'right'
-      if (!isDragging.current) {
+      if (!isDragging.current && !isSnapping.current) {
         canStartDrag.current = true
       }
     }
@@ -360,10 +361,6 @@ const DragContainer: FC<{
     targetDate,
     displayMode
   )
-  useEffect(() => {
-    router.prefetch(previousLink)
-    router.prefetch(nextLink)
-  }, [nextLink, previousLink, router])
 
   const handleDragEnd = async (info: PanInfo) => {
     const shouldSnapToPrevious =
@@ -380,6 +377,8 @@ const DragContainer: FC<{
     currentEdgeType.current = undefined
 
     if (shouldSnapToPrevious) {
+      isSnapping.current = true
+
       await controls.start('previous')
       // アニメーションが終わったらスクロール位置を戻す
       controls.start({ x: 0, transition: { duration: 0 } })
@@ -390,6 +389,8 @@ const DragContainer: FC<{
       onDateChange(previousDate)
       router.push(previousLink, { scroll: false })
     } else if (shouldSnapToNext) {
+      isSnapping.current = true
+
       await controls.start('next')
       if (currentChartRef.current) {
         currentChartRef.current.scrollLeft = 0
@@ -401,6 +402,12 @@ const DragContainer: FC<{
       controls.start('current')
     }
   }
+
+  const searchParams = useSearchParams()
+  useEffect(() => {
+    // searchParamsが変わったらスナップが終了したとみなす
+    isSnapping.current = false
+  }, [searchParams])
 
   useEffect(() => {
     const chartRef = currentChartRef.current
