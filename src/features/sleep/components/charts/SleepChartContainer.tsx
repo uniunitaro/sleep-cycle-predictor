@@ -142,7 +142,7 @@ const SleepChartContainer: FC<{
                     isPublic={isPublic}
                   />
                 </Box>
-                <Box ref={listContainerRef} overflowY="auto" px="6">
+                <Box ref={listContainerRef} overflowY="auto" px="6" flex="1">
                   <SleepList
                     sleeps={sleeps}
                     predictions={predictions}
