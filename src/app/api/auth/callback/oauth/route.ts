@@ -12,20 +12,26 @@ export const GET = async (request: NextRequest) => {
   const code = requestUrl.searchParams.get('code')
 
   if (code) {
-    const supabase = createRouteHandlerClient({ cookies })
+    const supabase = createRouteHandlerClient(
+      { cookies },
+      { supabaseKey: process.env.SUPABASE_SERVICE_ROLE }
+    )
     const { data, error } = await supabase.auth.exchangeCodeForSession(code)
     if (error || !data.user || !data.user.email || !data.session) {
       log.error(error)
       return
     }
 
-    // TODO エラー処理 ロールバック
     const { error: dbError } = await addUser({
       id: data.user.id,
       nickname: data.user.user_metadata.name,
       email: data.user.email,
       avatarUrl: data.user.user_metadata.avatar_url,
     })
+    if (dbError) {
+      await supabase.auth.admin.deleteUser(data.user.id)
+      log.error(dbError)
+    }
   }
 
   const next = requestUrl.searchParams.get('next')

@@ -5,13 +5,18 @@ import { redirectBasedOnAuthState } from '@/features/auth/utils/redirectBasedOnA
 
 export const metadata: Metadata = {
   title: '設定',
+  robots: { index: false },
 }
 
 const SettingsPage = async () => {
   await redirectBasedOnAuthState('unauthed', '/signin')
 
-  // TODO エラー処理
   const { authUserWithConfig, error } = await getAuthUserWithConfig()
+
+  if (error) {
+    throw new Error('Failed to get config')
+  }
+
   return authUserWithConfig && <Settings userWithConfig={authUserWithConfig} />
 }
 

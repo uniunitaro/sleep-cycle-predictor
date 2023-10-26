@@ -56,7 +56,7 @@ const SignIn: FC = () => {
     formState: { isSubmitting, errors },
   } = useForm<Schema>({ mode: 'onBlur', resolver: zodResolver(schema) })
 
-  const [error, setError] = useState<boolean>(false)
+  const [error, setError] = useState('')
 
   const router = useRouter()
   const supabase = createClientComponentClient()
@@ -66,7 +66,15 @@ const SignIn: FC = () => {
       password: data.password,
     })
     if (error) {
-      setError(true)
+      if (error.message === 'Invalid login credentials') {
+        setError('メールアドレスまたはパスワードが間違っています。')
+      } else if (error.message === 'Email not confirmed') {
+        setError(
+          'メールアドレスの確認が完了していません。メールをご確認ください。'
+        )
+      } else {
+        setError('ログイン時にエラーが発生しました。')
+      }
     } else {
       router.push('/home')
     }
@@ -136,7 +144,7 @@ const SignIn: FC = () => {
                 {error && (
                   <Alert status="error">
                     <AlertIcon />
-                    メールアドレスまたはパスワードが間違っています。
+                    {error}
                   </Alert>
                 )}
                 <Stack spacing="4">

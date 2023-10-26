@@ -2,6 +2,7 @@ import { drizzle, MySql2Database } from 'drizzle-orm/mysql2'
 import mysql from 'mysql2/promise'
 import { sql } from 'drizzle-orm'
 import * as schema from '@/db/schema'
+import '@testing-library/jest-dom'
 
 jest.mock('@/db', () => ({
   db: undefined,
@@ -59,3 +60,7 @@ jest.mock('@/utils/getLastInsertId', () => ({
 }))
 
 jest.mock('next/cache')
+jest.mock('next/navigation')
+
+jest.mock('@/features/auth/components/GoogleLogo')
+jest.mock('@/features/auth/components/XLogo')

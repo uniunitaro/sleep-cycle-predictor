@@ -8,5 +8,11 @@
   ],
   "rules": {
     "import/order": "warn"
-  }
+  },
+  "overrides": [
+    {
+      "files": ["**/!(e2e)/**/?(*.)+(spec|test).[jt]s?(x)"],
+      "extends": ["plugin:testing-library/react"]
+    }
+  ]
 }

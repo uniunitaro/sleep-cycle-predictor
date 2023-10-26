@@ -4,6 +4,7 @@ import { AxiomWebVitals } from 'next-axiom'
 import Providers from '@/components/Providers'
 import ThemeColorManager from '@/components/ThemeColorManager'
 import { ogImages } from '@/constants/og'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 const DEFAULT_TITLE = 'Sleep Predictor'
 const TITLE_TEMPLATE = '%s - Sleep Predictor'
@@ -16,7 +17,6 @@ export const metadata: Metadata = {
     template: TITLE_TEMPLATE,
   },
   description: DESCRIPTION,
-  robots: { index: false },
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
@@ -40,6 +40,7 @@ export const metadata: Metadata = {
 }
 
 export const runtime = 'edge'
+export const dynamic = 'force-dynamic'
 
 const notoSans = Noto_Sans_JP({
   weight: ['400', '700'],
@@ -62,6 +63,7 @@ export default function RootLayout({
   return (
     <html lang="ja-JP" className={`${notoSans.variable} ${roboto.variable}`}>
       {process.env.VERCEL_ENV === 'production' && <AxiomWebVitals />}
+      <GoogleAnalytics />
       <body>
         <Providers>
           {children}

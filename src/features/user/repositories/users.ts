@@ -75,6 +75,11 @@ export const getUser = async (
   try {
     const userResult = await db.query.user.findFirst({
       where: eq(user.id, uuidToBin(id)),
+      columns: {
+        id: true,
+        nickname: true,
+        avatarUrl: true,
+      },
     })
     if (!userResult) throw new Error('user not found')
 

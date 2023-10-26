@@ -3,13 +3,15 @@
 import { FC, memo } from 'react'
 import { getMonth } from 'date-fns'
 import { useSetAtom } from 'jotai'
+import Image from 'next/image'
 import SleepOverview from './SleepOverview'
 import {
   isSleepBottomSheetOpenAtom,
   selectedSleepOrPredictionAtom,
 } from '@/features/sleep/atoms/globalModals'
 import { Prediction, Sleep } from '@/features/sleep/types/sleep'
-import { Box, Stack } from '@/components/chakra'
+import { Box, Center, Stack, Text, VStack } from '@/components/chakra'
+import notFoundImage from '@/assets/404.png'
 
 type Props = {
   sleeps: Sleep[]
@@ -40,7 +42,7 @@ const SleepList: FC<Props> = memo(
       setIsSleepBottomSheetOpen(true)
     }
 
-    return (
+    return currentMonthSleeps.length || currentMonthPredictions.length ? (
       <Stack gap="4" role="list" aria-label="睡眠リスト">
         {currentMonthSleeps.map((sleep) => (
           <Box key={sleep.id} role="listitem">
@@ -95,6 +97,17 @@ const SleepList: FC<Props> = memo(
           </Box>
         ))}
       </Stack>
+    ) : (
+      <Center h="full">
+        <VStack>
+          <Image src={notFoundImage} alt="" width="100" />
+          <Text fontSize="sm" textAlign="center">
+            睡眠記録がありません。
+            <br />
+            新しい記録を追加してみましょう。
+          </Text>
+        </VStack>
+      </Center>
     )
   }
 )

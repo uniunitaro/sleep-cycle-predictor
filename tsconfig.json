@@ -29,7 +29,8 @@
     "**/*.ts",
     "**/*.tsx",
     "../types",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "./jest.setup.ts"
   ],
   "exclude": ["node_modules", ".next", "react-email"]
 }
