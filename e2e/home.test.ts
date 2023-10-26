@@ -52,8 +52,8 @@ authedTest.describe('home', () => {
         await page.waitForURL(/displayMode=week/)
       })
 
-      authedTest.describe.serial('睡眠作成・編集・削除', () => {
-        authedTest('睡眠の新規作成ができる', async ({ page }) => {
+      authedTest('睡眠作成・編集・削除', async ({ page }) => {
+        await authedTest.step('睡眠の新規作成ができる', async () => {
           await page.getByRole('button', { name: '睡眠記録を追加' }).click()
           await page.getByRole('dialog').waitFor()
 
@@ -85,7 +85,7 @@ authedTest.describe('home', () => {
           await expect.soft(page).toHaveScreenshot({ fullPage: true })
         })
 
-        authedTest('睡眠の編集ができる', async ({ page }) => {
+        await authedTest.step('睡眠の編集ができる', async () => {
           await page
             .getByRole('listitem')
             .filter({ hasText: '過去の睡眠' })
@@ -112,7 +112,7 @@ authedTest.describe('home', () => {
           ).toContainText('14:00')
         })
 
-        authedTest('睡眠の削除ができる', async ({ page }) => {
+        await authedTest.step('睡眠の削除ができる', async () => {
           await page
             .getByRole('listitem')
             .filter({ hasText: '過去の睡眠' })
@@ -139,8 +139,8 @@ authedTest.describe('home', () => {
         })
       })
 
-      authedTest.describe.serial('分割睡眠作成・編集・削除', () => {
-        authedTest('分割睡眠の新規作成ができる', async ({ page }) => {
+      authedTest('分割睡眠作成・編集・削除', async ({ page }) => {
+        await authedTest.step('分割睡眠の新規作成ができる', async () => {
           await page.getByRole('button', { name: '睡眠記録を追加' }).click()
           await page.getByRole('dialog').waitFor()
 
@@ -190,7 +190,7 @@ authedTest.describe('home', () => {
           await expect.soft(page).toHaveScreenshot({ fullPage: true })
         })
 
-        authedTest('分割睡眠の編集ができる', async ({ page }) => {
+        await authedTest.step('分割睡眠の編集ができる', async () => {
           await page
             .getByRole('listitem')
             .filter({ hasText: '過去の睡眠' })
@@ -214,7 +214,7 @@ authedTest.describe('home', () => {
           ).toContainText('4:00')
         })
 
-        authedTest('分割睡眠の削除ができる', async ({ page }) => {
+        await authedTest.step('分割睡眠の削除ができる', async () => {
           await page
             .getByRole('listitem')
             .filter({ hasText: '過去の睡眠' })
@@ -330,8 +330,8 @@ authedTest.describe('home', () => {
       })
     })
 
-    authedTest.describe.serial('睡眠作成・編集・削除', () => {
-      authedTest('睡眠の新規作成ができる', async ({ page }) => {
+    authedTest('睡眠作成・編集・削除', async ({ page }) => {
+      await authedTest.step('睡眠の新規作成ができる', async () => {
         await page.getByRole('button', { name: '睡眠記録を追加' }).click()
         await page.getByRole('dialog').waitFor()
 
@@ -379,7 +379,7 @@ authedTest.describe('home', () => {
         await expect.soft(page).toHaveScreenshot({ fullPage: true })
       })
 
-      authedTest('睡眠の編集ダイアログが表示される', async ({ page }) => {
+      await authedTest.step('睡眠の編集ダイアログが表示される', async () => {
         await page
           .getByRole('listitem')
           .filter({ hasText: '過去の睡眠' })
@@ -394,9 +394,11 @@ authedTest.describe('home', () => {
         await expect(
           page.getByRole('dialog', { name: '睡眠記録を編集' })
         ).toBeVisible()
+
+        await page.getByRole('button', { name: 'キャンセル' }).click()
       })
 
-      authedTest('睡眠の削除ができる', async ({ page }) => {
+      await authedTest.step('睡眠の削除ができる', async () => {
         await page
           .getByRole('listitem')
           .filter({ hasText: '過去の睡眠' })
