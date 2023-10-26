@@ -41,6 +41,7 @@ export const generateMetadata = async ({
       description: DESCRIPTION,
       images: `/api/og/users?${ogSearchParams.toString()}`,
     },
+    robots: { index: false },
   }
 }
 

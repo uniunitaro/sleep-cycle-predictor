@@ -17,7 +17,6 @@ export const metadata: Metadata = {
     template: TITLE_TEMPLATE,
   },
   description: DESCRIPTION,
-  robots: { index: false },
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,

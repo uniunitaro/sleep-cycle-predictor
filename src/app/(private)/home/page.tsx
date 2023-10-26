@@ -6,6 +6,7 @@ import { initChartPage } from '@/features/sleep/utils/initChartPage'
 
 export const metadata: Metadata = {
   title: 'ホーム',
+  robots: { index: false },
 }
 
 const HomePage = async ({ searchParams }: { searchParams: SearchParams }) => {

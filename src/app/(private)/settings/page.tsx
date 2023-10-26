@@ -5,6 +5,7 @@ import { redirectBasedOnAuthState } from '@/features/auth/utils/redirectBasedOnA
 
 export const metadata: Metadata = {
   title: '設定',
+  robots: { index: false },
 }
 
 const SettingsPage = async () => {
