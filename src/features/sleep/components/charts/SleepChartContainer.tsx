@@ -148,6 +148,7 @@ const SleepChartContainer: FC<{
                     predictions={predictions}
                     targetDate={zonedTargetDate}
                     variant="mobile"
+                    isPublic={isPublic}
                   />
                 </Box>
               </Flex>

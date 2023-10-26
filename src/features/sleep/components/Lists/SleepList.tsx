@@ -18,9 +18,10 @@ type Props = {
   predictions: Prediction[]
   targetDate: Date
   variant: 'mobile' | 'desktop'
+  isPublic: boolean
 }
 const SleepList: FC<Props> = memo(
-  ({ sleeps, predictions, targetDate, variant }) => {
+  ({ sleeps, predictions, targetDate, variant, isPublic }) => {
     const currentMonthSleeps = sleeps.filter(
       (sleep) => getMonth(sleep.sleeps[0].start) === getMonth(targetDate)
     )
@@ -102,9 +103,13 @@ const SleepList: FC<Props> = memo(
         <VStack>
           <Image src={notFoundImage} alt="" width="100" />
           <Text fontSize="sm" textAlign="center">
-            睡眠記録がありません。
-            <br />
-            新しい記録を追加してみましょう。
+            {isPublic ? '睡眠予測がありません。' : '睡眠記録がありません。'}
+            {!isPublic && (
+              <>
+                <br />
+                新しい記録を追加してみましょう。
+              </>
+            )}
           </Text>
         </VStack>
       </Center>
