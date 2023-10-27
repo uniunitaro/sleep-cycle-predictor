@@ -230,6 +230,7 @@ export const theme = extendTheme({
         list: {
           borderRadius: 'xl',
           boxShadow: 'lg',
+          WebkitTapHighlightColor: 'transparent',
         },
       },
     },
@@ -246,6 +247,11 @@ export const theme = extendTheme({
     Container: {
       baseStyle: {
         px: { base: 4, md: 6 },
+      },
+    },
+    CloseButton: {
+      baseStyle: {
+        WebkitTapHighlightColor: 'transparent',
       },
     },
   },

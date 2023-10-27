@@ -9,6 +9,7 @@ import RightColumn from '../RightColumn'
 import { DisplayMode } from '../../types/chart'
 import GlobalModals from '../GlobalModals'
 import SleepList from '../Lists/SleepList'
+import PWAInstallModal from '../PWAInstallModal'
 import SleepChart from './SleepChart/SleepChart'
 import ChartHeader from './ChartHeader'
 import { isRightColumnOpenAtom } from '@/features/sleep/atoms/rightColumn'
@@ -148,6 +149,7 @@ const SleepChartContainer: FC<{
                     predictions={predictions}
                     targetDate={zonedTargetDate}
                     variant="mobile"
+                    isPublic={isPublic}
                   />
                 </Box>
               </Flex>
@@ -165,6 +167,7 @@ const SleepChartContainer: FC<{
                 <SleepInputModal isOpen={isOpen} onClose={onClose} />
               </Hide>
             )}
+            {!isPublic && <PWAInstallModal />}
             <GlobalModals />
           </Box>
         </Flex>

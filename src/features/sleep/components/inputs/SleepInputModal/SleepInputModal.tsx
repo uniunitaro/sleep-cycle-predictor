@@ -16,6 +16,7 @@ import {
   setSeconds,
   subHours,
 } from 'date-fns'
+import { useSetAtom } from 'jotai'
 import SleepInputForm from '../SleepInputForm/SleepInputForm'
 import {
   Alert,
@@ -44,6 +45,7 @@ import {
 } from '@/components/chakra'
 import { addSleep, updateSleep } from '@/features/sleep/repositories/sleeps'
 import { Sleep } from '@/features/sleep/types/sleep'
+import { sleepAddCountAtom } from '@/features/sleep/atoms/sleepAddCount'
 
 type SleepInputType = ComponentProps<typeof SleepInputForm>['sleeps']
 type Props = Omit<ModalProps, 'children'> & { originalSleep?: Sleep }
@@ -70,6 +72,7 @@ const SleepInputModal = forwardRef<HTMLDivElement, Props>(
 
     const [error, setError] = useState<string>()
     const [isLoading, startTransition] = useTransition()
+    const setSleepAddCount = useSetAtom(sleepAddCountAtom)
     const handleSubmit = (args?: { ignoreShortInterval?: boolean }) => {
       setError(undefined)
 
@@ -106,6 +109,10 @@ const SleepInputModal = forwardRef<HTMLDivElement, Props>(
         } else {
           onClose()
           modalProps.onClose()
+
+          if (!isUpdate) {
+            setSleepAddCount((count) => count + 1)
+          }
         }
       })
     }

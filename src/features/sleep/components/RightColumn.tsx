@@ -35,6 +35,7 @@ const RightColumn: FC<Props> = ({
           predictions={predictions}
           targetDate={targetDate}
           variant="desktop"
+          isPublic={isPublic}
         />
       </CardBody>
     </Card>
