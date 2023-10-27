@@ -1,6 +1,5 @@
 import { FC, useEffect } from 'react'
-import { useAtomValue } from 'jotai'
-import { sleepAddCountAtom } from '../atoms/sleepAddCount'
+import { usePWAInstall } from '../hooks/usePWAInstall'
 import {
   Button,
   ButtonGroup,
@@ -13,25 +12,10 @@ import {
   Text,
   useDisclosure,
 } from '@/components/chakra'
-import { installPromptAtom } from '@/atoms/installPrompt'
 
 const PWAInstallModal: FC = () => {
-  const installPrompt = useAtomValue(installPromptAtom)
-
-  const sleepAddCount = useAtomValue(sleepAddCountAtom)
-
-  const hasDismissedPWAInstall =
-    localStorage.getItem('hasDismissedPWAInstall') === 'true'
-
-  const isMobileOrTablet =
-    navigator.userAgent.includes('Mobi') ||
-    navigator.userAgent.includes('Android')
-
-  const shouldSuggestPWAInstall =
-    installPrompt &&
-    sleepAddCount >= 2 &&
-    !hasDismissedPWAInstall &&
-    isMobileOrTablet
+  const { shouldSuggestPWAInstall, handleInstall, handleDismiss } =
+    usePWAInstall()
 
   const { isOpen, onOpen, onClose } = useDisclosure()
 
@@ -41,13 +25,13 @@ const PWAInstallModal: FC = () => {
     }
   }, [shouldSuggestPWAInstall, onOpen])
 
-  const handleInstall = () => {
-    installPrompt?.prompt()
+  const handleClickInstall = () => {
+    handleInstall()
     onClose()
   }
 
-  const handleDismiss = () => {
-    localStorage.setItem('hasDismissedPWAInstall', 'true')
+  const handleClickDismiss = () => {
+    handleDismiss()
     onClose()
   }
 
@@ -70,11 +54,11 @@ const PWAInstallModal: FC = () => {
             <Button
               color="secondaryGray"
               variant="ghost"
-              onClick={handleDismiss}
+              onClick={handleClickDismiss}
             >
               あとで
             </Button>
-            <Button colorScheme="brand" onClick={handleInstall}>
+            <Button colorScheme="brand" onClick={handleClickInstall}>
               インストール
             </Button>
           </ButtonGroup>

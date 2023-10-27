@@ -3,6 +3,7 @@
 import { FC } from 'react'
 import { HamburgerIcon } from '@chakra-ui/icons'
 import { BsCalendar3, BsCalendar3Week, BsListUl } from 'react-icons/bs'
+import { MdInstallMobile } from 'react-icons/md'
 import {
   Box,
   Button,
@@ -11,6 +12,8 @@ import {
   HStack,
   Icon,
   IconButton,
+  Spacer,
+  Stack,
   useColorModeValue,
   useDisclosure,
 } from './chakra'
@@ -18,11 +21,14 @@ import Logo from './Logo/Logo'
 import { Drawer, DrawerBody, DrawerHeader } from './Drawer/Drawer'
 import { DisplayMode } from '@/features/sleep/types/chart'
 import { useDisplayMode } from '@/features/sleep/hooks/useDisplayMode'
+import { usePWAInstall } from '@/features/sleep/hooks/usePWAInstall'
 
 const DrawerMenu: FC<{ displayMode: DisplayMode }> = ({ displayMode }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   const { currentDisplayMode, handleChange } = useDisplayMode(displayMode)
+
+  const { shouldSuggestPWAInstall, handleInstall } = usePWAInstall()
 
   return (
     <>
@@ -47,41 +53,53 @@ const DrawerMenu: FC<{ displayMode: DisplayMode }> = ({ displayMode }) => {
           </HStack>
         </DrawerHeader>
         <DrawerBody px="0" bgColor="globalBg">
-          <Box pr="3">
-            <Box as="h2" srOnly>
-              表示形式
+          <Stack h="full" pr="3">
+            <Box>
+              <Box as="h2" srOnly>
+                表示形式
+              </Box>
+              <DrawerItem
+                leftIcon={<Icon as={BsCalendar3Week} />}
+                isSelected={currentDisplayMode === 'week'}
+                onClick={() => {
+                  handleChange('week')
+                  onClose()
+                }}
+              >
+                週
+              </DrawerItem>
+              <DrawerItem
+                leftIcon={<Icon as={BsCalendar3} />}
+                isSelected={currentDisplayMode === 'month'}
+                onClick={() => {
+                  handleChange('month')
+                  onClose()
+                }}
+              >
+                月
+              </DrawerItem>
+              <DrawerItem
+                leftIcon={<Icon as={BsListUl} />}
+                isSelected={currentDisplayMode === 'list'}
+                onClick={() => {
+                  handleChange('list')
+                  onClose()
+                }}
+              >
+                リスト
+              </DrawerItem>
             </Box>
-            <DrawerItem
-              leftIcon={<Icon as={BsCalendar3Week} />}
-              isSelected={currentDisplayMode === 'week'}
-              onClick={() => {
-                handleChange('week')
-                onClose()
-              }}
-            >
-              週
-            </DrawerItem>
-            <DrawerItem
-              leftIcon={<Icon as={BsCalendar3} />}
-              isSelected={currentDisplayMode === 'month'}
-              onClick={() => {
-                handleChange('month')
-                onClose()
-              }}
-            >
-              月
-            </DrawerItem>
-            <DrawerItem
-              leftIcon={<Icon as={BsListUl} />}
-              isSelected={currentDisplayMode === 'list'}
-              onClick={() => {
-                handleChange('list')
-                onClose()
-              }}
-            >
-              リスト
-            </DrawerItem>
-          </Box>
+            <Spacer />
+            {shouldSuggestPWAInstall && (
+              <DrawerItem
+                leftIcon={<Icon as={MdInstallMobile} />}
+                colorScheme="gray"
+                onClick={handleInstall}
+              >
+                ホーム画面に追加
+              </DrawerItem>
+            )}
+          </Stack>
         </DrawerBody>
       </Drawer>
     </>
@@ -90,10 +108,12 @@ const DrawerMenu: FC<{ displayMode: DisplayMode }> = ({ displayMode }) => {
 
 const DrawerItem: FC<ButtonProps & { isSelected?: boolean }> = ({
   isSelected,
+  colorScheme,
   ...props
 }) => {
   const bgColor = useColorModeValue('brand.100', 'brand.800')
-  const bgActiveColor = useColorModeValue('brand.200', 'brand.700')
+  const bgActiveColorDefault = useColorModeValue('brand.200', 'brand.700')
+  const bgActiveColor = bgActiveColorDefault
   return (
     <Button
       w="full"
@@ -106,9 +126,15 @@ const DrawerItem: FC<ButtonProps & { isSelected?: boolean }> = ({
       justifyContent="left"
       iconSpacing="6"
       aria-current={isSelected}
-      bgColor={isSelected ? bgColor : undefined}
-      _hover={{ bgColor: bgColor }}
-      _active={{ bgColor: bgActiveColor }}
+      bgColor={!colorScheme && isSelected ? bgColor : undefined}
+      _hover={
+        !colorScheme ? { bgColor: isSelected ? bgColor : undefined } : undefined
+      }
+      _active={
+        !colorScheme
+          ? { bgColor: !colorScheme ? bgActiveColor : undefined }
+          : undefined
+      }
       {...props}
     />
   )
