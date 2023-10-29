@@ -13,6 +13,11 @@ import {
 import heroDesktop from '@/assets/hero-desktop.png'
 import heroMobile from '@/assets/hero-mobile.png'
 import { detectMobileByUserAgent } from '@/utils/detectMobileByUserAgent'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  alternates: { canonical: 'https://www.sleep-predictor.com' },
+}
 
 const IndexPage = () => {
   const { isMobile } = detectMobileByUserAgent()
