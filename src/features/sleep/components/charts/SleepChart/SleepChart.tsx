@@ -9,7 +9,6 @@ import {
   useState,
   memo,
   forwardRef,
-  useLayoutEffect,
 } from 'react'
 import {
   addDays,
@@ -31,7 +30,7 @@ import {
   useAnimationControls,
   useDragControls,
 } from 'framer-motion'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useSetAtom } from 'jotai'
 import ChartColumn from '../ChartColumn'
 import SleepBar from '../SleepBar'
@@ -239,7 +238,7 @@ const SleepChart: FC<Props> = memo(
                       ))}
                     </Box>
                     <DragContainer
-                      targetDate={optimisticTargetDate}
+                      targetDate={targetDate}
                       displayMode={displayMode}
                       currentChartRef={currentChartRef}
                       onDateChange={(date) => {
@@ -312,6 +311,7 @@ const DragContainer: FC<{
   const canStartDrag = useRef(false)
   const isDragging = useRef(false)
   const currentEdgeType = useRef<'left' | 'right' | 'both'>()
+  const isSnapping = useRef(false)
 
   const handleTouchStart = (e: TouchEvent) => {
     touchStartX.current = e.touches[0].pageX
@@ -339,7 +339,7 @@ const DragContainer: FC<{
 
       currentEdgeType.current =
         isOnLeftEdge && isOnRightEdge ? 'both' : isOnLeftEdge ? 'left' : 'right'
-      if (!isDragging.current) {
+      if (!isDragging.current && !isSnapping.current) {
         canStartDrag.current = true
       }
     }
@@ -362,16 +362,6 @@ const DragContainer: FC<{
     displayMode
   )
 
-  const snapType = useRef<'previous' | 'next' | undefined>()
-  const dragEndOffsetX = useRef(0)
-
-  // useLayoutEffect内ではtargetDateは更新されており、そのtargetDateに対応するリンクを
-  // pushする必要があるため、保存する
-  const targetDateLink = useRef('')
-
-  // チャート内のスクロール位置を戻すために前のrefを保存する
-  const formerChartRef = useRef<HTMLDivElement | null>(null)
-
   const handleDragEnd = async (info: PanInfo) => {
     const shouldSnapToPrevious =
       (currentEdgeType.current === 'both' ||
@@ -384,55 +374,40 @@ const DragContainer: FC<{
       ((info.velocity.x <= 0 && info.offset.x < -dragContainerWidth / 2) ||
         (info.velocity.x < -20 && info.offset.x < 0))
 
-    snapType.current = shouldSnapToPrevious
-      ? 'previous'
-      : shouldSnapToNext
-      ? 'next'
-      : undefined
-
     currentEdgeType.current = undefined
 
-    dragEndOffsetX.current = info.offset.x
-
     if (shouldSnapToPrevious) {
-      targetDateLink.current = previousLink
-      formerChartRef.current = currentChartRef.current
+      isSnapping.current = true
+
+      await controls.start('previous')
+      // アニメーションが終わったらスクロール位置を戻す
+      controls.start({ x: 0, transition: { duration: 0 } })
+      if (currentChartRef.current) {
+        // 今まで表示していたチャートのスクロール位置を戻す
+        currentChartRef.current.scrollLeft = 0
+      }
       onDateChange(previousDate)
+      router.push(previousLink, { scroll: false })
     } else if (shouldSnapToNext) {
-      targetDateLink.current = nextLink
-      formerChartRef.current = currentChartRef.current
+      isSnapping.current = true
+
+      await controls.start('next')
+      if (currentChartRef.current) {
+        currentChartRef.current.scrollLeft = 0
+      }
+      controls.start({ x: 0, transition: { duration: 0 } })
       onDateChange(nextDate)
+      router.push(nextLink, { scroll: false })
     } else {
       controls.start('current')
     }
   }
 
-  useLayoutEffect(() => {
-    ;(async () => {
-      if (snapType.current === 'previous') {
-        controls.set({
-          x: -dragContainerWidth + dragEndOffsetX.current,
-        })
-        await controls.start('current')
-        if (formerChartRef.current) {
-          // 今まで表示していたチャートのスクロール位置を戻す
-          formerChartRef.current.scrollLeft = 0
-        }
-        router.push(targetDateLink.current, { scroll: false })
-      } else if (snapType.current === 'next') {
-        controls.set({
-          x: dragContainerWidth + dragEndOffsetX.current,
-        })
-        await controls.start('current')
-        if (formerChartRef.current) {
-          formerChartRef.current.scrollLeft = 0
-        }
-        router.push(targetDateLink.current, { scroll: false })
-      }
-
-      snapType.current = undefined
-    })()
-  }, [controls, formerChartRef, dragContainerWidth, router, targetDate])
+  const searchParams = useSearchParams()
+  useEffect(() => {
+    // searchParamsが変わったらスナップが終了したとみなす
+    isSnapping.current = false
+  }, [searchParams])
 
   useEffect(() => {
     const chartRef = currentChartRef.current
