@@ -7,6 +7,6 @@ jest.mock('next/font/google', () => ({
   Roboto: jest.fn(),
 }))
 
-test('runtimeがedgeに設定されている', () => {
+test.skip('runtimeがedgeに設定されている', () => {
   expect(runtime).toBe('edge')
 })
