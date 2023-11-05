@@ -38,6 +38,12 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
   },
+  metadataBase:
+    process.env.VERCEL_ENV === 'production'
+      ? new URL('https://www.sleep-predictor.com')
+      : process.env.VERCEL_URL
+      ? new URL(`https://${process.env.VERCEL_URL}`)
+      : new URL(`http://localhost:${process.env.PORT || 3000}`),
 }
 
 export const runtime = 'edge'
