@@ -4,6 +4,7 @@ import UserPublicPage from './components/UserPublicPage'
 import { getUser } from '@/features/user/repositories/users'
 import { SearchParams } from '@/types/global'
 import { initChartPage } from '@/features/sleep/utils/initChartPage'
+import { ogSettings } from '@/constants/og'
 
 type Props = {
   params: { userId: string }
@@ -18,12 +19,12 @@ export const generateMetadata = async ({
   params,
 }: Props): Promise<Metadata> => {
   if (!isUuid(params.userId)) {
-    return {}
+    return notFound()
   }
 
   const { user, error } = await getUser(params.userId)
   if (error) {
-    return {}
+    return notFound()
   }
 
   const TITLE = `${user.nickname}さんの睡眠予測`
@@ -37,6 +38,7 @@ export const generateMetadata = async ({
     title: TITLE,
     description: DESCRIPTION,
     openGraph: {
+      ...ogSettings,
       title: TITLE,
       description: DESCRIPTION,
       images: `/api/og/users?${ogSearchParams.toString()}`,

@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
+import { Metadata } from 'next'
 import HeroHeading from '../components/HeroHeading'
 import Features from '../components/Features'
 import {
@@ -13,10 +14,18 @@ import {
 import heroDesktop from '@/assets/hero-desktop.png'
 import heroMobile from '@/assets/hero-mobile.png'
 import { detectMobileByUserAgent } from '@/utils/detectMobileByUserAgent'
-import { Metadata } from 'next'
+
+const TITLE = 'Sleep Predictor'
+const DESCRIPTION =
+  '非24時間睡眠覚醒症候群の人をサポートする、睡眠サイクル予測アプリケーション。あなたの体内時計に合わせて、日々のスケジュールを調整しましょう。'
 
 export const metadata: Metadata = {
   alternates: { canonical: 'https://www.sleep-predictor.com' },
+  description: DESCRIPTION,
+  openGraph: {
+    title: TITLE,
+    description: DESCRIPTION,
+  },
 }
 
 const IndexPage = () => {
