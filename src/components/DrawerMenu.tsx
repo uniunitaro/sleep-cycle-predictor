@@ -28,7 +28,7 @@ const DrawerMenu: FC<{ displayMode: DisplayMode }> = ({ displayMode }) => {
 
   const { currentDisplayMode, handleChange } = useDisplayMode(displayMode)
 
-  const { shouldSuggestPWAInstall, handleInstall } = usePWAInstall()
+  const { canInstallPWA, handleInstall } = usePWAInstall()
 
   return (
     <>
@@ -90,7 +90,7 @@ const DrawerMenu: FC<{ displayMode: DisplayMode }> = ({ displayMode }) => {
               </DrawerItem>
             </Box>
             <Spacer />
-            {shouldSuggestPWAInstall && (
+            {canInstallPWA && (
               <DrawerItem
                 leftIcon={<Icon as={MdInstallMobile} />}
                 colorScheme="gray"

@@ -1,1 +1,5 @@
-export const ogImages = { images: '/api/og' }
+export const ogSettings = {
+  type: 'website',
+  siteName: 'Sleep Predictor',
+  images: '/api/og',
+}

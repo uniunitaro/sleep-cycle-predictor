@@ -15,10 +15,12 @@ export const usePWAInstall = () => {
     navigator.userAgent.includes('Android')
 
   const shouldSuggestPWAInstall =
-    installPrompt &&
+    !!installPrompt &&
     sleepAddCount >= 2 &&
     !hasDismissedPWAInstall &&
     isMobileOrTablet
+
+  const canInstallPWA = !!installPrompt && isMobileOrTablet
 
   const handleInstall = () => {
     installPrompt?.prompt()
@@ -30,6 +32,7 @@ export const usePWAInstall = () => {
 
   return {
     shouldSuggestPWAInstall,
+    canInstallPWA,
     handleInstall,
     handleDismiss,
   }

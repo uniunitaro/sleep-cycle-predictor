@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import { redirectBasedOnAuthState } from '@/features/auth/utils/redirectBasedOnAuthState'
-import { ogImages } from '@/constants/og'
+import { ogSettings } from '@/constants/og'
 import { Box, Center, Text } from '@/components/chakra'
 import {
   BasicCard,
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   title: TITLE,
   openGraph: {
     title: TITLE,
-    ...ogImages,
+    ...ogSettings,
   },
 }
 
