@@ -3,9 +3,13 @@ import { Prediction } from '../types/sleep'
 import { Result } from '@/types/global'
 import { log } from '@/libs/axiomLogger'
 
-export const generateICal = (
+export const generateICal = ({
+  predictions,
+  userName,
+}: {
   predictions: Prediction[]
-): Result<{ iCalData: string }, true> => {
+  userName: string
+}): Result<{ iCalData: string }, true> => {
   const { error, value } = createEvents(
     predictions.map((prediction) => {
       const { start, end } = prediction
@@ -28,6 +32,8 @@ export const generateICal = (
         startInputType: 'utc',
         endInputType: 'utc',
         title: '睡眠予測',
+        calName: `${userName}さんの睡眠予測`,
+        productId: 'Sleep Predictor',
       } satisfies EventAttributes
     })
   )
