@@ -15,8 +15,9 @@ export const deleteAccount = async (): Promise<{ error?: true }> => {
     const { userId, error } = await getAuthUserIdWithServerAction()
     if (error) throw error
 
+    const cookieStore = cookies()
     const supabase = createServerActionClient(
-      { cookies },
+      { cookies: () => cookieStore },
       { supabaseKey: process.env.SUPABASE_SERVICE_ROLE }
     )
     const { error: deleteError } = await supabase.auth.admin.deleteUser(userId)

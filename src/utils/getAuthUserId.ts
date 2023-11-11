@@ -11,7 +11,8 @@ import { Result } from '@/types/global'
 export const getAuthUserIdWithServerAction = async (): Promise<
   Result<{ userId: string }, AuthError | 'no session'>
 > => {
-  const supabase = createServerActionClient({ cookies })
+  const cookieStore = cookies()
+  const supabase = createServerActionClient({ cookies: () => cookieStore })
   const { data, error } = await supabase.auth.getSession()
   if (error) return { error }
   if (!data.session) return { error: 'no session' }
@@ -23,7 +24,8 @@ export const getAuthUserIdWithServerAction = async (): Promise<
 export const getAuthUserIdWithServerComponent = async (): Promise<
   Result<{ userId: string }, AuthError | 'no session'>
 > => {
-  const supabase = createServerComponentClient({ cookies })
+  const cookieStore = cookies()
+  const supabase = createServerComponentClient({ cookies: () => cookieStore })
   const { data, error } = await supabase.auth.getSession()
   if (error) return { error }
   if (!data.session) return { error: 'no session' }

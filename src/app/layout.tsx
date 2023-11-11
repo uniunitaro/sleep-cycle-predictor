@@ -41,7 +41,6 @@ export const metadata: Metadata = {
 }
 
 export const runtime = 'edge'
-export const dynamic = 'force-dynamic'
 
 const notoSans = Noto_Sans_JP({
   weight: ['400', '700'],
