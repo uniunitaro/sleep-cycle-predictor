@@ -41,7 +41,6 @@ export const metadata: Metadata = {
 }
 
 export const runtime = 'edge'
-export const dynamic = 'force-dynamic'
 
 const notoSans = Noto_Sans_JP({
   weight: ['400', '700'],
@@ -63,6 +62,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja-JP" className={`${notoSans.variable} ${roboto.variable}`}>
+      <head>
+        <meta
+          name="google-site-verification"
+          content="xAfdL6ZaWvrHkTbulE1KM7b526NAjAd3tBm7E__LxAM"
+        />
+      </head>
       {process.env.VERCEL_ENV === 'production' && <AxiomWebVitals />}
       <GoogleAnalytics />
       <InstallPromptManager />

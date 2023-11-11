@@ -15,8 +15,9 @@ export const signUp = async ({
   password: string
 }): Promise<{ error?: boolean }> => {
   try {
+    const cookieStore = cookies()
     const supabase = createServerActionClient(
-      { cookies },
+      { cookies: () => cookieStore },
       { supabaseKey: process.env.SUPABASE_SERVICE_ROLE }
     )
 

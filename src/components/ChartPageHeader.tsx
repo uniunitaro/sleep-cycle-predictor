@@ -12,7 +12,8 @@ import { DisplayMode } from '@/features/sleep/types/chart'
 const ChartPageHeader: FC<{ displayMode: DisplayMode }> = async ({
   displayMode,
 }) => {
-  const supabase = createServerComponentClient({ cookies })
+  const cookieStore = cookies()
+  const supabase = createServerComponentClient({ cookies: () => cookieStore })
   const {
     data: { session },
   } = await supabase.auth.getSession()
