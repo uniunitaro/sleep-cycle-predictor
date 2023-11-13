@@ -1,10 +1,10 @@
 'use server'
 
-import { eq } from 'drizzle-orm'
+import { and, eq } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 import { AuthUser, AuthUserWithConfig, SrcDuration, User } from '../types/user'
 import { db } from '@/db'
-import { config, user } from '@/db/schema'
+import { calendar, config, user } from '@/db/schema'
 import { Result } from '@/types/global'
 import {
   getAuthUserIdWithServerAction,
@@ -99,7 +99,11 @@ export const getAuthUserWithConfig = async (): Promise<
 
     const authUserWithConfig = await db.query.user.findFirst({
       where: eq(user.id, uuidToBin(userId)),
-      with: { config: true },
+      with: {
+        config: {
+          with: { calendars: true },
+        },
+      },
     })
     if (!authUserWithConfig) throw new Error('user not found')
 
@@ -189,6 +193,89 @@ export const updateConfig = async ({
     revalidatePath('/settings')
     revalidatePath('/home')
     revalidatePath('/[userId]')
+    return {}
+  } catch (e) {
+    log.error(e)
+    return { error: true }
+  }
+}
+
+export const addCalendar = async (newCalendar: {
+  name: string
+  url: string
+}): Promise<{ error?: true }> => {
+  try {
+    const { userId, error } = await getAuthUserIdWithServerAction()
+    if (error) throw error
+
+    const userConfig = await db.query.config.findFirst({
+      where: eq(config.userId, uuidToBin(userId)),
+    })
+    if (!userConfig) throw new Error('config not found')
+
+    await db.insert(calendar).values({
+      configId: userConfig.id,
+      name: newCalendar.name,
+      url: newCalendar.url,
+    })
+
+    revalidatePath('/settings')
+    revalidatePath('/home')
+    return {}
+  } catch (e) {
+    log.error(e)
+    return { error: true }
+  }
+}
+
+export const updateCalendar = async ({
+  id,
+  newCalendar,
+}: {
+  id: number
+  newCalendar: { name: string }
+}): Promise<{ error?: true }> => {
+  try {
+    const { userId, error } = await getAuthUserIdWithServerAction()
+    if (error) throw error
+
+    const userConfig = await db.query.config.findFirst({
+      where: eq(config.userId, uuidToBin(userId)),
+    })
+    if (!userConfig) throw new Error('config not found')
+
+    await db
+      .update(calendar)
+      .set({
+        name: newCalendar.name,
+      })
+      .where(and(eq(calendar.configId, userConfig.id), eq(calendar.id, id)))
+
+    revalidatePath('/settings')
+    revalidatePath('/home')
+    return {}
+  } catch (e) {
+    log.error(e)
+    return { error: true }
+  }
+}
+
+export const deleteCalendar = async (id: number): Promise<{ error?: true }> => {
+  try {
+    const { userId, error } = await getAuthUserIdWithServerAction()
+    if (error) throw error
+
+    const userConfig = await db.query.config.findFirst({
+      where: eq(config.userId, uuidToBin(userId)),
+    })
+    if (!userConfig) throw new Error('config not found')
+
+    await db
+      .delete(calendar)
+      .where(and(eq(calendar.configId, userConfig.id), eq(calendar.id, id)))
+
+    revalidatePath('/settings')
+    revalidatePath('/home')
     return {}
   } catch (e) {
     log.error(e)

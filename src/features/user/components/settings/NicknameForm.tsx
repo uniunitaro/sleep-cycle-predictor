@@ -18,14 +18,14 @@ import { useErrorToast } from '@/hooks/useErrorToast'
 const schema = z.object({
   nickname: z.string().nonempty({ message: 'ニックネームを入力してください' }),
 })
-type schema = z.infer<typeof schema>
+type Schema = z.infer<typeof schema>
 
 const NicknameForm: FC<{ nickname: string }> = ({ nickname }) => {
   const {
     handleSubmit,
     register,
     formState: { errors },
-  } = useForm<schema>({
+  } = useForm<Schema>({
     mode: 'onSubmit',
     resolver: zodResolver(schema),
   })
@@ -33,7 +33,7 @@ const NicknameForm: FC<{ nickname: string }> = ({ nickname }) => {
   const [isSubmitting, startTransition] = useTransition()
   const [hasNicknameChanged, setHasNicknameChanged] = useState(false)
   const errorToast = useErrorToast()
-  const onSubmit: SubmitHandler<schema> = async (data) => {
+  const onSubmit: SubmitHandler<Schema> = async (data) => {
     setHasNicknameChanged(false)
     startTransition(async () => {
       const { error } = await updateAuthUser({ nickname: data.nickname })

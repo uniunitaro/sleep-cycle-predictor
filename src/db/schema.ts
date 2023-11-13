@@ -58,8 +58,33 @@ export const config = mysqlTable('Config', {
     .notNull(),
 })
 
+export const configRelations = relations(config, ({ many }) => ({
+  calendars: many(calendar),
+}))
+
 export type Config = typeof config.$inferSelect
 export type NewConfig = typeof config.$inferInsert
+
+export const calendar = mysqlTable('Calendar', {
+  id: int('id').autoincrement().primaryKey().notNull(),
+  createdAt: timestamp('createdAt')
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp('updatedAt')
+    .default(sql`CURRENT_TIMESTAMP`)
+    .onUpdateNow()
+    .notNull(),
+  configId: int('configId').notNull(),
+  name: varchar('name', { length: 255 }).notNull(),
+  url: varchar('url', { length: 255 }).notNull(),
+})
+
+export type Calendar = typeof calendar.$inferSelect
+export type NewCalendar = typeof calendar.$inferInsert
+
+export const calendarRelations = relations(calendar, ({ one }) => ({
+  config: one(config, { fields: [calendar.configId], references: [config.id] }),
+}))
 
 export const sleep = mysqlTable(
   'Sleep',

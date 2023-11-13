@@ -4,13 +4,22 @@ import { Prediction, Sleep } from '@/features/sleep/types/sleep'
 import { DisplayMode } from '@/features/sleep/types/chart'
 import ChartPageHeader from '@/components/ChartPageHeader'
 import { Box, Flex } from '@/components/chakra'
+import { Calendar } from '@/db/schema'
 const Home: FC<{
   sleeps: Sleep[]
   predictions: Prediction[]
   targetDate: Date
   hasTargetDate: boolean
   displayMode: DisplayMode
-}> = ({ sleeps, predictions, targetDate, hasTargetDate, displayMode }) => {
+  calendars: Calendar[]
+}> = ({
+  sleeps,
+  predictions,
+  targetDate,
+  hasTargetDate,
+  displayMode,
+  calendars,
+}) => {
   const SleepChartContainer = dynamic(
     () => import('@/features/sleep/components/charts/SleepChartContainer'),
     { ssr: false }
@@ -28,6 +37,7 @@ const Home: FC<{
             targetDate={targetDate}
             hasTargetDate={hasTargetDate}
             displayMode={displayMode}
+            calendars={calendars}
             isPublic={false}
           />
         </Box>

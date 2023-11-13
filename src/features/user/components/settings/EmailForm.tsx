@@ -22,14 +22,14 @@ const schema = z.object({
     .string()
     .email({ message: 'メールアドレスの形式が正しくありません' }),
 })
-type schema = z.infer<typeof schema>
+type Schema = z.infer<typeof schema>
 
 const EmailForm: FC<{ email: string }> = ({ email }) => {
   const {
     handleSubmit,
     register,
     formState: { errors, isSubmitting },
-  } = useForm<schema>({
+  } = useForm<Schema>({
     mode: 'onSubmit',
     resolver: zodResolver(schema),
   })
@@ -39,7 +39,7 @@ const EmailForm: FC<{ email: string }> = ({ email }) => {
   const errorToast = useErrorToast()
   const toast = useToast()
   const supabase = createClientComponentClient()
-  const onSubmit: SubmitHandler<schema> = async (data) => {
+  const onSubmit: SubmitHandler<Schema> = async (data) => {
     setHasEmailChanged(false)
     const {
       data: { session },

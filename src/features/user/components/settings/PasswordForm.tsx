@@ -24,14 +24,14 @@ const schema = z.object({
       'パスワードは英字と数字をどちらも含む必要があります'
     ),
 })
-type schema = z.infer<typeof schema>
+type Schema = z.infer<typeof schema>
 
 const PasswordForm: FC = () => {
   const {
     handleSubmit,
     register,
     formState: { errors },
-  } = useForm<schema>({
+  } = useForm<Schema>({
     mode: 'onSubmit',
     resolver: zodResolver(schema),
   })
@@ -40,7 +40,7 @@ const PasswordForm: FC = () => {
   const [hasPasswordChanged, setHasPasswordChanged] = useState(false)
   const errorToast = useErrorToast()
   const supabase = createClientComponentClient()
-  const onSubmit: SubmitHandler<schema> = async (data) => {
+  const onSubmit: SubmitHandler<Schema> = async (data) => {
     setHasPasswordChanged(false)
     startTransition(async () => {
       const { error } = await supabase.auth.updateUser({

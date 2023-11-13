@@ -17,6 +17,8 @@ import { getMyPredictions, getPredictions } from '../repositories/predictions'
 import { Prediction, Sleep } from '../types/sleep'
 import { SearchParams } from '@/types/global'
 import { detectMobileByUserAgent } from '@/utils/detectMobileByUserAgent'
+import { getAuthUserWithConfig } from '@/features/user/repositories/users'
+import { Calendar } from '@/db/schema'
 
 export const initChartPage = async ({
   isPublic,
@@ -34,6 +36,7 @@ export const initChartPage = async ({
   displayMode: DisplayMode
   sleeps?: Sleep[] | undefined
   predictions: Prediction[] | undefined
+  calendars?: Calendar[]
   error: true | undefined
 }> => {
   const hasTargetDate = !!(
@@ -88,12 +91,18 @@ export const initChartPage = async ({
 
     return { targetDate, hasTargetDate, displayMode, predictions, error }
   } else {
-    const { sleeps, error } = await getSleeps({ start, end })
+    const [sleepsResult, predictionsResult, authUserResult] = await Promise.all(
+      [
+        getSleeps({ start, end }),
+        getMyPredictions({ start: new Date(), end }),
+        getAuthUserWithConfig(),
+      ]
+    )
 
-    const { predictions, error: predictionsError } = await getMyPredictions({
-      start: new Date(),
-      end,
-    })
+    const { sleeps, error } = sleepsResult
+    const { predictions, error: predictionsError } = predictionsResult
+    const { authUserWithConfig, error: authUserError } = authUserResult
+    const calendars = authUserWithConfig?.config?.calendars ?? []
 
     return {
       targetDate,
@@ -101,7 +110,8 @@ export const initChartPage = async ({
       displayMode,
       sleeps,
       predictions,
-      error: error || predictionsError,
+      calendars,
+      error: error || predictionsError || authUserError,
     }
   }
 }

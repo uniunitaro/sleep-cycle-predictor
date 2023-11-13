@@ -12,8 +12,15 @@ export const metadata: Metadata = {
 const HomePage = async ({ searchParams }: { searchParams: SearchParams }) => {
   await redirectBasedOnAuthState('unauthed', '/signin')
 
-  const { targetDate, hasTargetDate, displayMode, sleeps, predictions, error } =
-    await initChartPage({ isPublic: false, searchParams })
+  const {
+    targetDate,
+    hasTargetDate,
+    displayMode,
+    sleeps,
+    predictions,
+    calendars,
+    error,
+  } = await initChartPage({ isPublic: false, searchParams })
 
   if (error) {
     throw new Error('Failed to initialize chart')
@@ -28,6 +35,7 @@ const HomePage = async ({ searchParams }: { searchParams: SearchParams }) => {
         targetDate={targetDate}
         hasTargetDate={hasTargetDate}
         displayMode={displayMode}
+        calendars={calendars ?? []}
       />
     )
   )

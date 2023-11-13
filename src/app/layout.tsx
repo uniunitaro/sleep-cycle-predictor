@@ -1,4 +1,4 @@
-import { Metadata } from 'next'
+import { Metadata, Viewport } from 'next'
 import { Noto_Sans_JP, Roboto } from 'next/font/google'
 import { AxiomWebVitals } from 'next-axiom'
 import Providers from '@/components/Providers'
@@ -21,7 +21,6 @@ export const metadata: Metadata = {
     statusBarStyle: 'default',
     title: DEFAULT_TITLE,
   },
-  themeColor: '#f7f9f7',
   openGraph: {
     title: {
       default: DEFAULT_TITLE,
@@ -38,6 +37,11 @@ export const metadata: Metadata = {
       : process.env.VERCEL_URL
       ? new URL(`https://${process.env.VERCEL_URL}`)
       : new URL(`http://localhost:${process.env.PORT || 3000}`),
+}
+
+// TODO カラーモードをcookieで管理してthemeColorを出し分ける
+export const viewport: Viewport = {
+  themeColor: '#f7f9f7',
 }
 
 export const runtime = 'edge'

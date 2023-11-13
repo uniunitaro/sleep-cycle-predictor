@@ -1,8 +1,10 @@
-import { Config, User as DBUser } from '@/db/schema'
+import { Calendar, Config, User as DBUser } from '@/db/schema'
 
 export type AuthUser = DBUser
 
-export type AuthUserWithConfig = DBUser & { config: Config }
+export type AuthUserWithConfig = DBUser & {
+  config: Config & { calendars: Calendar[] }
+}
 
 export type User = Pick<DBUser, 'id' | 'nickname' | 'avatarUrl'>
 
