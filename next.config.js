@@ -16,10 +16,6 @@ const { withAxiom } = require('next-axiom')
 
 const nextConfig = {
   reactStrictMode: true,
-  experimental: {
-    // swcPlugins: [['next-superjson-plugin', { excluded: [] }]],
-    serverActions: true,
-  },
   webpack(config) {
     // Grab the existing rule that handles SVG imports
     const fileLoaderRule = config.module.rules.find((rule) =>

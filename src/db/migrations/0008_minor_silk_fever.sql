@@ -1,0 +1,1 @@
+ALTER TABLE `Calendar` MODIFY COLUMN `configId` int NOT NULL;

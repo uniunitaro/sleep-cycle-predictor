@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   alternates: { canonical: 'https://www.sleep-predictor.com' },
   description: DESCRIPTION,
   openGraph: {
-    title: TITLE,
+    title: { absolute: TITLE },
     description: DESCRIPTION,
   },
 }

@@ -50,6 +50,20 @@
       "when": 1693476827243,
       "tag": "0006_hot_shriek",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1699772274572,
+      "tag": "0007_talented_wallflower",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "5",
+      "when": 1699774495345,
+      "tag": "0008_minor_silk_fever",
+      "breakpoints": true
     }
   ]
 }

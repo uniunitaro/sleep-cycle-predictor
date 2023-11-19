@@ -51,6 +51,7 @@ import {
   PopoverBody,
   PopoverContent,
   PopoverTrigger,
+  Portal,
   Show,
   Stack,
   StackDivider,
@@ -65,6 +66,7 @@ import { useCalendarControl } from '@/features/sleep/hooks/useCalendarControl'
 import { DisplayMode } from '@/features/sleep/types/chart'
 import { useOptimistic } from '@/features/sleep/hooks/useOptimistic'
 import { CardBodyMdOnly, CardMdOnly } from '@/components/MdOnlyCards'
+import { CalendarWithEvents } from '@/features/sleep/hooks/useCalendarWithEvents'
 
 type Props = {
   sleeps: Sleep[]
@@ -72,9 +74,17 @@ type Props = {
   targetDate: Date
   displayMode: DisplayMode
   isPublic: boolean
+  calendarWithEvents: CalendarWithEvents[]
 }
 const SleepChart: FC<Props> = memo(
-  ({ sleeps, predictions, targetDate, displayMode, isPublic }) => {
+  ({
+    sleeps,
+    predictions,
+    targetDate,
+    displayMode,
+    isPublic,
+    calendarWithEvents,
+  }) => {
     const [optimisticTargetDate, setOptimisticTargetDate] =
       useOptimistic(targetDate)
 
@@ -568,21 +578,23 @@ const SleepBarWithDetail: FC<{
           initialFocusRef={popoverContentRef}
         >
           <PopoverTrigger>{sleepBar}</PopoverTrigger>
-          <PopoverContent w="auto" ref={popoverContentRef}>
-            <PopoverArrow />
-            <PopoverBody>
-              {sleep.originalSleep && (
-                <SleepOverview
-                  sleep={sleep.originalSleep}
-                  variant="withMenu"
-                  ref={sleepOverviewRef}
-                />
-              )}
-              {sleep.originalPrediction && (
-                <SleepOverview prediction={sleep.originalPrediction} />
-              )}
-            </PopoverBody>
-          </PopoverContent>
+          <Portal>
+            <PopoverContent w="auto" ref={popoverContentRef}>
+              <PopoverArrow />
+              <PopoverBody>
+                {sleep.originalSleep && (
+                  <SleepOverview
+                    sleep={sleep.originalSleep}
+                    variant="withMenu"
+                    ref={sleepOverviewRef}
+                  />
+                )}
+                {sleep.originalPrediction && (
+                  <SleepOverview prediction={sleep.originalPrediction} />
+                )}
+              </PopoverBody>
+            </PopoverContent>
+          </Portal>
         </Popover>
       </Show>
       <Hide above="md">{sleepBar}</Hide>

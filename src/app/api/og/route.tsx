@@ -1,4 +1,4 @@
-import { ImageResponse } from 'next/server'
+import { ImageResponse } from 'next/og'
 import { loadGoogleFont } from './loadFont'
 import OgCard from './components/OgCard'
 

@@ -10,6 +10,7 @@ import { DisplayMode } from '../../types/chart'
 import GlobalModals from '../GlobalModals'
 import SleepList from '../Lists/SleepList'
 import PWAInstallModal from '../PWAInstallModal'
+import { useCalendarWithEvents } from '../../hooks/useCalendarWithEvents'
 import SleepChart from './SleepChart/SleepChart'
 import ChartHeader from './ChartHeader'
 import { isRightColumnOpenAtom } from '@/features/sleep/atoms/rightColumn'
@@ -25,6 +26,7 @@ import {
 } from '@/components/chakra'
 import FAB from '@/components/FAB/FAB'
 import { useHistoriedModal } from '@/hooks/useHistoriedModal'
+import { Calendar } from '@/db/schema'
 
 const SleepChartContainer: FC<{
   sleeps: Sleep[]
@@ -34,6 +36,7 @@ const SleepChartContainer: FC<{
   displayMode: DisplayMode
   isPublic: boolean
   userHeading?: ReactNode
+  calendars?: Calendar[]
 }> = ({
   sleeps,
   predictions,
@@ -42,6 +45,7 @@ const SleepChartContainer: FC<{
   displayMode,
   isPublic,
   userHeading,
+  calendars,
 }) => {
   const { isOpen, onOpen, onClose } = useHistoriedModal()
 
@@ -88,6 +92,10 @@ const SleepChartContainer: FC<{
       )
     : new Date()
 
+  const calendarWithEvents = useCalendarWithEvents(
+    isPublic ? [] : calendars ?? []
+  )
+
   return (
     <Box as="main" h="full">
       <Container
@@ -116,6 +124,7 @@ const SleepChartContainer: FC<{
                   targetDate={zonedTargetDate}
                   displayMode={displayMode}
                   isPublic={isPublic}
+                  calendarWithEvents={calendarWithEvents}
                 />
                 <Show above="md">
                   <Box
