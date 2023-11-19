@@ -39,6 +39,15 @@ export const metadata: Metadata = {
       : new URL(`http://localhost:${process.env.PORT || 3000}`),
 }
 
+const webSite = {
+  __html: `{
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Sleep Predictor",
+    "url": "https://www.sleep-predictor.com/"
+  }`,
+}
+
 // TODO カラーモードをcookieで管理してthemeColorを出し分ける
 export const viewport: Viewport = {
   themeColor: '#f7f9f7',
@@ -71,6 +80,7 @@ export default function RootLayout({
           name="google-site-verification"
           content="xAfdL6ZaWvrHkTbulE1KM7b526NAjAd3tBm7E__LxAM"
         />
+        <script type="application/ld+json" dangerouslySetInnerHTML={webSite} />
       </head>
       {process.env.VERCEL_ENV === 'production' && <AxiomWebVitals />}
       <GoogleAnalytics />
