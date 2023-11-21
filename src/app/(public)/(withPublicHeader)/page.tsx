@@ -14,6 +14,7 @@ import {
 import heroDesktop from '@/assets/hero-desktop.png'
 import heroMobile from '@/assets/hero-mobile.png'
 import { detectMobileByUserAgent } from '@/utils/detectMobileByUserAgent'
+import { ogSettings } from '@/constants/og'
 
 const TITLE = 'Sleep Predictor'
 const DESCRIPTION =
@@ -23,6 +24,7 @@ export const metadata: Metadata = {
   alternates: { canonical: 'https://www.sleep-predictor.com' },
   description: DESCRIPTION,
   openGraph: {
+    ...ogSettings,
     title: { absolute: TITLE },
     description: DESCRIPTION,
   },

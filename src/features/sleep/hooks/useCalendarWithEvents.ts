@@ -8,7 +8,7 @@ export type CalendarWithEvents = {
   events: ICalEvent[]
 }
 
-export const useCalendarWithEvents = (calendars: Calendar[]) => {
+export const useCalendarWithEvents = (calendars: Calendar[] | undefined) => {
   const [calendarWithEvents, setCalendarWithEvents] = useState<
     CalendarWithEvents[]
   >([])
@@ -16,8 +16,12 @@ export const useCalendarWithEvents = (calendars: Calendar[]) => {
   const [, startTransition] = useTransition()
   const toast = useToast()
   useEffect(() => {
+    if (!calendars) return
+    console.log(calendars)
+
     startTransition(async () => {
       const { data, error } = await parseICals(calendars.map((c) => c.url))
+      console.log(data, error)
       if (error) {
         toast({
           title: '外部カレンダーの読み込みに失敗しました。',
@@ -26,12 +30,7 @@ export const useCalendarWithEvents = (calendars: Calendar[]) => {
         return
       }
 
-      setCalendarWithEvents(
-        data.map(({ events }, i) => ({
-          calendarName: calendars[i].name,
-          events: events,
-        }))
-      )
+      setCalendarWithEvents([])
     })
   }, [calendars, toast])
 
