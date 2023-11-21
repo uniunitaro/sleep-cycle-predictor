@@ -92,9 +92,7 @@ const SleepChartContainer: FC<{
       )
     : new Date()
 
-  const calendarWithEvents = useCalendarWithEvents(
-    isPublic ? [] : calendars ?? []
-  )
+  const calendarWithEvents = useCalendarWithEvents(calendars)
 
   return (
     <Box as="main" h="full">

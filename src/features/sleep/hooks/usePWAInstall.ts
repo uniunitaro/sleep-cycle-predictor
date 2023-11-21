@@ -8,11 +8,13 @@ export const usePWAInstall = () => {
   const sleepAddCount = useAtomValue(sleepAddCountAtom)
 
   const hasDismissedPWAInstall =
+    typeof window !== 'undefined' &&
     localStorage.getItem('hasDismissedPWAInstall') === 'true'
 
   const isMobileOrTablet =
-    navigator.userAgent.includes('Mobi') ||
-    navigator.userAgent.includes('Android')
+    typeof window !== 'undefined' &&
+    (navigator.userAgent.includes('Mobi') ||
+      navigator.userAgent.includes('Android'))
 
   const shouldSuggestPWAInstall =
     !!installPrompt &&
