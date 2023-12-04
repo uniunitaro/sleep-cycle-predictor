@@ -3,7 +3,6 @@
 import { FC } from 'react'
 import NextLink from 'next/link'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { Link } from '@chakra-ui/next-js'
 import {
   Box,
   Button,
@@ -23,6 +22,7 @@ import GoogleLogo from '@/features/auth/components/GoogleLogo'
 import { useErrorToast } from '@/hooks/useErrorToast'
 import ProviderButton from '@/features/auth/components/ProviderButton'
 import XLogo from '@/features/auth/components/XLogo'
+import Link from '@/components/Link'
 
 const SignUp: FC = () => {
   const supabase = createClientComponentClient()
