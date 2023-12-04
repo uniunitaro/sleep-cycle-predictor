@@ -9,7 +9,7 @@ import SrcDurationSelect from '@/features/user/components/settings/SrcDurationSe
 import DeleteAccount from '@/features/user/components/settings/DeleteAccount'
 import { CardBodyMdOnly, CardMdOnly } from '@/components/MdOnlyCards'
 import AvatarSetting from '@/features/user/components/settings/AvatarSetting'
-import CalendarSetting from '@/features/user/components/settings/CalendarSetting'
+// import CalendarSetting from '@/features/user/components/settings/CalendarSetting'
 
 const Settings: FC<{ userWithConfig: AuthUserWithConfig }> = ({
   userWithConfig,
@@ -59,7 +59,7 @@ const Settings: FC<{ userWithConfig: AuthUserWithConfig }> = ({
                   />
                 </Stack>
               </Stack>
-              <Stack spacing="5">
+              {/* <Stack spacing="5">
                 <Heading as="h2" size="md">
                   外部カレンダー
                 </Heading>
@@ -68,7 +68,7 @@ const Settings: FC<{ userWithConfig: AuthUserWithConfig }> = ({
                     calendars={userWithConfig.config.calendars}
                   />
                 </Stack>
-              </Stack>
+              </Stack> */}
               <Stack spacing="5">
                 <Heading as="h2" size="md">
                   アカウントの削除

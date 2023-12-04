@@ -2,7 +2,6 @@ import { FC } from 'react'
 import {
   Container,
   Heading,
-  Link,
   ListItem,
   OrderedList,
   Text,
@@ -13,6 +12,7 @@ import {
   CardMdOnly,
 } from '@/components/MdOnlyCards'
 import SectionHeading from '@/components/SectionHeading'
+import Link from '@/components/Link'
 
 const Privacy: FC = () => {
   return (

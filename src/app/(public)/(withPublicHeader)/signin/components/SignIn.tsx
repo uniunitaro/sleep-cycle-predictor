@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Link } from '@chakra-ui/next-js'
 import NextLink from 'next/link'
 import {
   Alert,
@@ -34,6 +33,7 @@ import ProviderButton from '@/features/auth/components/ProviderButton'
 import GoogleLogo from '@/features/auth/components/GoogleLogo'
 import { useErrorToast } from '@/hooks/useErrorToast'
 import XLogo from '@/features/auth/components/XLogo'
+import Link from '@/components/Link'
 
 const schema = z.object({
   email: z
