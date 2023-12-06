@@ -71,6 +71,7 @@ export default function RootLayout({
           name="google-site-verification"
           content="xAfdL6ZaWvrHkTbulE1KM7b526NAjAd3tBm7E__LxAM"
         />
+        <meta name="msvalidate.01" content="B7C4FCF4692F34C672D5080DAA12F16D" />
       </head>
       {process.env.VERCEL_ENV === 'production' && <AxiomWebVitals />}
       <GoogleAnalytics />
