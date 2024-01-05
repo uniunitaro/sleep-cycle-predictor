@@ -36,7 +36,7 @@ const Layout: FC<{ headingText: string; children: ReactNode }> = ({
               {children}
               <Section className="text-center mt-[20px]">
                 <Text className="text-[#666666] text-[12px] leading-[24px]">
-                  © 2023 Sleep Predictor
+                  © 2023-2024 Sleep Predictor
                 </Text>
               </Section>
             </Container>

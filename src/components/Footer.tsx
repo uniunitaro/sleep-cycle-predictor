@@ -12,7 +12,7 @@ const Footer: FC = () => {
           flexDir={{ base: 'column-reverse', md: 'row' }}
         >
           <Text color="secondaryGray" fontSize="sm">
-            © 2023 Sleep Predictor
+            © 2023-2024 Sleep Predictor
           </Text>
           <HStack spacing="6">
             <Button
