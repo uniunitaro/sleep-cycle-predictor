@@ -68,7 +68,7 @@ export const setupDatabase = async () => {
       .update(config)
       .set({
         // homeでsleepsとpredictionsをテストするために1年に設定、詳細はhomeのテストファイル参照
-        predictionSrcDuration: 'year1',
+        predictionSrcDuration: 'year10',
       })
       .where(eq(config.userId, uuidToBin(userId)))
   }

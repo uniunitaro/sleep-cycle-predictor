@@ -2,8 +2,8 @@ import path from 'path'
 import { authedTest, expect } from './setup/fixtures'
 
 /*
-サーバー側のDateには関与できないので一年ごとに書き換える苦肉の策をとる
-${currentYear}-01-01でsleepsの表示を確認し、${nextYear}-01-01でpredictionsの表示を確認する
+サーバー側のDateには関与できないので10年ごとに書き換える苦肉の策をとる
+2023-01-01でsleepsの表示を確認し、2033-01-01でpredictionsの表示を確認する
 
 setupで01-01 ~ 01-04の睡眠が作成されている
 */
@@ -37,7 +37,7 @@ authedTest.describe('home', () => {
     })
   })
 
-  authedTest.describe('date: ${currentYear}-01-01', () => {
+  authedTest.describe('date: 2023-01-01', () => {
     authedTest.beforeEach(async ({ page }) => {
       await page.goto('/home?date=2023-01-01', { waitUntil: 'networkidle' })
     })
@@ -323,7 +323,7 @@ authedTest.describe('home', () => {
     })
   })
 
-  authedTest.describe('mobile-date: ${currentYear}-01-01', () => {
+  authedTest.describe('mobile-date: 2023-01-01', () => {
     authedTest.beforeEach(async ({ page }) => {
       await page.goto('/home?date=2023-01-01&displayMode=list', {
         waitUntil: 'networkidle',
@@ -423,9 +423,9 @@ authedTest.describe('home', () => {
     })
   })
 
-  authedTest.describe('date: ${nextYear}-01-01', () => {
+  authedTest.describe('date: 2033-01-01', () => {
     authedTest.beforeEach(async ({ page }) => {
-      await page.goto('/home?date=2024-01-01', { waitUntil: 'networkidle' })
+      await page.goto('/home?date=2033-01-01', { waitUntil: 'networkidle' })
     })
     authedTest('VRT-predictions', async ({ page }) => {
       await expect.soft(page).toHaveScreenshot({ fullPage: true })

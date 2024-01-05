@@ -21,5 +21,8 @@ export const getSrcStart = (
       return subMonths(new Date(), 6)
     case 'year1':
       return subYears(new Date(), 1)
+    case 'year10':
+      // for testing only
+      return subYears(new Date(), 10)
   }
 }

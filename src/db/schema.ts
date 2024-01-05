@@ -53,6 +53,7 @@ export const config = mysqlTable('Config', {
     'month4',
     'month6',
     'year1',
+    'year10', // for testing only
   ])
     .default('month2')
     .notNull(),
