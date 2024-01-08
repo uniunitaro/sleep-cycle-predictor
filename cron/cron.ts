@@ -1,7 +1,7 @@
 import { chromium } from '@playwright/test'
 
 const cron = async () => {
-  const browser = await chromium.launch({ headless: false })
+  const browser = await chromium.launch()
   const context = await browser.newContext({ serviceWorkers: 'block' })
   const page = await context.newPage()
   await page.goto('https://www.sleep-predictor.com/signin')
