@@ -280,8 +280,10 @@ export const theme = extendTheme({
           },
         },
       },
-      '*': {
-        scrollbarWidth: 'thin',
+      '@supports not selector(::-webkit-scrollbar)': {
+        '*': {
+          scrollbarWidth: 'thin',
+        },
       },
     }),
   },
