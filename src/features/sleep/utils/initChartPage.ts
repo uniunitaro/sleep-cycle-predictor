@@ -10,6 +10,7 @@ import {
   addMonths,
   endOfWeek,
   addWeeks,
+  isBefore,
 } from 'date-fns'
 import { DisplayMode } from '../types/chart'
 import { getSleeps } from '../repositories/sleeps'
@@ -74,6 +75,8 @@ export const initChartPage = async ({
           1
         )
 
+  const predictionStart = isBefore(start, new Date()) ? new Date() : start
+
   const end =
     displayMode === 'month'
       ? addDays(endOfMonth(addMonths(targetDate, hasTargetDate ? 1 : 2)), 1)
@@ -85,7 +88,7 @@ export const initChartPage = async ({
   if (isPublic) {
     const { predictions, error } = await getPredictions({
       userId,
-      start: new Date(),
+      start: predictionStart,
       end,
     })
 
@@ -94,7 +97,7 @@ export const initChartPage = async ({
     const [sleepsResult, predictionsResult, authUserResult] = await Promise.all(
       [
         getSleeps({ start, end }),
-        getMyPredictions({ start: new Date(), end }),
+        getMyPredictions({ start: predictionStart, end }),
         getAuthUserWithConfig(),
       ]
     )
