@@ -54,9 +54,11 @@ export const config = mysqlTable('Config', {
     'month6',
     'year1',
     'year10', // for testing only
+    'custom',
   ])
     .default('month2')
     .notNull(),
+  predictionSrcStartDate: datetime('predictionSrcStartDate'),
 })
 
 export const configRelations = relations(config, ({ many }) => ({

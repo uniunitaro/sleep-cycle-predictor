@@ -56,6 +56,9 @@ const Settings: FC<{ userWithConfig: AuthUserWithConfig }> = ({
                 <Stack spacing="4">
                   <SrcDurationSelect
                     srcDuration={userWithConfig.config.predictionSrcDuration}
+                    srcStartDate={
+                      userWithConfig.config.predictionSrcStartDate ?? undefined
+                    }
                   />
                 </Stack>
               </Stack>
