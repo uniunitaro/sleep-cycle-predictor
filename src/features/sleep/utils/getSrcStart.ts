@@ -2,9 +2,9 @@ import { subMonths, subWeeks, subYears } from 'date-fns'
 import { Config } from '@/db/schema'
 
 export const getSrcStart = (
-  duration: Config['predictionSrcDuration']
+  config: Pick<Config, 'predictionSrcDuration' | 'predictionSrcStartDate'>
 ): Date => {
-  switch (duration) {
+  switch (config.predictionSrcDuration) {
     case 'week1':
       return subWeeks(new Date(), 1)
     case 'week2':
@@ -24,5 +24,10 @@ export const getSrcStart = (
     case 'year10':
       // for testing only
       return subYears(new Date(), 10)
+    case 'custom':
+      if (!config.predictionSrcStartDate) {
+        throw new Error('predictionSrcStartDate is not set')
+      }
+      return config.predictionSrcStartDate
   }
 }

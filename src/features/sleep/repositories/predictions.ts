@@ -26,7 +26,7 @@ export const getPredictions = async ({
     })
     if (!userConfig) throw new Error('config not found')
 
-    const srcStart = getSrcStart(userConfig.predictionSrcDuration)
+    const srcStart = getSrcStart(userConfig)
     const sleeps = await db.query.sleep.findMany({
       where: and(
         eq(sleep.userId, uuidToBin(userId)),

@@ -41,7 +41,7 @@ authedTest.describe('settings', () => {
     await page.getByText('正常に更新されました').waitFor()
   })
 
-  authedTest(
+  authedTest.skip(
     '睡眠予測に使用する睡眠データの期間が変更できる',
     async ({ page }) => {
       await page

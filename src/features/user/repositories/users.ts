@@ -176,8 +176,10 @@ export const updateEmail = async (
 
 export const updateConfig = async ({
   predictionSrcDuration,
+  predictionSrcStartDate,
 }: {
-  predictionSrcDuration: SrcDuration
+  predictionSrcDuration?: SrcDuration
+  predictionSrcStartDate?: Date
 }): Promise<{ error?: true }> => {
   try {
     const { userId, error } = await getAuthUserIdWithServerAction()
@@ -187,6 +189,7 @@ export const updateConfig = async ({
       .update(config)
       .set({
         predictionSrcDuration,
+        predictionSrcStartDate,
       })
       .where(eq(config.userId, uuidToBin(userId)))
 

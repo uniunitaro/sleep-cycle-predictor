@@ -12,10 +12,7 @@ const cron = async () => {
   await page.getByLabel('パスワード', { exact: true }).fill('pass0000')
   await page.getByRole('button', { name: 'メールアドレスでログイン' }).click()
 
-  // ページタイトルが「Home | Sleep Predictor」になるまで待つ
   await page.waitForURL('https://www.sleep-predictor.com/home')
-
-  // await page.goto('https://www.sleep-predictor.com/home')
 
   await page.waitForTimeout(3000)
 

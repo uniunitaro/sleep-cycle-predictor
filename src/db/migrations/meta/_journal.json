@@ -71,6 +71,13 @@
       "when": 1704430347145,
       "tag": "0009_eager_pete_wisdom",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "5",
+      "when": 1707510650195,
+      "tag": "0010_hard_solo",
+      "breakpoints": true
     }
   ]
 }
