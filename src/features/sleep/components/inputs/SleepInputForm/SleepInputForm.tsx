@@ -4,12 +4,18 @@ import React, { FC, RefObject, createRef, useEffect, useRef } from 'react'
 import { AddIcon } from '@chakra-ui/icons'
 import {
   addDays,
+  getDate,
   getHours,
   getMinutes,
+  getMonth,
+  getYear,
   isAfter,
   isEqual,
+  setDate,
   setHours,
   setMinutes,
+  setMonth,
+  setYear,
   subDays,
 } from 'date-fns'
 import DateAndTimeInput from '../DateAndTimeInput/DateAndTimeInput'
@@ -33,11 +39,22 @@ const SleepInputForm: FC<{
   }
 
   const handleChangeStart = (index: number, start: Date) => {
+    const newStart = (() => {
+      if (isAfter(start, new Date())) {
+        const yesterday = subDays(new Date(), 1)
+        return setYear(
+          setMonth(setDate(start, getDate(yesterday)), getMonth(yesterday)),
+          getYear(yesterday)
+        )
+      }
+      return start
+    })()
+
     const end = sleeps[index].end
     const newEnd = (() => {
       const startTimeOnly = setMinutes(
-        setHours(new Date(), getHours(start)),
-        getMinutes(start)
+        setHours(new Date(), getHours(newStart)),
+        getMinutes(newStart)
       )
       const endTimeOnly = setMinutes(
         setHours(new Date(), getHours(end)),
@@ -49,19 +66,30 @@ const SleepInputForm: FC<{
       ) {
         // endがstartの翌日になる場合
         return setMinutes(
-          setHours(addDays(start, 1), getHours(end)),
+          setHours(addDays(newStart, 1), getHours(end)),
           getMinutes(end)
         )
       } else {
         // endがstartと同じ日になる場合
-        return setMinutes(setHours(start, getHours(end)), getMinutes(end))
+        return setMinutes(setHours(newStart, getHours(end)), getMinutes(end))
       }
     })()
 
-    handleChange(index, { start, end: newEnd })
+    handleChange(index, { start: newStart, end: newEnd })
   }
 
   const handleChangeEnd = (index: number, end: Date) => {
+    const newEnd = (() => {
+      if (isAfter(end, new Date())) {
+        const yesterday = subDays(new Date(), 1)
+        return setYear(
+          setMonth(setDate(end, getDate(yesterday)), getMonth(yesterday)),
+          getYear(yesterday)
+        )
+      }
+      return end
+    })()
+
     const start = sleeps[index].start
     const newStart = (() => {
       const startTimeOnly = setMinutes(
@@ -69,8 +97,8 @@ const SleepInputForm: FC<{
         getMinutes(start)
       )
       const endTimeOnly = setMinutes(
-        setHours(new Date(), getHours(end)),
-        getMinutes(end)
+        setHours(new Date(), getHours(newEnd)),
+        getMinutes(newEnd)
       )
       if (
         isEqual(startTimeOnly, endTimeOnly) ||
@@ -78,16 +106,16 @@ const SleepInputForm: FC<{
       ) {
         // endがstartの翌日になる場合
         return setMinutes(
-          setHours(subDays(end, 1), getHours(start)),
+          setHours(subDays(newEnd, 1), getHours(start)),
           getMinutes(start)
         )
       } else {
         // endがstartと同じ日になる場合
-        return setMinutes(setHours(end, getHours(start)), getMinutes(start))
+        return setMinutes(setHours(newEnd, getHours(start)), getMinutes(start))
       }
     })()
 
-    handleChange(index, { start: newStart, end })
+    handleChange(index, { start: newStart, end: newEnd })
   }
 
   const addSleep = () => {
