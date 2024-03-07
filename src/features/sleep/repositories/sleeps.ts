@@ -206,9 +206,9 @@ export const updateSleep = async ({
         })
         .where(eq(sleep.id, id))
 
-      if (segmentedSleeps.length) {
-        await tx.delete(sleep).where(eq(sleep.parentSleepId, id))
+      await tx.delete(sleep).where(eq(sleep.parentSleepId, id))
 
+      if (segmentedSleeps.length) {
         await tx.insert(sleep).values(
           segmentedSleeps.map(
             (s) =>
