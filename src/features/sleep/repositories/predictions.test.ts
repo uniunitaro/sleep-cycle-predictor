@@ -67,7 +67,7 @@ describe('getMyPredictions', () => {
         id: 100,
         userId: uuidToBin(userId),
         start: new Date('2022-01-01T00:00:00.000Z'),
-        end: new Date('2022-01-01T02:00:00.000Z'),
+        end: new Date('2022-01-01T04:00:00.000Z'),
       },
       {
         userId: uuidToBin(userId),
@@ -81,7 +81,6 @@ describe('getMyPredictions', () => {
         end: new Date('2022-01-01T06:00:00.000Z'),
         parentSleepId: 100,
       },
-
       testCases[1],
       testCases[2],
     ] satisfies Parameters<typeof sleepFactory.create>[0]
@@ -105,9 +104,8 @@ describe('getMyPredictions', () => {
         id: 100,
         userId: uuidToBin(userId),
         start: new Date('2022-01-01T00:00:00.000Z'),
-        end: new Date('2022-01-01T02:00:00.000Z'),
+        end: new Date('2022-01-01T04:00:00.000Z'),
       },
-
       {
         userId: uuidToBin(userId),
         start: new Date('2022-01-01T04:00:00.000Z'),
