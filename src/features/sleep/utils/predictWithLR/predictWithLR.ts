@@ -17,11 +17,16 @@ export const predictWithLR = (
       // 睡眠開始時刻の昇順でソートされているので最後の要素が最も遅い睡眠
       const lastSegmentedSleep =
         sleep.segmentedSleeps[sleep.segmentedSleeps.length - 1]
+      const totalDuration = [sleep, ...sleep.segmentedSleeps].reduce(
+        (total, segmentedSleep) =>
+          total +
+          (getUnixTime(segmentedSleep.end) - getUnixTime(segmentedSleep.start)),
+        0
+      )
       return [
         {
           sleep: { ...sleep, start: sleep.start, end: lastSegmentedSleep.end },
-          duration:
-            getUnixTime(lastSegmentedSleep.end) - getUnixTime(sleep.start),
+          duration: totalDuration,
           sleepMidUnixTime:
             getUnixTime(sleep.start) +
             (getUnixTime(lastSegmentedSleep.end) - getUnixTime(sleep.start)) /

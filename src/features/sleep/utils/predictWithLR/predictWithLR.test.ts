@@ -196,10 +196,11 @@ describe('predictWithLR', () => {
         : sleep
     )
 
+    // 分割睡眠の日は睡眠時間が4時間のため予測される睡眠時間は短くなる
     const expected = [
       {
-        start: new Date('2022-01-08T07:00:00.000Z'),
-        end: new Date('2022-01-08T15:00:00.000Z'),
+        start: new Date('2022-01-08T07:15:00.000Z'),
+        end: new Date('2022-01-08T14:45:00.000Z'),
       },
     ]
     const result = predictWithLR(
