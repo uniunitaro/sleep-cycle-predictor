@@ -11,13 +11,11 @@
     "test": "pnpm test:db:push && dotenv -e .env.test -- jest",
     "e2e": "pnpm build && (pnpm start & dotenv -e .env.e2e -- pnpm playwright test)",
     "e2e:update": "pnpm build && (pnpm start & dotenv -e .env.e2e -- pnpm playwright test --update-snapshots)",
-    "db:generate": "pnpm run with-env drizzle-kit generate:mysql",
-    "db:push": "pnpm run with-env tsx src/db/migrate.ts",
-    "test:db:push": "dotenv -e .env.test -- drizzle-kit push:mysql",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "test:db:push": "dotenv -e .env.test -- prisma db push",
     "gen:theme-typings": "chakra-cli tokens src/libs/chakraTheme.ts",
-    "postinstall": "pnpm run gen:theme-typings",
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build",
+    "postinstall": "pnpm run gen:theme-typings && pnpm run db:generate",
     "with-env": "dotenv -e .env.local --",
     "prepare": "husky install && panda codegen",
     "analyze": "ANALYZE=true pnpm build"
@@ -33,11 +31,14 @@
     "@emotion/styled": "^11.11.0",
     "@hookform/resolvers": "^3.3.2",
     "@internationalized/date": "^3.5.0",
+    "@libsql/client": "^0.5.3",
     "@mui/material": "^5.14.19",
     "@mui/x-date-pickers": "^6.18.3",
     "@next/bundle-analyzer": "^13.5.6",
     "@park-ui/presets": "^0.18.0",
     "@planetscale/database": "^1.11.0",
+    "@prisma/adapter-libsql": "^5.10.2",
+    "@prisma/client": "5.10.2",
     "@supabase/auth-helpers-nextjs": "^0.8.7",
     "@supabase/supabase-js": "^2.39.0",
     "@types/node": "18.15.11",
@@ -57,7 +58,7 @@
     "ics": "^3.5.0",
     "jotai": "^2.6.0",
     "mysql2": "^3.6.5",
-    "next": "14.0.3",
+    "next": "14.1.2",
     "next-axiom": "^1.1.1",
     "prettier": "^2.8.8",
     "react": "^18.2.0",
@@ -78,6 +79,9 @@
     "@faker-js/faker": "^8.3.1",
     "@pandacss/dev": "^0.15.5",
     "@playwright/test": "1.39.0",
+    "@quramy/jest-prisma": "^1.8.0",
+    "@quramy/jest-prisma-node": "^1.8.0",
+    "@quramy/prisma-fabbrica": "^2.1.0",
     "@storybook/addon-essentials": "^7.6.3",
     "@storybook/addon-interactions": "^7.6.3",
     "@storybook/addon-links": "^7.6.3",
@@ -106,6 +110,7 @@
     "jest-environment-jsdom": "^29.7.0",
     "msw": "^1.3.2",
     "msw-storybook-addon": "^1.10.0",
+    "prisma": "^5.10.2",
     "sinon": "^17.0.1",
     "storybook": "^7.6.3",
     "ts-jest": "^29.1.1",
@@ -119,5 +124,9 @@
     "overrides": {
       "postcss@<8.4.31": ">=8.4.31"
     }
+  },
+  "prisma": {
+    "schema": "src/prisma/schema.prisma",
+    "seed": "tsx src/prisma/seed.ts"
   }
 }

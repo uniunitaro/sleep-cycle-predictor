@@ -1,55 +1,54 @@
 import { getMyPredictions, getPredictions } from './predictions'
-import {
-  configFactory,
-  sleepFactory,
-  userFactory,
-} from '@/libs/drizzleFactories'
-import { uuidToBin } from '@/utils/uuid'
+import { ConfigFactory, UserFactory } from '@/libs/factories'
+import { defineSleepFactory } from '@/src/__generated__/fabbrica'
 
 jest.mock('@/utils/getAuthUserId', () => ({
   getAuthUserIdWithServerAction: jest
     .fn()
-    .mockResolvedValue({ userId: '2db90a08-7418-53c0-69dc-6bd37e968357' }),
+    .mockResolvedValue({ userId: 'test' }),
   getAuthUserIdWithServerComponent: jest
     .fn()
-    .mockResolvedValue({ userId: '2db90a08-7418-53c0-69dc-6bd37e968357' }),
+    .mockResolvedValue({ userId: 'test' }),
 }))
-const userId = '2db90a08-7418-53c0-69dc-6bd37e968357'
+const userId = 'test'
 
 jest.mock('../utils/getSrcStart', () => ({
   getSrcStart: jest.fn().mockReturnValue(new Date('2022-01-01T00:00:00.000Z')),
 }))
 
+const SleepFactory = defineSleepFactory({
+  defaultData: {
+    user: {
+      connect: {
+        id: userId,
+      },
+    },
+  },
+})
+
 beforeEach(async () => {
-  await userFactory.create({
-    id: uuidToBin(userId),
-  })
-  await configFactory.create({
-    userId: uuidToBin(userId),
-  })
+  await UserFactory.create({ id: userId })
+  await ConfigFactory.create({ user: { connect: { id: userId } } })
 })
 
 const testCases = [
   {
-    userId: uuidToBin(userId),
     start: new Date('2022-01-01T00:00:00.000Z'),
     end: new Date('2022-01-01T08:00:00.000Z'),
   },
   {
-    userId: uuidToBin(userId),
     start: new Date('2022-01-02T01:00:00.000Z'),
     end: new Date('2022-01-02T09:00:00.000Z'),
   },
   {
-    userId: uuidToBin(userId),
     start: new Date('2022-01-03T02:00:00.000Z'),
     end: new Date('2022-01-03T10:00:00.000Z'),
   },
-] satisfies Parameters<typeof sleepFactory.create>[0]
+] satisfies Parameters<typeof SleepFactory.createList>[0]
 
 describe('getMyPredictions', () => {
   test('予測睡眠データの配列が返される', async () => {
-    await sleepFactory.create(testCases)
+    await SleepFactory.createList(testCases)
 
     const payload = {
       start: new Date('2022-01-04T00:00:00.000Z'),
@@ -62,29 +61,28 @@ describe('getMyPredictions', () => {
   })
 
   test('segmentedSleepsがあるとき', async () => {
-    const sleeps = [
+    await SleepFactory.createList([
       {
-        id: 100,
-        userId: uuidToBin(userId),
         start: new Date('2022-01-01T00:00:00.000Z'),
         end: new Date('2022-01-01T04:00:00.000Z'),
-      },
-      {
-        userId: uuidToBin(userId),
-        start: new Date('2022-01-01T06:00:00.000Z'),
-        end: new Date('2022-01-01T08:00:00.000Z'),
-        parentSleepId: 100,
-      },
-      {
-        userId: uuidToBin(userId),
-        start: new Date('2022-01-01T04:00:00.000Z'),
-        end: new Date('2022-01-01T06:00:00.000Z'),
-        parentSleepId: 100,
+        segmentedSleeps: {
+          create: [
+            {
+              userId,
+              start: new Date('2022-01-01T06:00:00.000Z'),
+              end: new Date('2022-01-01T08:00:00.000Z'),
+            },
+            {
+              userId,
+              start: new Date('2022-01-01T04:00:00.000Z'),
+              end: new Date('2022-01-01T06:00:00.000Z'),
+            },
+          ],
+        },
       },
       testCases[1],
       testCases[2],
-    ] satisfies Parameters<typeof sleepFactory.create>[0]
-    await sleepFactory.create(sleeps)
+    ])
 
     const payload = {
       start: new Date('2022-01-04T00:00:00.000Z'),
@@ -97,29 +95,28 @@ describe('getMyPredictions', () => {
   })
 
   test('降順でsleepレコードが存在していても適切に予測される', async () => {
-    const sleeps = [
+    await SleepFactory.createList([
       testCases[2],
       testCases[1],
       {
-        id: 100,
-        userId: uuidToBin(userId),
         start: new Date('2022-01-01T00:00:00.000Z'),
         end: new Date('2022-01-01T04:00:00.000Z'),
+        segmentedSleeps: {
+          create: [
+            {
+              userId,
+              start: new Date('2022-01-01T04:00:00.000Z'),
+              end: new Date('2022-01-01T06:00:00.000Z'),
+            },
+            {
+              userId,
+              start: new Date('2022-01-01T06:00:00.000Z'),
+              end: new Date('2022-01-01T08:00:00.000Z'),
+            },
+          ],
+        },
       },
-      {
-        userId: uuidToBin(userId),
-        start: new Date('2022-01-01T04:00:00.000Z'),
-        end: new Date('2022-01-01T06:00:00.000Z'),
-        parentSleepId: 100,
-      },
-      {
-        userId: uuidToBin(userId),
-        start: new Date('2022-01-01T06:00:00.000Z'),
-        end: new Date('2022-01-01T08:00:00.000Z'),
-        parentSleepId: 100,
-      },
-    ] satisfies Parameters<typeof sleepFactory.create>[0]
-    await sleepFactory.create(sleeps)
+    ])
 
     const payload = {
       start: new Date('2022-01-04T00:00:00.000Z'),
@@ -134,7 +131,7 @@ describe('getMyPredictions', () => {
 
 describe('getPredictions', () => {
   test('予測睡眠データの配列が返される', async () => {
-    await sleepFactory.create(testCases)
+    await SleepFactory.createList(testCases)
 
     const payload = {
       userId,

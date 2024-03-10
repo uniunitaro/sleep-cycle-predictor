@@ -1,10 +1,11 @@
 import { subMonths, subWeeks, subYears } from 'date-fns'
-import { Config } from '@/db/schema'
+import { Config } from '@prisma/client'
+import { SrcDuration } from '@/features/user/constants/predictionSrcDurations'
 
 export const getSrcStart = (
   config: Pick<Config, 'predictionSrcDuration' | 'predictionSrcStartDate'>
 ): Date => {
-  switch (config.predictionSrcDuration) {
+  switch (config.predictionSrcDuration as SrcDuration) {
     case 'week1':
       return subWeeks(new Date(), 1)
     case 'week2':
