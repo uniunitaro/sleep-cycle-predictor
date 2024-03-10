@@ -455,8 +455,6 @@ const DragContainer: FC<{
           previous: { x: dragContainerWidth },
           next: { x: -dragContainerWidth },
         }}
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
         transition={{ duration: 0.3 }}
       >
         {children}
