@@ -105,12 +105,16 @@ const MobileTimeInput: FC<Props> = memo(({ value, ariaLabel, onChange }) => {
         onClick={handleOpen}
         onKeyDown={(e) => e.key === 'Enter' && handleOpen()}
         tabIndex={0}
+        sx={{
+          WebkitTapHighlightColor: 'transparent',
+        }}
       >
         <Input
           value={inputValue}
           tabIndex={-1}
           id=""
           isReadOnly
+          pointerEvents="none"
           aria-hidden
           _focusVisible={{}}
         />

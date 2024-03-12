@@ -121,20 +121,18 @@ const DateInput: FC<Props> = memo(({ value, id, ariaLabel, onChange }) => {
               id={id}
             />
           </PopoverAnchor>
-          <Show above="md">
-            <PopoverContent ref={popoverContentRef} w="auto">
-              <PopoverBody p="0">
-                <DatePicker
-                  value={[parseDate(oldInputValue.replaceAll('/', '-'))]}
-                  selectionMode="single"
-                  locale="ja"
-                  max={parseDate(format(new Date(), 'yyyy-MM-dd'))}
-                  disableFocus
-                  onChange={handleClickDate}
-                />
-              </PopoverBody>
-            </PopoverContent>
-          </Show>
+          <PopoverContent ref={popoverContentRef} w="auto">
+            <PopoverBody p="0">
+              <DatePicker
+                value={[parseDate(oldInputValue.replaceAll('/', '-'))]}
+                selectionMode="single"
+                locale="ja"
+                max={parseDate(format(new Date(), 'yyyy-MM-dd'))}
+                disableFocus
+                onChange={handleClickDate}
+              />
+            </PopoverBody>
+          </PopoverContent>
         </Popover>
       </Show>
       <Hide above="md">
@@ -149,6 +147,9 @@ const DateInput: FC<Props> = memo(({ value, id, ariaLabel, onChange }) => {
             }
           }}
           tabIndex={0}
+          sx={{
+            WebkitTapHighlightColor: 'transparent',
+          }}
         >
           <Input
             ref={inputRef}
@@ -156,6 +157,7 @@ const DateInput: FC<Props> = memo(({ value, id, ariaLabel, onChange }) => {
             tabIndex={-1}
             id=""
             isReadOnly
+            pointerEvents="none"
             aria-hidden
             _focusVisible={{}}
           />
