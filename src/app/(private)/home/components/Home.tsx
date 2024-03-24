@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, Suspense } from 'react'
 import dynamic from 'next/dynamic'
 import { Prediction, Sleep } from '@/features/sleep/types/sleep'
 import { DisplayMode } from '@/features/sleep/types/chart'
@@ -31,15 +31,17 @@ const Home: FC<{
       <Flex direction="column" h="100%">
         <ChartPageHeader displayMode={displayMode} />
         <Box flex="1" minH="0">
-          <SleepChartContainer
-            sleeps={sleeps}
-            predictions={predictions}
-            targetDate={targetDate}
-            hasTargetDate={hasTargetDate}
-            displayMode={displayMode}
-            calendars={calendars}
-            isPublic={false}
-          />
+          <Suspense>
+            <SleepChartContainer
+              sleeps={sleeps}
+              predictions={predictions}
+              targetDate={targetDate}
+              hasTargetDate={hasTargetDate}
+              displayMode={displayMode}
+              calendars={calendars}
+              isPublic={false}
+            />
+          </Suspense>
         </Box>
       </Flex>
     )

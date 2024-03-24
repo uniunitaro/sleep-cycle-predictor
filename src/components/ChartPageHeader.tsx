@@ -26,7 +26,9 @@ const ChartPageHeader: FC<{ displayMode: DisplayMode }> = async ({
         <Flex align="center" h="full">
           <HStack spacing="4">
             <Hide above="md">
-              <DrawerMenu displayMode={displayMode} />
+              <Suspense>
+                <DrawerMenu displayMode={displayMode} />
+              </Suspense>
             </Hide>
             <Link href="/home">
               <Logo />
@@ -45,7 +47,9 @@ const ChartPageHeader: FC<{ displayMode: DisplayMode }> = async ({
     <SignedOutHeader
       drawer={
         <Hide above="md">
-          <DrawerMenu displayMode={displayMode} />
+          <Suspense>
+            <DrawerMenu displayMode={displayMode} />
+          </Suspense>
         </Hide>
       }
     />

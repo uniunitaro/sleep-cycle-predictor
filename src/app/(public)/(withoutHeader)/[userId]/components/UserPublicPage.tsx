@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, Suspense } from 'react'
 import dynamic from 'next/dynamic'
 import { Avatar, Box, Flex, HStack, Heading } from '@/components/chakra'
 import { User } from '@/features/user/types/user'
@@ -21,32 +21,34 @@ const UserPublicPage: FC<{
     <Flex direction="column" h="100%">
       <ChartPageHeader displayMode={displayMode} />
       <Box flex="1" minH="0">
-        <SleepChartContainer
-          sleeps={[]}
-          predictions={predictions}
-          targetDate={targetDate}
-          hasTargetDate={hasTargetDate}
-          displayMode={displayMode}
-          isPublic={true}
-          userHeading={
-            <HStack
-              px="4"
-              pt={{ base: '2', md: '0' }}
-              pb={{ base: '0', md: '3' }}
-            >
-              <Avatar
-                name={user.nickname}
-                src={user.avatarUrl ?? undefined}
-                size={{ base: 'sm', md: 'md' }}
-                background={user.avatarUrl ? 'unset' : undefined}
-                ignoreFallback
-              />
-              <Heading size={{ base: 'sm', md: 'md' }}>
-                {user && `${user.nickname}さんの睡眠予測`}
-              </Heading>
-            </HStack>
-          }
-        />
+        <Suspense>
+          <SleepChartContainer
+            sleeps={[]}
+            predictions={predictions}
+            targetDate={targetDate}
+            hasTargetDate={hasTargetDate}
+            displayMode={displayMode}
+            isPublic={true}
+            userHeading={
+              <HStack
+                px="4"
+                pt={{ base: '2', md: '0' }}
+                pb={{ base: '0', md: '3' }}
+              >
+                <Avatar
+                  name={user.nickname}
+                  src={user.avatarUrl ?? undefined}
+                  size={{ base: 'sm', md: 'md' }}
+                  background={user.avatarUrl ? 'unset' : undefined}
+                  ignoreFallback
+                />
+                <Heading size={{ base: 'sm', md: 'md' }}>
+                  {user && `${user.nickname}さんの睡眠予測`}
+                </Heading>
+              </HStack>
+            }
+          />
+        </Suspense>
       </Box>
     </Flex>
   )
