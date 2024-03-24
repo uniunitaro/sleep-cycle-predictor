@@ -14,7 +14,6 @@ authedTest.beforeEach(async ({ context }) => {
   })
 
   await context.addInitScript(() => {
-    // @ts-expect-error ignore
     window.sinon.useFakeTimers({
       now: new Date(2023, 0, 10),
       toFake: ['Date'],
