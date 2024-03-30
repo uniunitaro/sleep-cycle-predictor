@@ -31,8 +31,8 @@ const DatePicker = (props: DatePickerProps & { disableFocus?: boolean }) => {
     >
       {(api) => (
         <>
-          <DatePickerContent bgColor="transparent" px="2">
-            <Stack gap="3">
+          <DatePickerContent bgColor="transparent" px="2" py="2">
+            <Stack gap="1">
               <Stack justify="space-between" direction="row">
                 <DatePickerPrevTrigger asChild>
                   <IconButton
@@ -65,7 +65,7 @@ const DatePicker = (props: DatePickerProps & { disableFocus?: boolean }) => {
                 </DatePickerNextTrigger>
               </Stack>
               {api.view === 'day' && (
-                <DatePickerGrid>
+                <DatePickerGrid gap="0">
                   <DatePickerRowHeader>
                     {api.weekDays.map((day, i) => (
                       <DatePickerColumnHeader key={i} aria-label={day.long}>
@@ -73,7 +73,7 @@ const DatePicker = (props: DatePickerProps & { disableFocus?: boolean }) => {
                       </DatePickerColumnHeader>
                     ))}
                   </DatePickerRowHeader>
-                  <DatePickerRowGroup>
+                  <DatePickerRowGroup gap="0">
                     {api.weeks.map((week, id) => (
                       <DatePickerRow key={id}>
                         {week.map((day, id) => (

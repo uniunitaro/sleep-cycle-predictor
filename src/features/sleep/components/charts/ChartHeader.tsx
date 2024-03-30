@@ -60,6 +60,7 @@ const ChartHeader: FC<{
           aria-label={displayMode === 'week' ? '前の週を表示' : '前の月を表示'}
           size="sm"
           variant="ghost"
+          prefetch={true}
         />
         <Heading size="md" fontWeight="normal">
           {format(targetDate, 'yyyy年M月')}
@@ -71,6 +72,7 @@ const ChartHeader: FC<{
           aria-label={displayMode === 'week' ? '次の週を表示' : '次の月を表示'}
           size="sm"
           variant="ghost"
+          prefetch={true}
         />
       </HStack>
       <Spacer />
