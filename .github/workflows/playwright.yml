@@ -6,14 +6,19 @@ jobs:
   test_setup:
     runs-on: ubuntu-latest
     outputs:
-      preview_url: ${{ steps.waitForVercelPreviewDeployment.outputs.url }}
+      preview_url: ${{ steps.awaitCFPages.outputs.url }}
+    permissions:
+      contents: read
+      deployments: write
     steps:
-      - name: Waiting for 200 from the Vercel Preview
-        uses: uniunitaro/wait-for-vercel-preview@main
-        id: waitForVercelPreviewDeployment
+      - name: Await CF Pages
+        uses: WalshyDev/cf-pages-await@v1
+        id: awaitCFPages
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          max_timeout: 600
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: '035105a500f32e7a9e3abef7f599ee43'
+          project: 'sleep-cycle-predictor'
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
   db_setup:
     runs-on: ubuntu-latest
     steps:
