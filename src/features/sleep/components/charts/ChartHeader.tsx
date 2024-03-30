@@ -27,7 +27,7 @@ import {
   Tooltip,
   useBreakpointValue,
   useDisclosure,
-} from '@/components/chakra'
+} from '@chakra-ui/react'
 
 const ChartHeader: FC<{
   targetDate: Date

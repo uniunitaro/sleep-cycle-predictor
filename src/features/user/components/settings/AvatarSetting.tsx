@@ -27,7 +27,7 @@ import {
   SliderTrack,
   useColorModeValue,
   useDisclosure,
-} from '@/components/chakra'
+} from '@chakra-ui/react'
 import 'cropperjs/dist/cropper.css'
 import { useErrorToast } from '@/hooks/useErrorToast'
 

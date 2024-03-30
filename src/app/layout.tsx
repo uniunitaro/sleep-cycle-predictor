@@ -1,10 +1,10 @@
 import { Metadata, Viewport } from 'next'
 import { Noto_Sans_JP, Roboto } from 'next/font/google'
 import { AxiomWebVitals } from 'next-axiom'
+import { GoogleAnalytics } from '@next/third-parties/google'
 import Providers from '@/components/Providers'
 import ThemeColorManager from '@/components/ThemeColorManager'
 import { ogSettings } from '@/constants/og'
-import GoogleAnalytics from '@/components/GoogleAnalytics'
 import InstallPromptManager from '@/components/InstallPromptManager'
 
 const DEFAULT_TITLE = 'Sleep Predictor'
@@ -74,7 +74,7 @@ export default function RootLayout({
         <meta name="msvalidate.01" content="B7C4FCF4692F34C672D5080DAA12F16D" />
       </head>
       {process.env.VERCEL_ENV === 'production' && <AxiomWebVitals />}
-      <GoogleAnalytics />
+      <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID ?? ''} />
       <InstallPromptManager />
       <body>
         <Providers>

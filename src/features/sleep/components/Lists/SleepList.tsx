@@ -10,7 +10,7 @@ import {
   selectedSleepOrPredictionAtom,
 } from '@/features/sleep/atoms/globalModals'
 import { Prediction, Sleep } from '@/features/sleep/types/sleep'
-import { Box, Center, Stack, Text, VStack } from '@/components/chakra'
+import { Box, Center, Stack, Text, VStack } from '@chakra-ui/react'
 import notFoundImage from '@/assets/404.png'
 
 type Props = {

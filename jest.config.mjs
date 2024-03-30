@@ -23,9 +23,15 @@ const config = {
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+  setupFilesAfterEnv: [
+    '<rootDir>/jest.setup.ts',
+    '@quramy/prisma-fabbrica/scripts/jest-prisma',
+  ],
   testPathIgnorePatterns: ['<rootDir>/node_modules/', '<rootDir>/e2e/'],
-  testEnvironment: 'jest-environment-jsdom',
+  testEnvironment: '@quramy/jest-prisma/environment',
+  testEnvironmentOptions: {
+    customExportConditions: ['browser', 'node'],
+  },
 }
 
 export default createJestConfig(config)

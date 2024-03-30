@@ -1,4 +1,4 @@
-import { Calendar, Config, User as DBUser } from '@/db/schema'
+import { Calendar, Config, User as DBUser } from '@prisma/client'
 
 export type AuthUser = DBUser
 
@@ -7,5 +7,3 @@ export type AuthUserWithConfig = DBUser & {
 }
 
 export type User = Pick<DBUser, 'id' | 'nickname' | 'avatarUrl'>
-
-export type SrcDuration = Config['predictionSrcDuration']

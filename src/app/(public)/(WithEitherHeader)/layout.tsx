@@ -2,7 +2,7 @@ import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import SignedInHeader from '@/components/SignedInHeader/SignedInHeader'
 import SignedOutHeader from '@/components/SignedOutHeader/SignedOutHeader'
-import { Grid } from '@/components/chakra'
+import { Grid } from '@chakra-ui/react'
 import Footer from '@/components/Footer'
 
 export default async function PublicLayout({

@@ -12,7 +12,7 @@ import {
   Button,
   ButtonGroup,
   ModalProps,
-} from '@/components/chakra'
+} from '@chakra-ui/react'
 import { deleteSleep } from '@/features/sleep/repositories/sleeps'
 import { Sleep } from '@/features/sleep/types/sleep'
 

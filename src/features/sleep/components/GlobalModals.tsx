@@ -11,7 +11,7 @@ import {
   isSleepBottomSheetOpenAtom,
   selectedSleepOrPredictionAtom,
 } from '@/features/sleep/atoms/globalModals'
-import { Hide } from '@/components/chakra'
+import { Hide } from '@chakra-ui/react'
 
 const GlobalModals: FC = () => {
   const selectedSleepOrPrediction = useAtomValue(selectedSleepOrPredictionAtom)

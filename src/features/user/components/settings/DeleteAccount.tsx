@@ -14,7 +14,7 @@ import {
   Button,
   ButtonGroup,
   useDisclosure,
-} from '@/components/chakra'
+} from '@chakra-ui/react'
 import { useErrorToast } from '@/hooks/useErrorToast'
 
 const DeleteAccount: FC = () => {

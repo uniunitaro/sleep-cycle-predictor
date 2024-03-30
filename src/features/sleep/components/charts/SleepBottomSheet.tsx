@@ -3,7 +3,7 @@ import { FC } from 'react'
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons'
 import SleepOverview from '../Lists/SleepOverview'
 import { Prediction, Sleep } from '../../types/sleep'
-import { Box, Button, ButtonProps, Divider } from '@/components/chakra'
+import { Box, Button, ButtonProps, Divider } from '@chakra-ui/react'
 import { Drawer, DrawerBody, DrawerProps } from '@/components/Drawer/Drawer'
 
 const SleepBottomSheet: FC<

@@ -19,7 +19,7 @@ import {
   ModalFooter,
   ModalOverlay,
   useDisclosure,
-} from '@/components/chakra'
+} from '@chakra-ui/react'
 
 type Props = {
   value: Date

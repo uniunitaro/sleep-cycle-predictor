@@ -20,7 +20,7 @@ import {
   MenuList,
   MenuOptionGroup,
   useColorMode,
-} from '@/components/chakra'
+} from '@chakra-ui/react'
 import { useSystemColorModeAtom } from '@/atoms/colorMode'
 import { useErrorToast } from '@/hooks/useErrorToast'
 

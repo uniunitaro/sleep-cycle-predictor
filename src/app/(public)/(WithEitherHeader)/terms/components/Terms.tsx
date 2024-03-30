@@ -5,7 +5,7 @@ import {
   ListItem,
   OrderedList,
   Text,
-} from '@/components/chakra'
+} from '@chakra-ui/react'
 import {
   CardBodyMdOnly,
   CardHeaderMdOnly,

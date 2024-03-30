@@ -1,6 +1,6 @@
+import { Sleep } from '@prisma/client'
 import { predictWithLR } from './predictWithLR'
 import * as getOutlierSleeps from './getOutlierSleeps'
-import { Sleep } from '@/db/schema'
 
 jest.mock('./getOutlierSleeps', () => ({
   __esModule: true,

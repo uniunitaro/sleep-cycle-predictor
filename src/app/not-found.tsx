@@ -6,7 +6,7 @@ import {
   BasicCardLayout,
 } from '@/components/BasicCards'
 import Logo from '@/components/Logo/Logo'
-import { Box, Button, Heading, Text, VStack } from '@/components/chakra'
+import { Box, Button, Heading, Text, VStack } from '@chakra-ui/react'
 import notFoundImage from '@/assets/404.png'
 
 const NotFound = () => {

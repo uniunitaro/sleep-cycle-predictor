@@ -1,4 +1,4 @@
-import { Box, Flex } from '@/components/chakra'
+import { Box, Flex } from '@chakra-ui/react'
 
 export default function PrivateLayout({
   children,

@@ -3,7 +3,7 @@
 import { format, getDay, isToday } from 'date-fns'
 import { ja } from 'date-fns/locale'
 import { FC, memo } from 'react'
-import { Box, BoxProps, Center } from '@/components/chakra'
+import { Box, BoxProps, Center } from '@chakra-ui/react'
 
 type Props = {
   date: Date

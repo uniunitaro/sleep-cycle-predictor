@@ -8,13 +8,7 @@ import { PickerSelectionState } from '@mui/x-date-pickers/internals'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import { jaJP } from '@mui/x-date-pickers/locales'
 import HourMinuteInput from '../HourMinuteInput/HourMinuteInput'
-import {
-  Box,
-  Center,
-  HStack,
-  Stack,
-  useColorModeValue,
-} from '@/components/chakra'
+import { Box, Center, HStack, Stack, useColorModeValue } from '@chakra-ui/react'
 
 const TimePicker: FC<{ value: Date; onChange: (value: Date) => void }> = ({
   value,

@@ -12,6 +12,7 @@ import {
   addWeeks,
   isBefore,
 } from 'date-fns'
+import { Calendar } from '@prisma/client'
 import { DisplayMode } from '../types/chart'
 import { getSleeps } from '../repositories/sleeps'
 import { getMyPredictions, getPredictions } from '../repositories/predictions'
@@ -19,7 +20,6 @@ import { Prediction, Sleep } from '../types/sleep'
 import { SearchParams } from '@/types/global'
 import { detectMobileByUserAgent } from '@/utils/detectMobileByUserAgent'
 import { getAuthUserWithConfig } from '@/features/user/repositories/users'
-import { Calendar } from '@/db/schema'
 
 export const initChartPage = async ({
   isPublic,

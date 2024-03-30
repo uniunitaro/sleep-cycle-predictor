@@ -16,7 +16,7 @@ import {
   Heading,
   Input,
   Stack,
-} from '@/components/chakra'
+} from '@chakra-ui/react'
 import { signUp } from '@/features/auth/server/signUp'
 import {
   BasicCard,

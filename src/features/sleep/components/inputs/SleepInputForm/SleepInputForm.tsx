@@ -26,7 +26,7 @@ import {
   Flex,
   FormControl,
   Stack,
-} from '@/components/chakra'
+} from '@chakra-ui/react'
 
 const SleepInputForm: FC<{
   sleeps: { start: Date; end: Date; id: number }[]

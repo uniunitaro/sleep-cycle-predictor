@@ -4,7 +4,7 @@ import {
   BasicCardBody,
   BasicCardLayout,
 } from '@/components/BasicCards'
-import { Box, Center } from '@/components/chakra'
+import { Box, Center } from '@chakra-ui/react'
 import { updateEmail } from '@/features/user/repositories/users'
 import { SearchParams } from '@/types/global'
 
