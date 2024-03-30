@@ -173,8 +173,8 @@ devDependencies:
     specifier: ^2.9.2
     version: 2.9.2
   '@cloudflare/next-on-pages':
-    specifier: ^1.10.0
-    version: 1.10.0(vercel@33.5.5)(wrangler@3.32.0)
+    specifier: ^1.11.0
+    version: 1.11.0(vercel@33.5.5)(wrangler@3.32.0)
   '@faker-js/faker':
     specifier: ^8.3.1
     version: 8.3.1
@@ -2894,8 +2894,8 @@ packages:
       mime: 3.0.0
     dev: true
 
-  /@cloudflare/next-on-pages@1.10.0(vercel@33.5.5)(wrangler@3.32.0):
-    resolution: {integrity: sha512-N0aGSRxinxQFbsQWGV7d/uhRclYup2itv34x9hkfwGeFLbQxZVSSkZHIYuk8R+1mmxfAWm3rRFKo6bT7PaMAVA==}
+  /@cloudflare/next-on-pages@1.11.0(vercel@33.5.5)(wrangler@3.32.0):
+    resolution: {integrity: sha512-/wKpDMrp2THkco+O5IKb7/JA07pppop4cRF3LEgL1FhJYxlOn3jo9WsZSuW58PovQJR2tZisLB/EJjJpmt1KOA==}
     hasBin: true
     peerDependencies:
       '@cloudflare/workers-types': ^4.20240208.0
