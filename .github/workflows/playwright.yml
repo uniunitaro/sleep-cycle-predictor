@@ -94,7 +94,8 @@ jobs:
         run: pnpm exec playwright test --shard ${{ matrix.shard.shard }}
         env:
           PLAYWRIGHT_TEST_BASE_URL: ${{ needs.test_setup.outputs.preview_url }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
           AUTH_ID: ${{ matrix.shard.authId }}
       - name: Upload blob report to GitHub Actions Artifacts
         if: always()
