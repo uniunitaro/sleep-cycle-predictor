@@ -43,7 +43,8 @@ jobs:
       - name: Setup database
         run: pnpm tsx ./e2e/setup/setupForCI.ts
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
   test:
     needs: [test_setup, db_setup]
     timeout-minutes: 60
