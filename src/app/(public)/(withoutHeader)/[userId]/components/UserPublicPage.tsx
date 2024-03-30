@@ -1,6 +1,6 @@
 import { FC, Suspense } from 'react'
 import dynamic from 'next/dynamic'
-import { Avatar, Box, Flex, HStack, Heading } from '@/components/chakra'
+import { Avatar, Box, Flex, HStack, Heading } from '@chakra-ui/react'
 import { User } from '@/features/user/types/user'
 import { Prediction } from '@/features/sleep/types/sleep'
 import { DisplayMode } from '@/features/sleep/types/chart'

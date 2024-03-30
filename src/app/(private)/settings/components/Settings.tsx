@@ -1,6 +1,6 @@
 import { FC } from 'react'
 import SettingsHeader from '@/features/user/components/settings/SettingsHeader'
-import { Container, Flex, Heading, Stack } from '@/components/chakra'
+import { Container, Flex, Heading, Stack } from '@chakra-ui/react'
 import { AuthUserWithConfig } from '@/features/user/types/user'
 import NicknameForm from '@/features/user/components/settings/NicknameForm'
 import EmailForm from '@/features/user/components/settings/EmailForm'

@@ -26,7 +26,7 @@ import {
   MenuItem,
   MenuList,
   useDisclosure,
-} from '@/components/chakra'
+} from '@chakra-ui/react'
 
 export type SleepOverviewRef = {
   modalRef: RefObject<HTMLDivElement>

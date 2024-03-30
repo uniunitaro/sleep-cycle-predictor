@@ -11,7 +11,7 @@ import {
   ModalOverlay,
   Text,
   useDisclosure,
-} from '@/components/chakra'
+} from '@chakra-ui/react'
 
 const PWAInstallModal: FC = () => {
   const { shouldSuggestPWAInstall, handleInstall, handleDismiss } =

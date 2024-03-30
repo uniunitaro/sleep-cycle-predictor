@@ -8,7 +8,7 @@ import {
   HStack,
   Show,
   Spacer,
-} from '@/components/chakra'
+} from '@chakra-ui/react'
 import Logo from '@/components/Logo/Logo'
 
 const SignedOutHeader: FC<{ drawer?: ReactNode }> = ({ drawer }) => {

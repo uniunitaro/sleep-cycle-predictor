@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { FC, Suspense } from 'react'
 import Logo from '@/components/Logo/Logo'
-import { Container, Flex, HStack, Spacer } from '@/components/chakra'
+import { Container, Flex, HStack, Spacer } from '@chakra-ui/react'
 import UserMenuContainer from '@/features/user/components/UserMenu/UserMenuContainer'
 
 const SignedInHeader: FC = () => {

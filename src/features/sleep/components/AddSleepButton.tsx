@@ -1,6 +1,6 @@
 import { AddIcon } from '@chakra-ui/icons'
 import { FC } from 'react'
-import { Button, ButtonProps } from '@/components/chakra'
+import { Button, ButtonProps } from '@chakra-ui/react'
 
 const AddSleepButton: FC<Omit<ButtonProps, 'children'>> = (props) => {
   return (

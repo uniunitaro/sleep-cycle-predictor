@@ -1,2 +1,0 @@
-ALTER TABLE `Config` MODIFY COLUMN `predictionSrcDuration` enum('week1','week2','month1','month2','month3','month4','month6','year1','year10','custom') NOT NULL DEFAULT 'month2';--> statement-breakpoint
-ALTER TABLE `Config` ADD `predictionSrcStartDate` datetime;

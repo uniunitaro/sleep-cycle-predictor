@@ -8,4 +8,7 @@ const libsql = createClient({
 })
 
 const adapter = new PrismaLibSQL(libsql)
-export const prisma = new PrismaClient({ adapter })
+export const prisma = new PrismaClient({
+  adapter,
+  transactionOptions: { timeout: 100000, maxWait: 100000 },
+})

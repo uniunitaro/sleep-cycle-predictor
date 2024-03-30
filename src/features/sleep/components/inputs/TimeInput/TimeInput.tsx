@@ -2,7 +2,7 @@
 
 import { FC, memo, useRef } from 'react'
 import MobileTimeInput from '../MobileTimeInput'
-import { Box, HStack, Hide, Input, InputProps, Show } from '@/components/chakra'
+import { Box, HStack, Hide, Input, InputProps, Show } from '@chakra-ui/react'
 import { useTimeInput } from '@/features/sleep/hooks/useTimeInput'
 
 type Props = {

@@ -11,7 +11,7 @@ import {
   Heading,
   Stack,
   Text,
-} from '@/components/chakra'
+} from '@chakra-ui/react'
 import {
   BasicCard,
   BasicCardBody,

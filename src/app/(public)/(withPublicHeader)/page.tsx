@@ -3,14 +3,7 @@ import Image from 'next/image'
 import { Metadata } from 'next'
 import HeroHeading from '../components/HeroHeading'
 import Features from '../components/Features'
-import {
-  Box,
-  Button,
-  Container,
-  Heading,
-  Text,
-  VStack,
-} from '@/components/chakra'
+import { Box, Button, Container, Heading, Text, VStack } from '@chakra-ui/react'
 import heroDesktop from '@/assets/hero-desktop.png'
 import heroMobile from '@/assets/hero-mobile.png'
 import { detectMobileByUserAgent } from '@/utils/detectMobileByUserAgent'

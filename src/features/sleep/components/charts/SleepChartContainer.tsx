@@ -3,6 +3,17 @@
 import { FC, ReactNode, useEffect, useRef } from 'react'
 import { AddIcon } from '@chakra-ui/icons'
 import { useAtomValue } from 'jotai'
+import {
+  Box,
+  Container,
+  Flex,
+  Grid,
+  Hide,
+  Show,
+  SlideFade,
+  useDisclosure,
+} from '@chakra-ui/react'
+import { Calendar } from '@prisma/client'
 import SleepInputModal from '../inputs/SleepInputModal/SleepInputModal'
 import { Prediction, Sleep } from '../../types/sleep'
 import RightColumn from '../RightColumn'
@@ -14,19 +25,8 @@ import { useCalendarWithEvents } from '../../hooks/useCalendarWithEvents'
 import SleepChart from './SleepChart/SleepChart'
 import ChartHeader from './ChartHeader'
 import { isRightColumnOpenAtom } from '@/features/sleep/atoms/rightColumn'
-import {
-  Box,
-  Container,
-  Flex,
-  Grid,
-  Hide,
-  Show,
-  SlideFade,
-  useDisclosure,
-} from '@/components/chakra'
 import FAB from '@/components/FAB/FAB'
 import { useHistoriedModal } from '@/hooks/useHistoriedModal'
-import { Calendar } from '@/db/schema'
 
 const SleepChartContainer: FC<{
   sleeps: Sleep[]

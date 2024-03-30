@@ -4,9 +4,6 @@ import { FC, useState, useTransition } from 'react'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { validateAndAddCalendar } from '../../server/validateAndAddCalendar'
-import { deleteCalendar, updateCalendar } from '../../repositories/users'
-import FormButton from './FormButton'
 import {
   Box,
   Button,
@@ -21,8 +18,11 @@ import {
   Text,
   UnorderedList,
   useToast,
-} from '@/components/chakra'
-import { Calendar } from '@/db/schema'
+} from '@chakra-ui/react'
+import { Calendar } from '@prisma/client'
+import { validateAndAddCalendar } from '../../server/validateAndAddCalendar'
+import { deleteCalendar, updateCalendar } from '../../repositories/users'
+import FormButton from './FormButton'
 import { useErrorToast } from '@/hooks/useErrorToast'
 
 const addSchema = z.object({

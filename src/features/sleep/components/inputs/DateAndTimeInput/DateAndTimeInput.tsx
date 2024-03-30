@@ -4,7 +4,7 @@ import { FC, memo, useCallback } from 'react'
 import { getHours, getMinutes, setHours, setMinutes } from 'date-fns'
 import TimeInput from '../TimeInput/TimeInput'
 import DateInput from '../DateInput/DateInput'
-import { Box, HStack } from '@/components/chakra'
+import { Box, HStack } from '@chakra-ui/react'
 
 const DateAndTimeInput: FC<{
   value: Date

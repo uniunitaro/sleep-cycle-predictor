@@ -11,7 +11,7 @@ import {
   FormControl,
   FormLabel,
   FormErrorMessage,
-} from '@/components/chakra'
+} from '@chakra-ui/react'
 import { useErrorToast } from '@/hooks/useErrorToast'
 import PasswordField from '@/components/PasswordField/PasswordField'
 

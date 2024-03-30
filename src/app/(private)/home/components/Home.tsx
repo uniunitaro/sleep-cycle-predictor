@@ -1,10 +1,11 @@
 import { FC, Suspense } from 'react'
 import dynamic from 'next/dynamic'
+import { Box, Flex } from '@chakra-ui/react'
+import { Calendar } from '@prisma/client'
 import { Prediction, Sleep } from '@/features/sleep/types/sleep'
 import { DisplayMode } from '@/features/sleep/types/chart'
 import ChartPageHeader from '@/components/ChartPageHeader'
-import { Box, Flex } from '@/components/chakra'
-import { Calendar } from '@/db/schema'
+
 const Home: FC<{
   sleeps: Sleep[]
   predictions: Prediction[]

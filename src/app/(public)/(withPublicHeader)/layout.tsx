@@ -1,6 +1,6 @@
 import Footer from '@/components/Footer'
 import SignedOutHeader from '@/components/SignedOutHeader/SignedOutHeader'
-import { Grid } from '@/components/chakra'
+import { Grid } from '@chakra-ui/react'
 
 export default function PublicLayout({
   children,

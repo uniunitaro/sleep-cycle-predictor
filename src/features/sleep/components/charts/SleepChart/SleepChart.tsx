@@ -60,7 +60,7 @@ import {
   useDimensions,
   useDisclosure,
   useOutsideClick,
-} from '@/components/chakra'
+} from '@chakra-ui/react'
 import { Prediction, Sleep } from '@/features/sleep/types/sleep'
 import { useCalendarControl } from '@/features/sleep/hooks/useCalendarControl'
 import { DisplayMode } from '@/features/sleep/types/chart'

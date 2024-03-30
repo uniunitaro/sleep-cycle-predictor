@@ -14,7 +14,7 @@ import {
   Input,
   FormErrorMessage,
   useToast,
-} from '@/components/chakra'
+} from '@chakra-ui/react'
 import { useErrorToast } from '@/hooks/useErrorToast'
 
 const schema = z.object({

@@ -42,7 +42,7 @@ import {
   Text,
   useBreakpointValue,
   useDisclosure,
-} from '@/components/chakra'
+} from '@chakra-ui/react'
 import { addSleep, updateSleep } from '@/features/sleep/repositories/sleeps'
 import { Sleep } from '@/features/sleep/types/sleep'
 import { sleepAddCountAtom } from '@/features/sleep/atoms/sleepAddCount'

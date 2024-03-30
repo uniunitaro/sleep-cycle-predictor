@@ -14,7 +14,7 @@ import {
   IconButton,
   Select,
   Stack,
-} from '@/components/chakra'
+} from '@chakra-ui/react'
 import { useErrorToast } from '@/hooks/useErrorToast'
 import DateInput from '@/features/sleep/components/inputs/DateInput/DateInput'
 

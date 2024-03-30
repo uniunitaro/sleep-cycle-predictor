@@ -10,7 +10,7 @@ import {
   Heading,
   Icon,
   IconButton,
-} from '@/components/chakra'
+} from '@chakra-ui/react'
 
 const SettingsHeader: FC = () => {
   const router = useRouter()
