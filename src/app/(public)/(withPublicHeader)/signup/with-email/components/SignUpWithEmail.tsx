@@ -5,7 +5,6 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FC, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import PasswordField from '@/components/PasswordField/PasswordField'
 import {
   Alert,
   AlertIcon,
@@ -17,6 +16,7 @@ import {
   Input,
   Stack,
 } from '@chakra-ui/react'
+import PasswordField from '@/components/PasswordField/PasswordField'
 import { signUp } from '@/features/auth/server/signUp'
 import {
   BasicCard,

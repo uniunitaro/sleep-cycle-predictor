@@ -3,8 +3,6 @@
 import { FC, useEffect, useState, useTransition } from 'react'
 import { RepeatClockIcon } from '@chakra-ui/icons'
 import { startOfMonth } from 'date-fns'
-import { updateConfig } from '../../repositories/users'
-import { SrcDuration } from '../../constants/predictionSrcDurations'
 import {
   Box,
   Flex,
@@ -15,6 +13,8 @@ import {
   Select,
   Stack,
 } from '@chakra-ui/react'
+import { updateConfig } from '../../repositories/users'
+import { SrcDuration } from '../../constants/predictionSrcDurations'
 import { useErrorToast } from '@/hooks/useErrorToast'
 import DateInput from '@/features/sleep/components/inputs/DateInput/DateInput'
 

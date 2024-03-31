@@ -18,7 +18,6 @@ import {
   setYear,
   subDays,
 } from 'date-fns'
-import DateAndTimeInput from '../DateAndTimeInput/DateAndTimeInput'
 import {
   Box,
   Button,
@@ -27,6 +26,7 @@ import {
   FormControl,
   Stack,
 } from '@chakra-ui/react'
+import DateAndTimeInput from '../DateAndTimeInput/DateAndTimeInput'
 
 const SleepInputForm: FC<{
   sleeps: { start: Date; end: Date; id: number }[]

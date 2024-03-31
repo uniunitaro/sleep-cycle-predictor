@@ -7,7 +7,6 @@ import { SettingsIcon } from '@chakra-ui/icons'
 import Link from 'next/link'
 import { MdLogout } from 'react-icons/md'
 import { useAtom } from 'jotai'
-import { AuthUser } from '../../types/user'
 import {
   Avatar,
   Icon,
@@ -21,6 +20,7 @@ import {
   MenuOptionGroup,
   useColorMode,
 } from '@chakra-ui/react'
+import { AuthUser } from '../../types/user'
 import { useSystemColorModeAtom } from '@/atoms/colorMode'
 import { useErrorToast } from '@/hooks/useErrorToast'
 

@@ -1,11 +1,11 @@
 import Image from 'next/image'
+import { Box, Heading, Text, VStack } from '@chakra-ui/react'
 import Logo from '@/components/Logo/Logo'
 import {
   BasicCard,
   BasicCardBody,
   BasicCardLayout,
 } from '@/components/BasicCards'
-import { Box, Heading, Text, VStack } from '@chakra-ui/react'
 import notFoundImage from '@/assets/404.png'
 
 const MaintenancePage = () => {

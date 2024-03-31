@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardHeaderProps,
   CardProps,
-} from './chakra'
+} from '@chakra-ui/react'
 
 export const CardMdOnly: FC<CardProps> = ({ children, ...rest }) => {
   return (

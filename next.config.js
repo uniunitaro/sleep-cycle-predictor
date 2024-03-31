@@ -47,9 +47,6 @@ const nextConfig = {
 
     return config
   },
-  typescript: {
-    ignoreBuildErrors: true,
-  },
 }
 
 module.exports = withAxiom(withBundleAnalyzer(withPWA(nextConfig)))

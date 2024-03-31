@@ -32,14 +32,6 @@ import {
 } from 'framer-motion'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useSetAtom } from 'jotai'
-import ChartColumn from '../ChartColumn'
-import SleepBar from '../SleepBar'
-import ChartHeader from '../ChartHeader'
-import SleepOverview, { SleepOverviewRef } from '../../Lists/SleepOverview'
-import {
-  isSleepBottomSheetOpenAtom,
-  selectedSleepOrPredictionAtom,
-} from '@/features/sleep/atoms/globalModals'
 import {
   Box,
   Center,
@@ -61,6 +53,14 @@ import {
   useDisclosure,
   useOutsideClick,
 } from '@chakra-ui/react'
+import ChartColumn from '../ChartColumn'
+import SleepBar from '../SleepBar'
+import ChartHeader from '../ChartHeader'
+import SleepOverview, { SleepOverviewRef } from '../../Lists/SleepOverview'
+import {
+  isSleepBottomSheetOpenAtom,
+  selectedSleepOrPredictionAtom,
+} from '@/features/sleep/atoms/globalModals'
 import { Prediction, Sleep } from '@/features/sleep/types/sleep'
 import { useCalendarControl } from '@/features/sleep/hooks/useCalendarControl'
 import { DisplayMode } from '@/features/sleep/types/chart'

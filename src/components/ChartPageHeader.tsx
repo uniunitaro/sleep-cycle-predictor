@@ -2,11 +2,11 @@ import Link from 'next/link'
 import { FC, Suspense } from 'react'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
+import { Container, Flex, HStack, Hide, Spacer } from '@chakra-ui/react'
 import DrawerMenu from './DrawerMenu'
 import SignedOutHeader from './SignedOutHeader/SignedOutHeader'
 import UserMenuContainer from '@/features/user/components/UserMenu/UserMenuContainer'
 import Logo from '@/components/Logo/Logo'
-import { Container, Flex, HStack, Hide, Spacer } from '@chakra-ui/react'
 import { DisplayMode } from '@/features/sleep/types/chart'
 
 const ChartPageHeader: FC<{ displayMode: DisplayMode }> = async ({

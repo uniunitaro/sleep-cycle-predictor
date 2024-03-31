@@ -4,8 +4,6 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { FC, useState, useTransition } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { updateAuthUser } from '../../repositories/users'
-import FormButton from './FormButton'
 import {
   Flex,
   FormControl,
@@ -13,6 +11,8 @@ import {
   Input,
   FormErrorMessage,
 } from '@chakra-ui/react'
+import { updateAuthUser } from '../../repositories/users'
+import FormButton from './FormButton'
 import { useErrorToast } from '@/hooks/useErrorToast'
 
 const schema = z.object({

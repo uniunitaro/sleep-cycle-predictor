@@ -1,10 +1,10 @@
 'use client'
 
 import { FC } from 'react'
+import { Card, CardBody, useDisclosure } from '@chakra-ui/react'
 import SleepList from './Lists/SleepList'
 import SleepInputModal from './inputs/SleepInputModal/SleepInputModal'
 import AddSleepButton from './AddSleepButton'
-import { Card, CardBody, useDisclosure } from '@chakra-ui/react'
 import { Prediction, Sleep } from '@/features/sleep/types/sleep'
 
 type Props = {

@@ -2,9 +2,6 @@ import { FC, memo, useEffect, useRef, useState } from 'react'
 import { format } from 'date-fns'
 import { MdOutlineKeyboard } from 'react-icons/md'
 import { AiOutlineClockCircle } from 'react-icons/ai'
-import { useTimeInput } from '../../hooks/useTimeInput'
-import TimePicker from './TimePicker/TimePicker'
-import HourMinuteInput from './HourMinuteInput/HourMinuteInput'
 import {
   Box,
   Button,
@@ -20,6 +17,9 @@ import {
   ModalOverlay,
   useDisclosure,
 } from '@chakra-ui/react'
+import { useTimeInput } from '../../hooks/useTimeInput'
+import TimePicker from './TimePicker/TimePicker'
+import HourMinuteInput from './HourMinuteInput/HourMinuteInput'
 
 type Props = {
   value: Date

@@ -1,10 +1,10 @@
+import { Box, Center } from '@chakra-ui/react'
 import Logo from '@/components/Logo/Logo'
 import {
   BasicCard,
   BasicCardBody,
   BasicCardLayout,
 } from '@/components/BasicCards'
-import { Box, Center } from '@chakra-ui/react'
 import { updateEmail } from '@/features/user/repositories/users'
 import { SearchParams } from '@/types/global'
 

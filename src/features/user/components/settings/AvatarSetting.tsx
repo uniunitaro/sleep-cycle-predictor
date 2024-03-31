@@ -4,7 +4,6 @@ import { FC, useRef, useState, useTransition } from 'react'
 import { EditIcon } from '@chakra-ui/icons'
 import { Cropper, ReactCropperElement } from 'react-cropper'
 import { BsZoomIn, BsZoomOut } from 'react-icons/bs'
-import { updateAvatar } from '../../server/updateAvatar'
 import {
   Avatar,
   AvatarBadge,
@@ -28,6 +27,7 @@ import {
   useColorModeValue,
   useDisclosure,
 } from '@chakra-ui/react'
+import { updateAvatar } from '../../server/updateAvatar'
 import 'cropperjs/dist/cropper.css'
 import { useErrorToast } from '@/hooks/useErrorToast'
 

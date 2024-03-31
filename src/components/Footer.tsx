@@ -1,6 +1,6 @@
 import { FC } from 'react'
 import Link from 'next/link'
-import { Button, Container, HStack, Text } from './chakra'
+import { Button, Container, HStack, Text } from '@chakra-ui/react'
 
 const Footer: FC = () => {
   return (

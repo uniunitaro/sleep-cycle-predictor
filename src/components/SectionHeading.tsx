@@ -1,5 +1,5 @@
 import { FC, ReactNode } from 'react'
-import { Heading } from './chakra'
+import { Heading } from '@chakra-ui/react'
 
 const SectionHeading: FC<{ children: ReactNode }> = ({ children }) => {
   return (

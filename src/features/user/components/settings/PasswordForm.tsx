@@ -5,13 +5,13 @@ import { FC, useState, useTransition } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import FormButton from './FormButton'
 import {
   Flex,
   FormControl,
   FormLabel,
   FormErrorMessage,
 } from '@chakra-ui/react'
+import FormButton from './FormButton'
 import { useErrorToast } from '@/hooks/useErrorToast'
 import PasswordField from '@/components/PasswordField/PasswordField'
 
