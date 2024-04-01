@@ -8,6 +8,6 @@ jest.mock('@/features/auth/components/XLogo')
 
 jest.mock('@/libs/prisma', () => {
   return {
-    prisma: jestPrisma.client,
+    createPrisma: () => jestPrisma.client,
   }
 })

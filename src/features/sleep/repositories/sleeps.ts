@@ -7,8 +7,9 @@ import {
   subHours,
 } from 'date-fns'
 import { revalidatePath } from 'next/cache'
+import { PrismaClient } from '@prisma/client'
 import { Sleep } from '../types/sleep'
-import { prisma } from '@/libs/prisma'
+import { createPrisma } from '@/libs/prisma'
 import { log } from '@/libs/axiomLogger'
 import {
   getAuthUserIdWithServerAction,
@@ -28,6 +29,7 @@ type OverlapError = {
   type: 'overlapWithRecorded' | 'overlapInRequest'
 }
 const checkOverlap = async (
+  prisma: PrismaClient,
   userId: string,
   sleeps: { start: Date; end: Date }[],
   originalSleepId?: number
@@ -76,6 +78,7 @@ const checkOverlap = async (
 
 type ShortIntervalError = { type: 'shortInterval' }
 const checkShortInterval = async (
+  prisma: PrismaClient,
   userId: string,
   sleeps: { start: Date; end: Date }[],
   originalSleepId?: number
@@ -132,14 +135,16 @@ export const addSleep = async ({
   sleeps: { start: Date; end: Date }[]
   ignoreShortInterval?: boolean
 }): Promise<{ error?: OverlapError | ShortIntervalError | true }> => {
+  const prisma = createPrisma()
+
   try {
     const { userId, error } = await getAuthUserIdWithServerAction()
     if (error) throw error
 
-    const overlapError = await checkOverlap(userId, sleeps)
+    const overlapError = await checkOverlap(prisma, userId, sleeps)
     if (overlapError) return { error: overlapError }
 
-    const shortIntervalError = await checkShortInterval(userId, sleeps)
+    const shortIntervalError = await checkShortInterval(prisma, userId, sleeps)
     if (shortIntervalError && !ignoreShortInterval) {
       return { error: shortIntervalError }
     }
@@ -178,6 +183,8 @@ export const updateSleep = async ({
   sleeps: { start: Date; end: Date }[]
   ignoreShortInterval?: boolean
 }): Promise<{ error?: OverlapError | ShortIntervalError | true }> => {
+  const prisma = createPrisma()
+
   try {
     const { userId, error } = await getAuthUserIdWithServerAction()
     if (error) throw error
@@ -187,10 +194,15 @@ export const updateSleep = async ({
     })
     if (!originalSleep) throw new Error('sleep not found')
 
-    const overlapError = await checkOverlap(userId, sleeps, id)
+    const overlapError = await checkOverlap(prisma, userId, sleeps, id)
     if (overlapError) return { error: overlapError }
 
-    const shortIntervalError = await checkShortInterval(userId, sleeps, id)
+    const shortIntervalError = await checkShortInterval(
+      prisma,
+      userId,
+      sleeps,
+      id
+    )
     if (shortIntervalError && !ignoreShortInterval) {
       return { error: shortIntervalError }
     }
@@ -222,6 +234,8 @@ export const updateSleep = async ({
 }
 
 export const deleteSleep = async (id: number): Promise<{ error?: true }> => {
+  const prisma = createPrisma()
+
   try {
     const { userId, error } = await getAuthUserIdWithServerAction()
     if (error) throw error
@@ -243,6 +257,8 @@ export const getSleeps = async ({
   start: Date
   end: Date
 }): Promise<Result<{ sleeps: Sleep[] }, true>> => {
+  const prisma = createPrisma()
+
   try {
     const { userId, error } = await getAuthUserIdWithServerComponent()
     if (error) throw error

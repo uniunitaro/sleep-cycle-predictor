@@ -1,7 +1,7 @@
 import { addSleep, deleteSleep, getSleeps, updateSleep } from './sleeps'
 import { defineSleepFactory } from '@/src/__generated__/fabbrica'
 import { UserFactory } from '@/libs/factories'
-import { prisma } from '@/libs/prisma'
+import { createPrisma } from '@/libs/prisma'
 
 jest.mock('@/utils/getAuthUserId', () => ({
   getAuthUserIdWithServerAction: jest
@@ -32,6 +32,8 @@ const SleepFactory = defineSleepFactory({
     },
   },
 })
+
+const prisma = createPrisma()
 
 beforeEach(async () => {
   UserFactory.create({ id: userId })

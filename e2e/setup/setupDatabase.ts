@@ -1,9 +1,11 @@
 import { Prisma } from '@prisma/client'
 import { emails } from './constants'
-import { prisma } from '@/libs/prisma'
+import { createPrisma } from '@/libs/prisma'
 import { SrcDuration } from '@/features/user/constants/predictionSrcDurations'
 
 export const setupDatabase = async () => {
+  const prisma = createPrisma()
+
   const userIds = await Promise.all(
     emails.map(async (email) => {
       const userData = await prisma.user.findFirst({

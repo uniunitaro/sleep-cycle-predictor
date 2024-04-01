@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { AuthUser, AuthUserWithConfig, User } from '../types/user'
 import { SrcDuration } from '../constants/predictionSrcDurations'
-import { prisma } from '@/libs/prisma'
+import { createPrisma } from '@/libs/prisma'
 import { log } from '@/libs/axiomLogger'
 import {
   getAuthUserIdWithServerAction,
@@ -22,6 +22,8 @@ export const addUser = async ({
   email: string
   avatarUrl?: string
 }): Promise<{ error?: true }> => {
+  const prisma = createPrisma()
+
   try {
     await prisma.$transaction(async (tx) => {
       const existingUser = await tx.user.findFirst({
@@ -56,6 +58,8 @@ export const addUser = async ({
 export const getAuthUser = async (): Promise<
   Result<{ authUser: AuthUser }, true>
 > => {
+  const prisma = createPrisma()
+
   try {
     const { userId, error } = await getAuthUserIdWithServerComponent()
     if (error) throw error
@@ -75,6 +79,8 @@ export const getAuthUser = async (): Promise<
 export const getUser = async (
   id: string
 ): Promise<Result<{ user: User }, true>> => {
+  const prisma = createPrisma()
+
   try {
     const user = await prisma.user.findFirst({
       where: { id },
@@ -96,6 +102,8 @@ export const getUser = async (
 export const getAuthUserWithConfig = async (): Promise<
   Result<{ authUserWithConfig: AuthUserWithConfig }, true>
 > => {
+  const prisma = createPrisma()
+
   try {
     const { userId, error } = await getAuthUserIdWithServerComponent()
     if (error) throw error
@@ -132,6 +140,8 @@ export const updateAuthUser = async ({
   newEmail?: string
   avatarUrl?: string
 }): Promise<{ error?: true }> => {
+  const prisma = createPrisma()
+
   try {
     const { userId, error } = await getAuthUserIdWithServerComponent()
     if (error) throw error
@@ -158,6 +168,8 @@ export const updateAuthUser = async ({
 export const updateEmail = async (
   userId: string
 ): Promise<{ error?: true }> => {
+  const prisma = createPrisma()
+
   try {
     const result = await prisma.user.findFirst({
       where: { id: userId },
@@ -188,6 +200,8 @@ export const updateConfig = async ({
   predictionSrcDuration?: SrcDuration
   predictionSrcStartDate?: Date
 }): Promise<{ error?: true }> => {
+  const prisma = createPrisma()
+
   try {
     const { userId, error } = await getAuthUserIdWithServerAction()
     if (error) throw error
@@ -220,6 +234,8 @@ export const addCalendar = async (newCalendar: {
   name: string
   url: string
 }): Promise<{ error?: true }> => {
+  const prisma = createPrisma()
+
   try {
     const { userId, error } = await getAuthUserIdWithServerAction()
     if (error) throw error
@@ -250,6 +266,8 @@ export const updateCalendar = async ({
   id: number
   newCalendar: { name: string }
 }): Promise<{ error?: true }> => {
+  const prisma = createPrisma()
+
   try {
     const { userId, error } = await getAuthUserIdWithServerAction()
     if (error) throw error
@@ -269,6 +287,8 @@ export const updateCalendar = async ({
 }
 
 export const deleteCalendar = async (id: number): Promise<{ error?: true }> => {
+  const prisma = createPrisma()
+
   try {
     const { userId, error } = await getAuthUserIdWithServerAction()
     if (error) throw error

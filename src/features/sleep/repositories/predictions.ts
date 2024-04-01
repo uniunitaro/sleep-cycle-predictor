@@ -6,7 +6,7 @@ import { predictWithLR } from '../utils/predictWithLR/predictWithLR'
 import { getAuthUserIdWithServerComponent } from '@/utils/getAuthUserId'
 import { Result } from '@/types/global'
 import { log } from '@/libs/axiomLogger'
-import { prisma } from '@/libs/prisma'
+import { createPrisma } from '@/libs/prisma'
 
 export const getPredictions = async ({
   userId,
@@ -17,6 +17,7 @@ export const getPredictions = async ({
   start: Date
   end: Date
 }): Promise<Result<{ predictions: Prediction[] }, true>> => {
+  const prisma = createPrisma()
   try {
     const userConfig = await prisma.config.findFirst({
       where: { userId },

@@ -5,9 +5,11 @@ import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache'
 import { getAuthUserIdWithServerAction } from '@/utils/getAuthUserId'
 import { log } from '@/libs/axiomLogger'
-import { prisma } from '@/libs/prisma'
+import { createPrisma } from '@/libs/prisma'
 
 export const deleteAccount = async (): Promise<{ error?: true }> => {
+  const prisma = createPrisma()
+
   try {
     const { userId, error } = await getAuthUserIdWithServerAction()
     if (error) throw error

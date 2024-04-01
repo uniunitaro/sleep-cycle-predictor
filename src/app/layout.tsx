@@ -46,6 +46,8 @@ export const viewport: Viewport = {
 
 export const runtime = 'edge'
 
+export const fetchCache = 'force-no-store'
+
 const notoSans = Noto_Sans_JP({
   weight: ['400', '700'],
   subsets: ['latin'],
