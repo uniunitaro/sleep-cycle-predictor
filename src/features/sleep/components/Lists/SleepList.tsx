@@ -4,13 +4,13 @@ import { FC, memo } from 'react'
 import { getMonth } from 'date-fns'
 import { useSetAtom } from 'jotai'
 import Image from 'next/image'
+import { Box, Center, Stack, Text, VStack } from '@chakra-ui/react'
 import SleepOverview from './SleepOverview'
 import {
   isSleepBottomSheetOpenAtom,
   selectedSleepOrPredictionAtom,
 } from '@/features/sleep/atoms/globalModals'
 import { Prediction, Sleep } from '@/features/sleep/types/sleep'
-import { Box, Center, Stack, Text, VStack } from '@/components/chakra'
 import notFoundImage from '@/assets/404.png'
 
 type Props = {

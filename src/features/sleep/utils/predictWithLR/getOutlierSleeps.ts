@@ -1,5 +1,5 @@
 import { interquartileRange, mean, median } from 'simple-statistics'
-import { Sleep } from '@/db/schema'
+import { Sleep } from '@prisma/client'
 
 export type CombinedSleep = {
   sleep: Sleep

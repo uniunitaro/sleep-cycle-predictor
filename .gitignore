@@ -51,3 +51,5 @@ node_modules
 .react-email
 
 /styled-system
+
+__generated__

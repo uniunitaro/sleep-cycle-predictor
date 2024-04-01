@@ -1,9 +1,9 @@
 'use client'
 import { FC } from 'react'
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons'
+import { Box, Button, ButtonProps, Divider } from '@chakra-ui/react'
 import SleepOverview from '../Lists/SleepOverview'
 import { Prediction, Sleep } from '../../types/sleep'
-import { Box, Button, ButtonProps, Divider } from '@/components/chakra'
 import { Drawer, DrawerBody, DrawerProps } from '@/components/Drawer/Drawer'
 
 const SleepBottomSheet: FC<

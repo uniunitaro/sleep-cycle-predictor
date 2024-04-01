@@ -3,17 +3,6 @@
 import { FC, ReactNode, useEffect, useRef } from 'react'
 import { AddIcon } from '@chakra-ui/icons'
 import { useAtomValue } from 'jotai'
-import SleepInputModal from '../inputs/SleepInputModal/SleepInputModal'
-import { Prediction, Sleep } from '../../types/sleep'
-import RightColumn from '../RightColumn'
-import { DisplayMode } from '../../types/chart'
-import GlobalModals from '../GlobalModals'
-import SleepList from '../Lists/SleepList'
-import PWAInstallModal from '../PWAInstallModal'
-import { useCalendarWithEvents } from '../../hooks/useCalendarWithEvents'
-import SleepChart from './SleepChart/SleepChart'
-import ChartHeader from './ChartHeader'
-import { isRightColumnOpenAtom } from '@/features/sleep/atoms/rightColumn'
 import {
   Box,
   Container,
@@ -23,10 +12,20 @@ import {
   Show,
   SlideFade,
   useDisclosure,
-} from '@/components/chakra'
+} from '@chakra-ui/react'
+import { Calendar } from '@prisma/client'
+import SleepInputModal from '../inputs/SleepInputModal/SleepInputModal'
+import { Prediction, Sleep } from '../../types/sleep'
+import RightColumn from '../RightColumn'
+import { DisplayMode } from '../../types/chart'
+import GlobalModals from '../GlobalModals'
+import SleepList from '../Lists/SleepList'
+import PWAInstallModal from '../PWAInstallModal'
+import SleepChart from './SleepChart/SleepChart'
+import ChartHeader from './ChartHeader'
+import { isRightColumnOpenAtom } from '@/features/sleep/atoms/rightColumn'
 import FAB from '@/components/FAB/FAB'
 import { useHistoriedModal } from '@/hooks/useHistoriedModal'
-import { Calendar } from '@/db/schema'
 
 const SleepChartContainer: FC<{
   sleeps: Sleep[]
@@ -45,7 +44,6 @@ const SleepChartContainer: FC<{
   displayMode,
   isPublic,
   userHeading,
-  calendars,
 }) => {
   const { isOpen, onOpen, onClose } = useHistoriedModal()
 
@@ -92,8 +90,6 @@ const SleepChartContainer: FC<{
       )
     : new Date()
 
-  const calendarWithEvents = useCalendarWithEvents(calendars)
-
   return (
     <Box as="main" h="full">
       <Container
@@ -122,7 +118,7 @@ const SleepChartContainer: FC<{
                   targetDate={zonedTargetDate}
                   displayMode={displayMode}
                   isPublic={isPublic}
-                  calendarWithEvents={calendarWithEvents}
+                  calendarWithEvents={[]}
                 />
                 <Show above="md">
                   <Box

@@ -1,10 +1,11 @@
-import { FC } from 'react'
+import { FC, Suspense } from 'react'
 import dynamic from 'next/dynamic'
+import { Box, Flex } from '@chakra-ui/react'
+import { Calendar } from '@prisma/client'
 import { Prediction, Sleep } from '@/features/sleep/types/sleep'
 import { DisplayMode } from '@/features/sleep/types/chart'
 import ChartPageHeader from '@/components/ChartPageHeader'
-import { Box, Flex } from '@/components/chakra'
-import { Calendar } from '@/db/schema'
+
 const Home: FC<{
   sleeps: Sleep[]
   predictions: Prediction[]
@@ -31,15 +32,17 @@ const Home: FC<{
       <Flex direction="column" h="100%">
         <ChartPageHeader displayMode={displayMode} />
         <Box flex="1" minH="0">
-          <SleepChartContainer
-            sleeps={sleeps}
-            predictions={predictions}
-            targetDate={targetDate}
-            hasTargetDate={hasTargetDate}
-            displayMode={displayMode}
-            calendars={calendars}
-            isPublic={false}
-          />
+          <Suspense>
+            <SleepChartContainer
+              sleeps={sleeps}
+              predictions={predictions}
+              targetDate={targetDate}
+              hasTargetDate={hasTargetDate}
+              displayMode={displayMode}
+              calendars={calendars}
+              isPublic={false}
+            />
+          </Suspense>
         </Box>
       </Flex>
     )

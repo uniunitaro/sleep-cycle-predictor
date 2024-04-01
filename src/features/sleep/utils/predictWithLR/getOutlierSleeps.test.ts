@@ -1,6 +1,6 @@
 import { getUnixTime } from 'date-fns'
+import { Sleep } from '@prisma/client'
 import { getOutlierSleeps } from './getOutlierSleeps'
-import { Sleep } from '@/db/schema'
 
 const realSleeps: (Sleep & { segmentedSleeps: Sleep[] })[] = [
   {

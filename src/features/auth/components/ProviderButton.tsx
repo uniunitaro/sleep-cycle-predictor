@@ -1,5 +1,5 @@
 import { FC } from 'react'
-import { Button, ButtonProps, LightMode } from '@/components/chakra'
+import { Button, ButtonProps, LightMode } from '@chakra-ui/react'
 
 const ProviderButton: FC<ButtonProps> = ({ children, ...rest }) => {
   return (

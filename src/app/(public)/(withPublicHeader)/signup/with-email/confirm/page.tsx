@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
+import { Box, Center, Text } from '@chakra-ui/react'
 import { redirectBasedOnAuthState } from '@/features/auth/utils/redirectBasedOnAuthState'
 import { ogSettings } from '@/constants/og'
-import { Box, Center, Text } from '@/components/chakra'
 import {
   BasicCard,
   BasicCardBody,

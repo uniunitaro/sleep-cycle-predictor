@@ -6,7 +6,7 @@ import {
   BoxProps,
   useColorModeValue,
   useMediaQuery,
-} from '@/components/chakra'
+} from '@chakra-ui/react'
 
 type Props = {
   isHoveredOrSelected: boolean

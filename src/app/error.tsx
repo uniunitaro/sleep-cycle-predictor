@@ -3,7 +3,7 @@
 import { useLogger } from 'next-axiom'
 import { useEffect } from 'react'
 import Link from 'next/link'
-import { Button, Center, Heading, Stack } from '@/components/chakra'
+import { Button, Center, Heading, Stack } from '@chakra-ui/react'
 
 const Error = ({
   error,

@@ -1,7 +1,7 @@
 import { useEffect, useState, useTransition } from 'react'
+import { useToast } from '@chakra-ui/react'
+import { Calendar } from '@prisma/client'
 import { ICalEvent, parseICals } from '../server/parseICal'
-import { useToast } from '@/components/chakra'
-import { Calendar } from '@/db/schema'
 
 export type CalendarWithEvents = {
   calendarName: string | undefined

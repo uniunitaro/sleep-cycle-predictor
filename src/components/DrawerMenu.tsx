@@ -16,7 +16,7 @@ import {
   Stack,
   useColorModeValue,
   useDisclosure,
-} from './chakra'
+} from '@chakra-ui/react'
 import Logo from './Logo/Logo'
 import { Drawer, DrawerBody, DrawerHeader } from './Drawer/Drawer'
 import { DisplayMode } from '@/features/sleep/types/chart'

@@ -28,8 +28,7 @@ export const GET = async () => {
         {/* eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text */}
         <img
           width={600}
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
+          // @ts-expect-error ignore
           src={logo}
         />
         <div

@@ -1,5 +1,5 @@
 import { FC, ReactNode } from 'react'
-import { Card, Container } from './chakra'
+import { Card, Container } from '@chakra-ui/react'
 
 export const BasicCardLayout: FC<{ children: ReactNode }> = ({ children }) => {
   return (

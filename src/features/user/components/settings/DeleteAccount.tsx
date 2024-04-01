@@ -2,7 +2,6 @@
 
 import { FC, useRef, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { deleteAccount } from '../../server/deleteAccount'
 import {
   AlertDialog,
   AlertDialogBody,
@@ -14,7 +13,8 @@ import {
   Button,
   ButtonGroup,
   useDisclosure,
-} from '@/components/chakra'
+} from '@chakra-ui/react'
+import { deleteAccount } from '../../server/deleteAccount'
 import { useErrorToast } from '@/hooks/useErrorToast'
 
 const DeleteAccount: FC = () => {

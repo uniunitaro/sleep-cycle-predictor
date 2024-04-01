@@ -1,17 +1,15 @@
 'use server'
 
-import { and, eq } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
-import { AuthUser, AuthUserWithConfig, SrcDuration, User } from '../types/user'
-import { db } from '@/db'
-import { calendar, config, user } from '@/db/schema'
-import { Result } from '@/types/global'
+import { AuthUser, AuthUserWithConfig, User } from '../types/user'
+import { SrcDuration } from '../constants/predictionSrcDurations'
+import { createPrisma } from '@/libs/prisma'
+import { log } from '@/libs/axiomLogger'
 import {
   getAuthUserIdWithServerAction,
   getAuthUserIdWithServerComponent,
 } from '@/utils/getAuthUserId'
-import { uuidToBin } from '@/utils/uuid'
-import { log } from '@/libs/axiomLogger'
+import { Result } from '@/types/global'
 
 export const addUser = async ({
   id,
@@ -24,22 +22,29 @@ export const addUser = async ({
   email: string
   avatarUrl?: string
 }): Promise<{ error?: true }> => {
+  const prisma = createPrisma()
+
   try {
-    await db.transaction(async (tx) => {
-      const existingUser = await tx.query.user.findFirst({
-        where: eq(user.id, uuidToBin(id)),
+    await prisma.$transaction(async (tx) => {
+      const existingUser = await tx.user.findFirst({
+        where: { id },
       })
       if (existingUser) return
 
-      await tx.insert(user).values({
-        id: uuidToBin(id),
-        nickname,
-        email,
-        avatarUrl,
-      })
-
-      await tx.insert(config).values({
-        userId: uuidToBin(id),
+      await tx.user.create({
+        data: {
+          id,
+          nickname,
+          email,
+          avatarUrl,
+          config: {
+            create: {
+              predictionSrcDurationRelation: {
+                connect: { duration: 'month2' satisfies SrcDuration },
+              },
+            },
+          },
+        },
       })
     })
 
@@ -53,12 +58,14 @@ export const addUser = async ({
 export const getAuthUser = async (): Promise<
   Result<{ authUser: AuthUser }, true>
 > => {
+  const prisma = createPrisma()
+
   try {
     const { userId, error } = await getAuthUserIdWithServerComponent()
     if (error) throw error
 
-    const authUser = await db.query.user.findFirst({
-      where: eq(user.id, uuidToBin(userId)),
+    const authUser = await prisma.user.findFirst({
+      where: { id: userId },
     })
     if (!authUser) throw new Error('user not found')
 
@@ -72,18 +79,20 @@ export const getAuthUser = async (): Promise<
 export const getUser = async (
   id: string
 ): Promise<Result<{ user: User }, true>> => {
+  const prisma = createPrisma()
+
   try {
-    const userResult = await db.query.user.findFirst({
-      where: eq(user.id, uuidToBin(id)),
-      columns: {
+    const user = await prisma.user.findFirst({
+      where: { id },
+      select: {
         id: true,
         nickname: true,
         avatarUrl: true,
       },
     })
-    if (!userResult) throw new Error('user not found')
+    if (!user) throw new Error('user not found')
 
-    return { user: userResult }
+    return { user }
   } catch (e) {
     log.error(e)
     return { error: true }
@@ -93,21 +102,29 @@ export const getUser = async (
 export const getAuthUserWithConfig = async (): Promise<
   Result<{ authUserWithConfig: AuthUserWithConfig }, true>
 > => {
+  const prisma = createPrisma()
+
   try {
     const { userId, error } = await getAuthUserIdWithServerComponent()
     if (error) throw error
 
-    const authUserWithConfig = await db.query.user.findFirst({
-      where: eq(user.id, uuidToBin(userId)),
-      with: {
+    const authUserWithConfig = await prisma.user.findFirst({
+      where: { id: userId },
+      include: {
         config: {
-          with: { calendars: true },
+          include: { calendars: true },
         },
       },
     })
-    if (!authUserWithConfig) throw new Error('user not found')
+    if (!authUserWithConfig?.config) throw new Error('user not found')
 
-    return { authUserWithConfig }
+    return {
+      // こうしないとconfigがnullableと推論されてしまう
+      authUserWithConfig: {
+        ...authUserWithConfig,
+        config: authUserWithConfig.config,
+      },
+    }
   } catch (e) {
     log.error(e)
     return { error: true }
@@ -123,18 +140,20 @@ export const updateAuthUser = async ({
   newEmail?: string
   avatarUrl?: string
 }): Promise<{ error?: true }> => {
+  const prisma = createPrisma()
+
   try {
-    const { userId, error } = await getAuthUserIdWithServerAction()
+    const { userId, error } = await getAuthUserIdWithServerComponent()
     if (error) throw error
 
-    await db
-      .update(user)
-      .set({
-        nickname: nickname,
-        newEmail: newEmail,
-        avatarUrl: avatarUrl,
-      })
-      .where(eq(user.id, uuidToBin(userId)))
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        nickname,
+        newEmail,
+        avatarUrl,
+      },
+    })
 
     revalidatePath('/settings')
     revalidatePath('/home')
@@ -149,22 +168,22 @@ export const updateAuthUser = async ({
 export const updateEmail = async (
   userId: string
 ): Promise<{ error?: true }> => {
+  const prisma = createPrisma()
+
   try {
-    const result = await db.query.user.findFirst({
-      where: eq(user.id, uuidToBin(userId)),
-      columns: {
-        newEmail: true,
-      },
+    const result = await prisma.user.findFirst({
+      where: { id: userId },
+      select: { newEmail: true },
     })
     if (!result?.newEmail) throw new Error('newEmail not found')
 
-    await db
-      .update(user)
-      .set({
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
         email: result.newEmail,
         newEmail: null,
-      })
-      .where(eq(user.id, uuidToBin(userId)))
+      },
+    })
 
     revalidatePath('/settings')
     return {}
@@ -181,17 +200,25 @@ export const updateConfig = async ({
   predictionSrcDuration?: SrcDuration
   predictionSrcStartDate?: Date
 }): Promise<{ error?: true }> => {
+  const prisma = createPrisma()
+
   try {
     const { userId, error } = await getAuthUserIdWithServerAction()
     if (error) throw error
 
-    await db
-      .update(config)
-      .set({
-        predictionSrcDuration,
+    await prisma.config.update({
+      where: { userId },
+      data: {
+        predictionSrcDurationRelation: predictionSrcDuration
+          ? {
+              connect: {
+                duration: predictionSrcDuration,
+              },
+            }
+          : undefined,
         predictionSrcStartDate,
-      })
-      .where(eq(config.userId, uuidToBin(userId)))
+      },
+    })
 
     revalidatePath('/settings')
     revalidatePath('/home')
@@ -207,19 +234,20 @@ export const addCalendar = async (newCalendar: {
   name: string
   url: string
 }): Promise<{ error?: true }> => {
+  const prisma = createPrisma()
+
   try {
     const { userId, error } = await getAuthUserIdWithServerAction()
     if (error) throw error
 
-    const userConfig = await db.query.config.findFirst({
-      where: eq(config.userId, uuidToBin(userId)),
-    })
-    if (!userConfig) throw new Error('config not found')
-
-    await db.insert(calendar).values({
-      configId: userConfig.id,
-      name: newCalendar.name,
-      url: newCalendar.url,
+    await prisma.calendar.create({
+      data: {
+        name: newCalendar.name,
+        url: newCalendar.url,
+        config: {
+          connect: { userId },
+        },
+      },
     })
 
     revalidatePath('/settings')
@@ -238,21 +266,16 @@ export const updateCalendar = async ({
   id: number
   newCalendar: { name: string }
 }): Promise<{ error?: true }> => {
+  const prisma = createPrisma()
+
   try {
     const { userId, error } = await getAuthUserIdWithServerAction()
     if (error) throw error
 
-    const userConfig = await db.query.config.findFirst({
-      where: eq(config.userId, uuidToBin(userId)),
+    await prisma.calendar.update({
+      where: { id, config: { userId } },
+      data: newCalendar,
     })
-    if (!userConfig) throw new Error('config not found')
-
-    await db
-      .update(calendar)
-      .set({
-        name: newCalendar.name,
-      })
-      .where(and(eq(calendar.configId, userConfig.id), eq(calendar.id, id)))
 
     revalidatePath('/settings')
     revalidatePath('/home')
@@ -264,18 +287,15 @@ export const updateCalendar = async ({
 }
 
 export const deleteCalendar = async (id: number): Promise<{ error?: true }> => {
+  const prisma = createPrisma()
+
   try {
     const { userId, error } = await getAuthUserIdWithServerAction()
     if (error) throw error
 
-    const userConfig = await db.query.config.findFirst({
-      where: eq(config.userId, uuidToBin(userId)),
+    await prisma.calendar.delete({
+      where: { id, config: { userId } },
     })
-    if (!userConfig) throw new Error('config not found')
-
-    await db
-      .delete(calendar)
-      .where(and(eq(calendar.configId, userConfig.id), eq(calendar.id, id)))
 
     revalidatePath('/settings')
     revalidatePath('/home')

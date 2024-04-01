@@ -21,7 +21,7 @@ import {
   Input,
   Stack,
   Text,
-} from '@/components/chakra'
+} from '@chakra-ui/react'
 import PasswordField from '@/components/PasswordField/PasswordField'
 import {
   BasicCard,

@@ -22,7 +22,8 @@
       {
         "name": "next"
       }
-    ]
+    ],
+    "types": ["@types/jest", "@quramy/jest-prisma"]
   },
   "include": [
     "next-env.d.ts",

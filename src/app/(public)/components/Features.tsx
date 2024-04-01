@@ -3,7 +3,7 @@
 import { FC } from 'react'
 import { RiRhythmFill } from 'react-icons/ri'
 import { MdShare } from 'react-icons/md'
-import { Box, Grid, HStack, Icon, Stack, Text } from '@/components/chakra'
+import { Box, Grid, HStack, Icon, Stack, Text } from '@chakra-ui/react'
 
 const Features: FC = () => {
   return (

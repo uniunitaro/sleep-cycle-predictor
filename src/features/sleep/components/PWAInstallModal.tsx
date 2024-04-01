@@ -1,5 +1,4 @@
 import { FC, useEffect } from 'react'
-import { usePWAInstall } from '../hooks/usePWAInstall'
 import {
   Button,
   ButtonGroup,
@@ -11,7 +10,8 @@ import {
   ModalOverlay,
   Text,
   useDisclosure,
-} from '@/components/chakra'
+} from '@chakra-ui/react'
+import { usePWAInstall } from '../hooks/usePWAInstall'
 
 const PWAInstallModal: FC = () => {
   const { shouldSuggestPWAInstall, handleInstall, handleDismiss } =

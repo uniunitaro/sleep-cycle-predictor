@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { useToast } from '@/components/chakra'
+import { useToast } from '@chakra-ui/react'
 
 export const useErrorToast = () => {
   const toast = useToast()

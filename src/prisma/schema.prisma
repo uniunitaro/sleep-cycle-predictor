@@ -1,0 +1,72 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("LOCAL_DATABASE_URL")
+}
+
+generator fabbrica {
+  provider = "prisma-fabbrica"
+}
+
+model User {
+  id        String   @id
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  email     String   @unique
+  newEmail  String?
+  nickname  String
+  avatarUrl String?
+  config    Config?
+  sleeps    Sleep[]
+}
+
+model Config {
+  id                            Int                   @id @default(autoincrement())
+  createdAt                     DateTime              @default(now())
+  updatedAt                     DateTime              @updatedAt
+  predictionSrcDurationRelation PredictionSrcDuration @relation(fields: [predictionSrcDuration], references: [duration], onUpdate: Cascade)
+  predictionSrcDuration         String
+  predictionSrcStartDate        DateTime?
+  user                          User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId                        String                @unique
+  calendars                     Calendar[]
+}
+
+model PredictionSrcDuration {
+  duration String   @id
+  Config   Config[]
+}
+
+model Calendar {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String
+  url       String
+  config    Config   @relation(fields: [configId], references: [id], onDelete: Cascade)
+  configId  Int
+}
+
+model Sleep {
+  id              Int      @id @default(autoincrement())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  start           DateTime
+  end             DateTime
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          String
+  segmentedSleeps Sleep[]  @relation("segmentedSleeps")
+  parentSleep     Sleep?   @relation(fields: [parentSleepId], references: [id], name: "segmentedSleeps", onDelete: Cascade)
+  parentSleepId   Int?
+
+  @@index(userId)
+  @@index(parentSleepId)
+  @@index([parentSleepId, userId, start, end])
+}

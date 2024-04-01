@@ -32,14 +32,6 @@ import {
 } from 'framer-motion'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useSetAtom } from 'jotai'
-import ChartColumn from '../ChartColumn'
-import SleepBar from '../SleepBar'
-import ChartHeader from '../ChartHeader'
-import SleepOverview, { SleepOverviewRef } from '../../Lists/SleepOverview'
-import {
-  isSleepBottomSheetOpenAtom,
-  selectedSleepOrPredictionAtom,
-} from '@/features/sleep/atoms/globalModals'
 import {
   Box,
   Center,
@@ -60,7 +52,15 @@ import {
   useDimensions,
   useDisclosure,
   useOutsideClick,
-} from '@/components/chakra'
+} from '@chakra-ui/react'
+import ChartColumn from '../ChartColumn'
+import SleepBar from '../SleepBar'
+import ChartHeader from '../ChartHeader'
+import SleepOverview, { SleepOverviewRef } from '../../Lists/SleepOverview'
+import {
+  isSleepBottomSheetOpenAtom,
+  selectedSleepOrPredictionAtom,
+} from '@/features/sleep/atoms/globalModals'
 import { Prediction, Sleep } from '@/features/sleep/types/sleep'
 import { useCalendarControl } from '@/features/sleep/hooks/useCalendarControl'
 import { DisplayMode } from '@/features/sleep/types/chart'
@@ -455,8 +455,6 @@ const DragContainer: FC<{
           previous: { x: dragContainerWidth },
           next: { x: -dragContainerWidth },
         }}
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
         transition={{ duration: 0.3 }}
       >
         {children}

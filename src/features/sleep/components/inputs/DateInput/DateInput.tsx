@@ -20,7 +20,7 @@ import {
   Show,
   useDisclosure,
   useOutsideClick,
-} from '@/components/chakra'
+} from '@chakra-ui/react'
 import DatePicker from '@/components/DatePicker'
 
 type Props = {

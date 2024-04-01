@@ -1,7 +1,7 @@
 import { fromUnixTime, getUnixTime, isAfter } from 'date-fns'
 import { linearRegression, linearRegressionLine, mean } from 'simple-statistics'
+import { Sleep } from '@prisma/client'
 import { CombinedSleep, getOutlierSleeps } from './getOutlierSleeps'
-import { Sleep } from '@/db/schema'
 
 export const predictWithLR = (
   sleeps: (Sleep & { segmentedSleeps: Sleep[] })[],

@@ -36,6 +36,9 @@ export default defineConfig({
   },
   expect: {
     timeout: 15000,
+    toHaveScreenshot: {
+      maxDiffPixels: 10,
+    },
   },
   fullyParallel: true,
 

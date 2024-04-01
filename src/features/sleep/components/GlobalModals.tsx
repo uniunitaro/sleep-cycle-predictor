@@ -2,6 +2,7 @@
 
 import { FC, useState } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
+import { Hide } from '@chakra-ui/react'
 import SleepInputModal from './inputs/SleepInputModal/SleepInputModal'
 import SleepDeleteModal from './SleepDeleteModal'
 import SleepBottomSheet from './charts/SleepBottomSheet'
@@ -11,7 +12,6 @@ import {
   isSleepBottomSheetOpenAtom,
   selectedSleepOrPredictionAtom,
 } from '@/features/sleep/atoms/globalModals'
-import { Hide } from '@/components/chakra'
 
 const GlobalModals: FC = () => {
   const selectedSleepOrPrediction = useAtomValue(selectedSleepOrPredictionAtom)

@@ -24,13 +24,13 @@ import {
   chakra,
   shouldForwardProp,
   useColorModeValue,
-} from '../chakra'
+} from '@chakra-ui/react'
 
 export {
   ModalBody as DrawerBody,
   ModalFooter as DrawerFooter,
   ModalHeader as DrawerHeader,
-} from '../chakra'
+} from '@chakra-ui/react'
 
 const MotionSection = chakra(motion.section, {
   shouldForwardProp: (prop) =>

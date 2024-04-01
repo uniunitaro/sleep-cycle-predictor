@@ -1,6 +1,6 @@
 import { FC } from 'react'
+import { Container, Flex, Heading, Stack } from '@chakra-ui/react'
 import SettingsHeader from '@/features/user/components/settings/SettingsHeader'
-import { Container, Flex, Heading, Stack } from '@/components/chakra'
 import { AuthUserWithConfig } from '@/features/user/types/user'
 import NicknameForm from '@/features/user/components/settings/NicknameForm'
 import EmailForm from '@/features/user/components/settings/EmailForm'
@@ -9,6 +9,7 @@ import SrcDurationSelect from '@/features/user/components/settings/SrcDurationSe
 import DeleteAccount from '@/features/user/components/settings/DeleteAccount'
 import { CardBodyMdOnly, CardMdOnly } from '@/components/MdOnlyCards'
 import AvatarSetting from '@/features/user/components/settings/AvatarSetting'
+import { SrcDuration } from '@/features/user/constants/predictionSrcDurations'
 // import CalendarSetting from '@/features/user/components/settings/CalendarSetting'
 
 const Settings: FC<{ userWithConfig: AuthUserWithConfig }> = ({
@@ -55,7 +56,9 @@ const Settings: FC<{ userWithConfig: AuthUserWithConfig }> = ({
                 </Heading>
                 <Stack spacing="4">
                   <SrcDurationSelect
-                    srcDuration={userWithConfig.config.predictionSrcDuration}
+                    srcDuration={
+                      userWithConfig.config.predictionSrcDuration as SrcDuration
+                    }
                     srcStartDate={
                       userWithConfig.config.predictionSrcStartDate ?? undefined
                     }

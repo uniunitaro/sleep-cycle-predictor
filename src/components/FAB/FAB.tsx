@@ -1,5 +1,5 @@
 import { FC } from 'react'
-import { IconButton, IconButtonProps } from '../chakra'
+import { IconButton, IconButtonProps } from '@chakra-ui/react'
 
 const FAB: FC<IconButtonProps> = (props) => {
   return (

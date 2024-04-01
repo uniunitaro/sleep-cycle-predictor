@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import { FC } from 'react'
-import { useColorMode } from '../chakra'
+import { useColorMode } from '@chakra-ui/react'
 import logoLight from '@/assets/logo-light.png'
 import logoDark from '@/assets/logo-dark.png'
 

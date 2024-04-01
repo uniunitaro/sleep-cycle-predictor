@@ -1,10 +1,10 @@
 import { Metadata, Viewport } from 'next'
 import { Noto_Sans_JP, Roboto } from 'next/font/google'
 import { AxiomWebVitals } from 'next-axiom'
+import { GoogleAnalytics } from '@next/third-parties/google'
 import Providers from '@/components/Providers'
 import ThemeColorManager from '@/components/ThemeColorManager'
 import { ogSettings } from '@/constants/og'
-import GoogleAnalytics from '@/components/GoogleAnalytics'
 import InstallPromptManager from '@/components/InstallPromptManager'
 
 const DEFAULT_TITLE = 'Sleep Predictor'
@@ -32,10 +32,10 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
   },
   metadataBase:
-    process.env.VERCEL_ENV === 'production'
+    process.env.CF_PAGES_BRANCH === 'main'
       ? new URL('https://www.sleep-predictor.com')
-      : process.env.VERCEL_URL
-      ? new URL(`https://${process.env.VERCEL_URL}`)
+      : process.env.CF_PAGES_URL
+      ? new URL(`https://${process.env.CF_PAGES_URL}`)
       : new URL(`http://localhost:${process.env.PORT || 3000}`),
 }
 
@@ -45,6 +45,8 @@ export const viewport: Viewport = {
 }
 
 export const runtime = 'edge'
+
+export const fetchCache = 'force-no-store'
 
 const notoSans = Noto_Sans_JP({
   weight: ['400', '700'],
@@ -73,8 +75,12 @@ export default function RootLayout({
         />
         <meta name="msvalidate.01" content="B7C4FCF4692F34C672D5080DAA12F16D" />
       </head>
-      {process.env.VERCEL_ENV === 'production' && <AxiomWebVitals />}
-      <GoogleAnalytics />
+      {process.env.CF_PAGES_BRANCH === 'main' && (
+        <>
+          <AxiomWebVitals />
+          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID ?? ''} />
+        </>
+      )}
       <InstallPromptManager />
       <body>
         <Providers>

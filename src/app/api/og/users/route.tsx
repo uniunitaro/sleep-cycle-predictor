@@ -36,8 +36,7 @@ export const GET = async (request: NextRequest) => {
         {/* eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text */}
         <img
           width={400}
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
+          // @ts-expect-error ignore
           src={logo}
           style={{
             marginTop: -50,

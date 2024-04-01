@@ -7,13 +7,6 @@ import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'
 import { BsListUl } from 'react-icons/bs'
 import { useAtom, useSetAtom } from 'jotai'
 import { MdShare } from 'react-icons/md'
-import { useCalendarControl } from '../../hooks/useCalendarControl'
-import { DisplayMode } from '../../types/chart'
-import { useDisplayMode } from '../../hooks/useDisplayMode'
-import AddSleepButton from '../AddSleepButton'
-import ShareModal from '../ShareModal'
-import { isRightColumnOpenAtom } from '@/features/sleep/atoms/rightColumn'
-import { isInputModalOpenAtom } from '@/features/sleep/atoms/globalModals'
 import {
   Box,
   Button,
@@ -27,7 +20,14 @@ import {
   Tooltip,
   useBreakpointValue,
   useDisclosure,
-} from '@/components/chakra'
+} from '@chakra-ui/react'
+import { useCalendarControl } from '../../hooks/useCalendarControl'
+import { DisplayMode } from '../../types/chart'
+import { useDisplayMode } from '../../hooks/useDisplayMode'
+import AddSleepButton from '../AddSleepButton'
+import ShareModal from '../ShareModal'
+import { isRightColumnOpenAtom } from '@/features/sleep/atoms/rightColumn'
+import { isInputModalOpenAtom } from '@/features/sleep/atoms/globalModals'
 
 const ChartHeader: FC<{
   targetDate: Date
@@ -60,7 +60,6 @@ const ChartHeader: FC<{
           aria-label={displayMode === 'week' ? '前の週を表示' : '前の月を表示'}
           size="sm"
           variant="ghost"
-          prefetch={true}
         />
         <Heading size="md" fontWeight="normal">
           {format(targetDate, 'yyyy年M月')}
@@ -72,7 +71,6 @@ const ChartHeader: FC<{
           aria-label={displayMode === 'week' ? '次の週を表示' : '次の月を表示'}
           size="sm"
           variant="ghost"
-          prefetch={true}
         />
       </HStack>
       <Spacer />

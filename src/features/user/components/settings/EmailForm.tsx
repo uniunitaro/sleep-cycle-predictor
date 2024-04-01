@@ -5,8 +5,6 @@ import { FC, useState, useTransition } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { updateAuthUser } from '../../repositories/users'
-import FormButton from './FormButton'
 import {
   Flex,
   FormControl,
@@ -14,7 +12,9 @@ import {
   Input,
   FormErrorMessage,
   useToast,
-} from '@/components/chakra'
+} from '@chakra-ui/react'
+import { updateAuthUser } from '../../repositories/users'
+import FormButton from './FormButton'
 import { useErrorToast } from '@/hooks/useErrorToast'
 
 const schema = z.object({

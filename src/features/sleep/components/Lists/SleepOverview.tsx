@@ -11,9 +11,6 @@ import {
 } from 'date-fns'
 import { ja } from 'date-fns/locale'
 import { BsThreeDotsVertical } from 'react-icons/bs'
-import { Sleep, Prediction } from '../../types/sleep'
-import SleepInputModal from '../inputs/SleepInputModal/SleepInputModal'
-import SleepDeleteModal from '../SleepDeleteModal'
 import {
   Box,
   BoxProps,
@@ -26,7 +23,10 @@ import {
   MenuItem,
   MenuList,
   useDisclosure,
-} from '@/components/chakra'
+} from '@chakra-ui/react'
+import { Sleep, Prediction } from '../../types/sleep'
+import SleepInputModal from '../inputs/SleepInputModal/SleepInputModal'
+import SleepDeleteModal from '../SleepDeleteModal'
 
 export type SleepOverviewRef = {
   modalRef: RefObject<HTMLDivElement>
