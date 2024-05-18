@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { AuthUser, AuthUserWithConfig, User } from '../types/user'
 import { SrcDuration } from '../constants/predictionSrcDurations'
-import { createPrisma } from '@/libs/prisma'
+import { createPrisma } from '@/libs/cachedPrisma'
 import { log } from '@/libs/axiomLogger'
 import {
   getAuthUserIdWithServerAction,

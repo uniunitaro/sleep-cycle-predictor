@@ -4,6 +4,8 @@ import { generateICal } from '@/features/sleep/server/generateICal'
 import { getPredictions } from '@/features/sleep/repositories/predictions'
 import { getUser } from '@/features/user/repositories/users'
 
+export const runtime = 'edge'
+
 export const GET = async (
   _request: NextRequest,
   context: { params: { userId: string } }

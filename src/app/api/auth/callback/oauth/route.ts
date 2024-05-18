@@ -30,7 +30,7 @@ export const GET = async (request: NextRequest) => {
       avatarUrl: data.user.user_metadata.avatar_url,
     })
     if (dbError) {
-      await supabase.auth.admin.deleteUser(data.user.id)
+      // await supabase.auth.admin.deleteUser(data.user.id)
       log.error(dbError)
     }
   }

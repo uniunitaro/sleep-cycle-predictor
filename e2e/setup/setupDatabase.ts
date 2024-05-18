@@ -1,10 +1,10 @@
 import { Prisma } from '@prisma/client'
 import { emails } from './constants'
-import { createPrisma } from '@/libs/prisma'
+import { createUncachedPrisma } from '@/libs/prisma'
 import { SrcDuration } from '@/features/user/constants/predictionSrcDurations'
 
 export const setupDatabase = async () => {
-  const prisma = createPrisma()
+  const prisma = createUncachedPrisma()
 
   const userIds = await Promise.all(
     emails.map(async (email) => {
