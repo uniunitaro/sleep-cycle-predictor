@@ -1,7 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import { PrismaLibSQL } from '@prisma/adapter-libsql'
 import { createClient } from '@libsql/client'
-import { cache } from 'react'
 
 export const createUncachedPrisma = () => {
   const libsql = createClient({
@@ -13,5 +12,3 @@ export const createUncachedPrisma = () => {
 
   return new PrismaClient({ adapter })
 }
-
-export const createPrisma = cache(createUncachedPrisma)

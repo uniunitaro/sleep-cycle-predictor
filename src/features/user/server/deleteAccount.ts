@@ -5,7 +5,7 @@ import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache'
 import { getAuthUserIdWithServerAction } from '@/utils/getAuthUserId'
 import { log } from '@/libs/axiomLogger'
-import { createPrisma } from '@/libs/prisma'
+import { createPrisma } from '@/libs/cachedPrisma'
 
 export const deleteAccount = async (): Promise<{ error?: true }> => {
   const prisma = createPrisma()

@@ -9,7 +9,7 @@ import {
 import { revalidatePath } from 'next/cache'
 import { PrismaClient } from '@prisma/client'
 import { Sleep } from '../types/sleep'
-import { createPrisma } from '@/libs/prisma'
+import { createPrisma } from '@/libs/cachedPrisma'
 import { log } from '@/libs/axiomLogger'
 import {
   getAuthUserIdWithServerAction,

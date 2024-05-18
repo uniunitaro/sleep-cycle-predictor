@@ -6,7 +6,7 @@ import { predictWithLR } from '../utils/predictWithLR/predictWithLR'
 import { getAuthUserIdWithServerComponent } from '@/utils/getAuthUserId'
 import { Result } from '@/types/global'
 import { log } from '@/libs/axiomLogger'
-import { createPrisma } from '@/libs/prisma'
+import { createPrisma } from '@/libs/cachedPrisma'
 
 export const getPredictions = async ({
   userId,
