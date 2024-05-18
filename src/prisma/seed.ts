@@ -1,7 +1,7 @@
 import { PREDICTION_SRC_DURATIONS } from '@/features/user/constants/predictionSrcDurations'
-import { createPrisma } from '@/libs/prisma'
+import { createUncachedPrisma } from '@/libs/prisma'
 
-const prisma = createPrisma()
+const prisma = createUncachedPrisma()
 
 const main = async () => {
   prisma.$transaction(
