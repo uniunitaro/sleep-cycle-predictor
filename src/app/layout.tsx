@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     process.env.CF_PAGES_BRANCH === 'main'
       ? new URL('https://www.sleep-predictor.com')
       : process.env.CF_PAGES_URL
-      ? new URL(`https://${process.env.CF_PAGES_URL}`)
+      ? new URL(process.env.CF_PAGES_URL)
       : new URL(`http://localhost:${process.env.PORT || 3000}`),
 }
 

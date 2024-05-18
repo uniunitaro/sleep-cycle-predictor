@@ -1,0 +1,17 @@
+diff --git a/generator-build/index.js b/generator-build/index.js
+index 94cff69cee29a619e8f725da3da9b7ff93884d96..78387a7dd480315840cc39979fa34fd6b7e63cb2 100644
+--- a/generator-build/index.js
++++ b/generator-build/index.js
+@@ -18166,8 +18166,10 @@ async function buildClient({
+   if (generator.previewFeatures.includes("driverAdapters")) {
+     fileMap["default.js"] = JS(trampolineTsClient);
+     fileMap["default.d.ts"] = TS(trampolineTsClient);
+-    fileMap["wasm-worker-loader.js"] = `export default (await import('./query_engine_bg.wasm')).default`;
+-    fileMap["wasm-edge-light-loader.js"] = `export default (await import('./query_engine_bg.wasm?module')).default`;
++    // fileMap["wasm-worker-loader.js"] = `export default (await import('./query_engine_bg.wasm')).default`;
++    // fileMap["wasm-edge-light-loader.js"] = `export default (await import('./query_engine_bg.wasm?module')).default`;
++    fileMap['wasm-worker-loader.js'] = `export { default } from './query_engine_bg.wasm'`;
++    fileMap['wasm-edge-light-loader.js'] = `export { default } from './query_engine_bg.wasm?module'`;
+     pkgJson["browser"] = "default.js";
+     pkgJson["imports"] = {
+       // when `import('#wasm-engine-loader')` is called, it will be resolved to the correct file
