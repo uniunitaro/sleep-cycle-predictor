@@ -53,3 +53,5 @@ node_modules
 /styled-system
 
 __generated__
+
+/src/prisma/*.db*
