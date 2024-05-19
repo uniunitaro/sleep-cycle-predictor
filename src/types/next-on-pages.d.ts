@@ -1,5 +1,6 @@
 /// <reference types="@cloudflare/workers-types" />
 
+// HACK: おそらくnext-on-pages自体にバグがありインポートがうまくできないため型定義をコピー
 declare module '@cloudflare/next-on-pages' {
   declare global {
     // eslint-disable-next-line @typescript-eslint/no-empty-interface

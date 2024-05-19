@@ -22,6 +22,7 @@ const config = {
   // },
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
+    '^@cloudflare/next-on-pages$': '<rootDir>/src/mocks/next-on-pages.ts',
   },
   setupFilesAfterEnv: [
     '<rootDir>/jest.setup.ts',
