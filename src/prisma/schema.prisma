@@ -34,6 +34,8 @@ model Config {
   predictionSrcDurationRelation PredictionSrcDuration @relation(fields: [predictionSrcDuration], references: [duration], onUpdate: Cascade)
   predictionSrcDuration         String
   predictionSrcStartDate        DateTime?
+  googleRefreshToken            String?
+  googleCalendarId              String?
   user                          User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId                        String                @unique
   calendars                     Calendar[]

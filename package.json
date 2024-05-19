@@ -78,6 +78,7 @@
     "@chakra-ui/storybook-addon": "^5.1.0",
     "@chakra-ui/styled-system": "^2.9.2",
     "@cloudflare/next-on-pages": "^1.11.3",
+    "@cloudflare/workers-types": "^4.20240512.0",
     "@faker-js/faker": "^8.3.1",
     "@pandacss/dev": "^0.15.5",
     "@playwright/test": "1.39.0",
