@@ -10,6 +10,7 @@ import {
   getAuthUserIdWithServerComponent,
 } from '@/utils/getAuthUserId'
 import { Result } from '@/types/global'
+import { encrypt } from '@/utils/crypto'
 
 export const addUser = async ({
   id,
@@ -295,6 +296,39 @@ export const deleteCalendar = async (id: number): Promise<{ error?: true }> => {
 
     await prisma.calendar.delete({
       where: { id, config: { userId } },
+    })
+
+    revalidatePath('/settings')
+    revalidatePath('/home')
+    return {}
+  } catch (e) {
+    log.error(e)
+    return { error: true }
+  }
+}
+
+export const updateGoogleConfig = async ({
+  rawGoogleRefreshToken,
+  googleCalendarId,
+}: {
+  rawGoogleRefreshToken?: string | null
+  googleCalendarId?: string | null
+}): Promise<{ error?: true }> => {
+  const prisma = createPrisma()
+
+  try {
+    const { userId, error } = await getAuthUserIdWithServerAction()
+    if (error) throw error
+
+    await prisma.config.update({
+      where: { userId },
+      data: {
+        googleRefreshToken:
+          typeof rawGoogleRefreshToken === 'string'
+            ? await encrypt(rawGoogleRefreshToken)
+            : rawGoogleRefreshToken, // nullかundefined
+        googleCalendarId,
+      },
     })
 
     revalidatePath('/settings')

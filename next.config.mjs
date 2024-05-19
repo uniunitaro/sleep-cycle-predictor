@@ -1,17 +1,17 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const withPWA = require('@ducanh2912/next-pwa').default({
+import withPWA from '@ducanh2912/next-pwa'
+import withBundleAnalyzer from '@next/bundle-analyzer'
+import { withAxiom } from 'next-axiom'
+import { setupDevPlatform } from '@cloudflare/next-on-pages/next-dev'
+
+const pwaConfig = withPWA({
   dest: 'public',
   disable: process.env.NODE_ENV === 'development',
   buildExcludes: [/woff2/],
 })
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
+const bundleAnalyzerConfig = withBundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
 })
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { withAxiom } = require('next-axiom')
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -45,4 +45,9 @@ const nextConfig = {
   },
 }
 
-module.exports = withAxiom(withBundleAnalyzer(withPWA(nextConfig)))
+export default withAxiom(bundleAnalyzerConfig(pwaConfig(nextConfig)))
+
+if (process.env.NODE_ENV === 'development') {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  await setupDevPlatform()
+}

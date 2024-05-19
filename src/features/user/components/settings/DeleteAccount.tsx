@@ -38,7 +38,7 @@ const DeleteAccount: FC = () => {
 
   return (
     <>
-      <Button colorScheme="red" variant="ghost" onClick={onOpen}>
+      <Button colorScheme="red" variant="outline" onClick={onOpen}>
         アカウントを削除する
       </Button>
       <AlertDialog

@@ -8,6 +8,7 @@ import {
 } from 'date-fns'
 import { revalidatePath } from 'next/cache'
 import { PrismaClient } from '@prisma/client'
+import { getRequestContext } from '@cloudflare/next-on-pages'
 import { Sleep } from '../types/sleep'
 import { createPrisma } from '@/libs/cachedPrisma'
 import { log } from '@/libs/axiomLogger'
@@ -16,6 +17,7 @@ import {
   getAuthUserIdWithServerComponent,
 } from '@/utils/getAuthUserId'
 import { Result } from '@/types/global'
+import { syncPredictions } from '@/features/googleApi/server/syncPredictions'
 
 const getSleepAndSegmentedSleeps = (sleeps: { start: Date; end: Date }[]) => {
   const sortedSleeps = [...sleeps].sort(
@@ -167,6 +169,9 @@ export const addSleep = async ({
     })
 
     revalidatePath('/home')
+
+    const { ctx } = getRequestContext()
+    ctx.waitUntil(syncPredictions())
     return {}
   } catch (e) {
     log.error(e)
@@ -226,6 +231,9 @@ export const updateSleep = async ({
     })
 
     revalidatePath('/home')
+
+    const { ctx } = getRequestContext()
+    ctx.waitUntil(syncPredictions())
     return {}
   } catch (e) {
     log.error(e)
@@ -243,6 +251,9 @@ export const deleteSleep = async (id: number): Promise<{ error?: true }> => {
     await prisma.sleep.delete({ where: { userId, id } })
 
     revalidatePath('/home')
+
+    const { ctx } = getRequestContext()
+    ctx.waitUntil(syncPredictions())
     return {}
   } catch (e) {
     log.error(e)
