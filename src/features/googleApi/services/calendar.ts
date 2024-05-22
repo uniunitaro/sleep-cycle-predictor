@@ -142,17 +142,24 @@ export const deleteEvents = async (
 
 export const getAllEvents = async (
   accessToken: string,
-  calendarId: string
+  { calendarId, lastUpdatedAt }: { calendarId: string; lastUpdatedAt?: Date }
 ): Promise<Result<{ events: Event[] }, true>> => {
   try {
-    const response = await fetch(
-      `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events`,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
+    const searchParams = new URLSearchParams({
+      maxResults: '1000',
+      ...(lastUpdatedAt ? { updatedMin: lastUpdatedAt.toISOString() } : {}),
+    })
+
+    const url = new URL(
+      `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events`
     )
+    url.search = searchParams.toString()
+
+    const response = await fetch(url.toString(), {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
 
     if (!response.ok) {
       throw new Error(await response.text())

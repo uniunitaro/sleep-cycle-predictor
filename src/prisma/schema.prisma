@@ -36,6 +36,7 @@ model Config {
   predictionSrcStartDate        DateTime?
   googleRefreshToken            String?
   googleCalendarId              String?
+  googleCalendarLastUpdatedAt   DateTime?
   user                          User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId                        String                @unique
   calendars                     Calendar[]

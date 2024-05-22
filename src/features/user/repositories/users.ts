@@ -310,9 +310,11 @@ export const deleteCalendar = async (id: number): Promise<{ error?: true }> => {
 export const updateGoogleConfig = async ({
   rawGoogleRefreshToken,
   googleCalendarId,
+  lastUpdatedAt,
 }: {
   rawGoogleRefreshToken?: string | null
   googleCalendarId?: string | null
+  lastUpdatedAt?: Date | null
 }): Promise<{ error?: true }> => {
   const prisma = createPrisma()
 
@@ -328,6 +330,7 @@ export const updateGoogleConfig = async ({
             ? await encrypt(rawGoogleRefreshToken)
             : rawGoogleRefreshToken, // nullかundefined
         googleCalendarId,
+        googleCalendarLastUpdatedAt: lastUpdatedAt,
       },
     })
 

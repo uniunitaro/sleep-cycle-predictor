@@ -48,6 +48,7 @@ const GoogleCalendarSetting: FC<{ isConnected: boolean }> = ({
       const { error } = await updateGoogleConfig({
         rawGoogleRefreshToken: null,
         googleCalendarId: null,
+        lastUpdatedAt: null,
       })
       if (error) {
         errorToast()
