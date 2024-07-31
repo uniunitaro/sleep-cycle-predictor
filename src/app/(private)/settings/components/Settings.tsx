@@ -10,7 +10,7 @@ import DeleteAccount from '@/features/user/components/settings/DeleteAccount'
 import { CardBodyMdOnly, CardMdOnly } from '@/components/MdOnlyCards'
 import AvatarSetting from '@/features/user/components/settings/AvatarSetting'
 import { SrcDuration } from '@/features/user/constants/predictionSrcDurations'
-import GoogleCalendarSetting from '@/features/user/components/settings/GoogleCalendarSetting'
+// import GoogleCalendarSetting from '@/features/user/components/settings/GoogleCalendarSetting'
 // import CalendarSetting from '@/features/user/components/settings/CalendarSetting'
 
 const Settings: FC<{ userWithConfig: AuthUserWithConfig }> = ({
@@ -66,7 +66,7 @@ const Settings: FC<{ userWithConfig: AuthUserWithConfig }> = ({
                   />
                 </Stack>
               </Stack>
-              <Stack spacing="5">
+              {/* <Stack spacing="5">
                 <Heading as="h2" size="md">
                   Google カレンダー連携
                 </Heading>
@@ -75,7 +75,7 @@ const Settings: FC<{ userWithConfig: AuthUserWithConfig }> = ({
                     isConnected={!!userWithConfig.config.googleCalendarId}
                   />
                 </Stack>
-              </Stack>
+              </Stack> */}
               {/* <Stack spacing="5">
                 <Heading as="h2" size="md">
                   外部カレンダー

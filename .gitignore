@@ -56,3 +56,5 @@ node_modules
 __generated__
 
 /src/prisma/*.db*
+
+.wrangler
