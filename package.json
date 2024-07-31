@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "@ark-ui/react": "^0.15.0",
+    "@chakra-ui/color-mode": "^2.2.0",
     "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/next-js": "^2.2.0",
     "@chakra-ui/react": "2.8.2",
