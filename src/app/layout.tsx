@@ -40,9 +40,10 @@ export const metadata: Metadata = {
 }
 
 // TODO カラーモードをcookieで管理してthemeColorを出し分ける
-export const viewport: Viewport = {
-  themeColor: '#f7f9f7',
-}
+// そこまでする必要もない気がする、ここでthemeColorを定義せず、ThemeColorManagerでmetaタグを生成するだけでいいかも
+// export const viewport: Viewport = {
+//   themeColor: '#f7f9f7',
+// }
 
 export const runtime = 'edge'
 
