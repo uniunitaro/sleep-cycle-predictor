@@ -6,14 +6,17 @@ import { FC, useEffect } from 'react'
 const ThemeColorManager: FC = () => {
   const { colorMode } = useColorMode()
   useEffect(() => {
-    if (colorMode === 'light') {
-      document
-        .querySelector('meta[name="theme-color"]')
-        ?.setAttribute('content', '#f7f9f7')
+    const existingMeta = document.querySelector('meta[name="theme-color"]')
+    if (existingMeta) {
+      existingMeta.setAttribute(
+        'content',
+        colorMode === 'light' ? '#f7f9f7' : '#1a202c'
+      )
     } else {
-      document
-        .querySelector('meta[name="theme-color"]')
-        ?.setAttribute('content', '#1a202c')
+      const meta = document.createElement('meta')
+      meta.name = 'theme-color'
+      meta.content = colorMode === 'light' ? '#f7f9f7' : '#1a202c'
+      document.head.appendChild(meta)
     }
   }, [colorMode])
 
