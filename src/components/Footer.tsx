@@ -1,6 +1,6 @@
-import { FC } from 'react'
-import Link from 'next/link'
 import { Button, Container, HStack, Text } from '@chakra-ui/react'
+import Link from 'next/link'
+import { FC } from 'react'
 
 const Footer: FC = () => {
   return (
@@ -12,7 +12,7 @@ const Footer: FC = () => {
           flexDir={{ base: 'column-reverse', md: 'row' }}
         >
           <Text color="secondaryGray" fontSize="sm">
-            © 2023-2024 Sleep Predictor
+            © 2023-2025 Sleep Predictor
           </Text>
           <HStack spacing="6">
             <Button

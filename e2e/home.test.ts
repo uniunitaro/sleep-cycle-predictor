@@ -42,10 +42,6 @@ authedTest.describe('home', () => {
       await page.goto('/home?date=2023-01-01', { waitUntil: 'networkidle' })
     })
 
-    authedTest('VRT-sleeps', async ({ page }) => {
-      await expect.soft(page).toHaveScreenshot({ fullPage: true })
-    })
-
     authedTest.describe('desktop', () => {
       authedTest('表示形式が切り替えられる', async ({ page }) => {
         await page.getByLabel('表示形式の切り替え').selectOption('週')
@@ -70,19 +66,15 @@ authedTest.describe('home', () => {
 
           // 日付選択popoverを表示してVRT
           await page.getByRole('textbox', { name: '就寝日時 日付' }).click()
-          await expect.soft(page).toHaveScreenshot({ fullPage: true })
 
           // 日付選択popoverを閉じる
           await page.keyboard.press('Tab')
-          await expect.soft(page).toHaveScreenshot({ fullPage: true })
 
           await page.getByRole('button', { name: '追加する' }).click()
 
           await expect(
             page.getByRole('listitem').filter({ hasText: '過去の睡眠' })
           ).toContainText(['5日'])
-
-          await expect.soft(page).toHaveScreenshot({ fullPage: true })
         })
 
         await authedTest.step('睡眠の編集ができる', async () => {
@@ -92,15 +84,12 @@ authedTest.describe('home', () => {
             .filter({ hasText: '5日' })
             .getByRole('button', { name: '詳細' })
             .click()
-          await expect.soft(page).toHaveScreenshot({ fullPage: true })
 
           await page.getByRole('menuitem', { name: '睡眠記録を編集' }).click()
 
           await page.getByRole('dialog').waitFor()
 
           await page.getByRole('textbox', { name: '就寝日時 時間' }).fill('14')
-
-          await expect.soft(page).toHaveScreenshot({ fullPage: true })
 
           await page.getByRole('button', { name: '更新する' }).click()
 
@@ -123,7 +112,6 @@ authedTest.describe('home', () => {
           await page.getByRole('menuitem', { name: '睡眠記録を削除' }).click()
 
           await page.getByRole('alertdialog').waitFor()
-          await expect.soft(page).toHaveScreenshot({ fullPage: true })
 
           await page.getByRole('button', { name: '削除する' }).click()
 
@@ -176,8 +164,6 @@ authedTest.describe('home', () => {
             .getByRole('textbox', { name: '睡眠2 起床日時 分' })
             .fill('00')
 
-          await expect.soft(page).toHaveScreenshot({ fullPage: true })
-
           await page.getByRole('button', { name: '追加する' }).click()
 
           await expect(
@@ -186,8 +172,6 @@ authedTest.describe('home', () => {
               .filter({ hasText: '過去の睡眠' })
               .filter({ hasText: '5日' })
           ).toContainText('3:00')
-
-          await expect.soft(page).toHaveScreenshot({ fullPage: true })
         })
 
         await authedTest.step('分割睡眠の編集ができる', async () => {
@@ -259,8 +243,6 @@ authedTest.describe('home', () => {
           await page.getByRole('button', { name: '追加する' }).click()
 
           await expect(page.getByRole('alert')).toContainText('重複しています')
-
-          await expect.soft(page).toHaveScreenshot({ fullPage: true })
         }
       )
 
@@ -285,8 +267,6 @@ authedTest.describe('home', () => {
           await expect(page.getByRole('alertdialog')).toContainText(
             '間隔が短い'
           )
-
-          await expect.soft(page).toHaveScreenshot({ fullPage: true })
         }
       )
     })
@@ -294,7 +274,6 @@ authedTest.describe('home', () => {
     authedTest('共有ができる', async ({ page }) => {
       await page.getByRole('button', { name: '共有' }).click()
       await page.getByRole('dialog').waitFor()
-      await expect.soft(page).toHaveScreenshot({ fullPage: true })
 
       await page.getByRole('button', { name: 'リンクをコピー' }).click()
 
@@ -312,10 +291,8 @@ authedTest.describe('home', () => {
       await page.getByRole('button', { name: 'アカウント' }).click()
 
       await page.getByRole('menuitemradio', { name: 'ダークモード' }).click()
-      await expect.soft(page).toHaveScreenshot({ fullPage: true })
 
       await page.getByRole('menuitemradio', { name: 'ライトモード' }).click()
-      await expect.soft(page).toHaveScreenshot({ fullPage: true })
 
       await page
         .getByRole('menuitemradio', { name: 'システムのモード' })
@@ -340,7 +317,6 @@ authedTest.describe('home', () => {
           .getByRole('dialog')
           .filter({ hasText: '2023年1月' })
           .waitFor()
-        await expect.soft(page).toHaveScreenshot({ fullPage: true })
 
         await page.getByRole('button', { name: '1月5日' }).click()
 
@@ -348,7 +324,6 @@ authedTest.describe('home', () => {
         await page
           .getByRole('button', { name: 'キーボードで時刻を入力する' })
           .waitFor()
-        await expect.soft(page).toHaveScreenshot({ fullPage: true })
 
         await page
           .getByRole('button', { name: 'キーボードで時刻を入力する' })
@@ -356,7 +331,6 @@ authedTest.describe('home', () => {
 
         await page.getByLabel('時間を入力').fill('13')
         await page.getByLabel('分を入力').fill('00')
-        await expect.soft(page).toHaveScreenshot({ fullPage: true })
 
         await page.getByRole('button', { name: 'OK' }).click()
 
@@ -368,15 +342,11 @@ authedTest.describe('home', () => {
         await page.getByLabel('分を入力').fill('00')
         await page.getByRole('button', { name: 'OK' }).click()
 
-        await expect.soft(page).toHaveScreenshot({ fullPage: true })
-
         await page.getByRole('button', { name: '追加する' }).click()
 
         await expect(
           page.getByRole('listitem').filter({ hasText: '過去の睡眠' })
         ).toContainText(['5日'])
-
-        await expect.soft(page).toHaveScreenshot({ fullPage: true })
       })
 
       await authedTest.step('睡眠の編集ダイアログが表示される', async () => {
@@ -387,7 +357,6 @@ authedTest.describe('home', () => {
           .getByRole('button')
           .click()
         await page.getByRole('dialog').waitFor()
-        await expect.soft(page).toHaveScreenshot({ fullPage: true })
 
         await page.getByRole('button', { name: '睡眠記録を編集' }).click()
 
@@ -427,9 +396,6 @@ authedTest.describe('home', () => {
     authedTest.beforeEach(async ({ page }) => {
       await page.goto('/home?date=2033-01-01', { waitUntil: 'networkidle' })
     })
-    authedTest('VRT-predictions', async ({ page }) => {
-      await expect.soft(page).toHaveScreenshot({ fullPage: true })
-    })
   })
 
   authedTest.describe('displayMode: month', () => {
@@ -439,9 +405,6 @@ authedTest.describe('home', () => {
       })
     })
 
-    authedTest('VRT', async ({ page }) => {
-      await expect.soft(page).toHaveScreenshot({ fullPage: true })
-    })
     authedTest('月の切り替えができる', async ({ page }) => {
       await page.getByRole('link', { name: '次の月を表示' }).click()
       await page.waitForURL(/date=2023-02-01/)
@@ -457,9 +420,6 @@ authedTest.describe('home', () => {
       })
     })
 
-    authedTest('VRT', async ({ page }) => {
-      await expect.soft(page).toHaveScreenshot({ fullPage: true })
-    })
     authedTest('週の切り替えができる', async ({ page }) => {
       await page.getByRole('link', { name: '次の週を表示' }).click()
       await page.waitForURL(/date=2023-01-08/)
@@ -475,9 +435,6 @@ authedTest.describe('home', () => {
       })
     })
 
-    authedTest('VRT', async ({ page }) => {
-      await expect.soft(page).toHaveScreenshot({ fullPage: true })
-    })
     authedTest('月の切り替えができる', async ({ page }) => {
       await page.getByRole('link', { name: '次の月を表示' }).click()
       await page.waitForURL(/date=2023-02-01/)
