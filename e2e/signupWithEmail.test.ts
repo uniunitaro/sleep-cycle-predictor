@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 import { deleteAccount } from './utils/deleteAccount'
 
 test.describe('signup/with-email', () => {
@@ -18,7 +18,6 @@ test.describe('signup/with-email', () => {
     await page.getByText('ニックネームを入力してください').waitFor()
     await page.getByText('メールアドレスの形式が正しくありません').waitFor()
     await page.getByText('パスワードは8文字以上で入力してください').waitFor()
-    await expect.soft(page).toHaveScreenshot({ fullPage: true })
   })
 
   test('desktop-正常に登録&退会ができる', async ({

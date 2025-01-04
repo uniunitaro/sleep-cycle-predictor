@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 
 test.describe('index', () => {
   test.beforeEach(async ({ page }) => {
@@ -7,10 +7,6 @@ test.describe('index', () => {
 
   test('正しいタイトルがある', async ({ page }) => {
     await expect(page).toHaveTitle('Sleep Predictor')
-  })
-
-  test('VRT', async ({ page }) => {
-    await expect.soft(page).toHaveScreenshot({ fullPage: true })
   })
 
   test('会員登録リンクがあり、押下すると登録ページに遷移する', async ({

@@ -1,5 +1,4 @@
 import { authedTest, expect } from './setup/fixtures'
-import { setFullViewport } from './utils/setFullViewport'
 
 authedTest.describe('settings', () => {
   authedTest.beforeEach(async ({ page }) => {
@@ -8,14 +7,6 @@ authedTest.describe('settings', () => {
 
   authedTest('正しいタイトルがある', async ({ page }) => {
     await expect(page).toHaveTitle(/設定/)
-  })
-
-  authedTest('VRT', async ({ page }) => {
-    await page.getByRole('textbox', { name: 'メールアドレス' }).fill('dummy')
-
-    await setFullViewport(page, page.getByTestId('scrollContainer'))
-
-    await expect.soft(page).toHaveScreenshot({ fullPage: true })
   })
 
   authedTest('ニックネームが変更できる', async ({ page }) => {

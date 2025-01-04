@@ -8,8 +8,8 @@ import {
   Section,
   Tailwind,
   Text,
-} from '@react-email/components'
-import { FC, ReactNode } from 'react'
+} from '@react-email/components';
+import { FC, ReactNode } from 'react';
 
 const Layout: FC<{ headingText: string; children: ReactNode }> = ({
   headingText,
@@ -36,7 +36,7 @@ const Layout: FC<{ headingText: string; children: ReactNode }> = ({
               {children}
               <Section className="text-center mt-[20px]">
                 <Text className="text-[#666666] text-[12px] leading-[24px]">
-                  © 2023-2024 Sleep Predictor
+                  © 2023-2025 Sleep Predictor
                 </Text>
               </Section>
             </Container>

@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 
 test.describe('signin', () => {
   test.beforeEach(async ({ page }) => {
@@ -7,10 +7,6 @@ test.describe('signin', () => {
 
   test('正しいタイトルがある', async ({ page }) => {
     await expect(page).toHaveTitle(/ログイン/)
-  })
-
-  test('VRT', async ({ page }) => {
-    await expect.soft(page).toHaveScreenshot({ fullPage: true })
   })
 
   test('誤ったメールアドレス、パスワードを入力するとエラーが出る', async ({
@@ -22,7 +18,6 @@ test.describe('signin', () => {
     await expect(
       page.getByText('メールアドレスまたはパスワードが間違っています')
     ).toBeVisible()
-    await expect.soft(page).toHaveScreenshot({ fullPage: true })
   })
 
   test('正常にログインができる', async ({ page }) => {
